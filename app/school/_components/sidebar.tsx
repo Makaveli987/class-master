@@ -53,6 +53,12 @@ const navLinks: NavLink[] = [
     isRestricted: false,
   },
   {
+    path: "/school/teachers",
+    icon: <BarChart2Icon className="w-4 h-4 mr-2" />,
+    label: "Teachers",
+    isRestricted: true,
+  },
+  {
     path: "/school/analyticas",
     icon: <BarChart2Icon className="w-4 h-4 mr-2" />,
     label: "Analyticas",
@@ -61,6 +67,8 @@ const navLinks: NavLink[] = [
 ];
 
 export function Sidebar({ className, session }: SidebarProps) {
+  console.log("rendered");
+
   const pathname = usePathname();
   return (
     <div className={cn("pb-12 flex-1 max-w-64 border-r", className)}>

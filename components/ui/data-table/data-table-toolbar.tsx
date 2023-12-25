@@ -1,0 +1,29 @@
+"use client";
+
+import { Table } from "@tanstack/react-table";
+import { Input } from "../input";
+
+interface DataTableToolbarProps<TData> {
+  table: Table<TData>;
+}
+
+export function DataTableToolbar<TData>({
+  table,
+}: DataTableToolbarProps<TData>) {
+  const isFiltered = table.getState().columnFilters.length > 0;
+
+  return (
+    <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-1 items-center space-x-2">
+        <Input
+          placeholder="Search students..."
+          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          onChange={(event: any) =>
+            table.getColumn("email")?.setFilterValue(event.target.value)
+          }
+          className="h-8 w-[150px] lg:w-[250px]"
+        />
+      </div>
+    </div>
+  );
+}

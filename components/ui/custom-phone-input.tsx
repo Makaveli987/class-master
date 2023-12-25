@@ -5,7 +5,6 @@ import {
   usePhoneInput,
 } from "react-international-phone";
 import "react-international-phone/style.css";
-import "./custom-input-phone.css";
 
 import { Input } from "./input";
 

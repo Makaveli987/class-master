@@ -18,6 +18,14 @@ import { z } from "zod";
 import { signIn, useSession } from "next-auth/react";
 import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
@@ -62,7 +70,7 @@ export default function SignInClient() {
 
   return (
     <div className="mx-auto bg-white w-[400px] p-10 shadow-sm border rounded-lg">
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col space-y-1 mb-8">
         <h3 className="font-semibold tracking-tight text-2xl">
           Log into your account
         </h3>
