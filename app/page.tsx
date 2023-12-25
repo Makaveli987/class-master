@@ -38,24 +38,7 @@ export default function Home() {
               placeholder="Name"
             />
           </div>
-          {/* <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="picture">Email</Label>
-            <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              placeholder="Email"
-            />
-          </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="picture">Password</Label>
-            <Input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="Password"
-            />
-          </div> */}
+
           <Button
             onClick={() => {
               console.log("clicked");

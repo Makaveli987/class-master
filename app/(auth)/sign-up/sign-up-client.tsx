@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { signIn, useSession } from "next-auth/react";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -99,138 +100,145 @@ const SignUpClient = () => {
   }
 
   return (
-    <div className="h-screen w-screen pt-[10%]">
-      <div className="mx-auto bg-white w-[500px] p-10 shadow-sm border rounded-lg">
-        <div className="flex flex-col space-y-1">
-          <h3 className="font-semibold tracking-tight text-2xl">
-            Create an account
-          </h3>
+    <div className="bg-white w-[500px] p-10 shadow-sm border rounded-lg">
+      <div className="flex flex-col space-y-1">
+        <h3 className="font-semibold tracking-tight text-2xl">
+          Create an account
+        </h3>
+        <div className="flex text-sm">
+          <p className="text-muted-foreground">
+            Already have an account?{" "}
+            <Link className="text-primary font-medium" href="/sign-in">
+              Sign in
+            </Link>
+            .
+          </p>
         </div>
-        <Separator className="my-6" />
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First name</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={pending}
-                      placeholder="First name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last name</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={pending}
-                      placeholder="Last name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={pending}
-                      type="email"
-                      placeholder="Email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={pending}
-                      type="password"
-                      placeholder="Password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <CustomPhoneInput
-                      disabled={pending}
-                      placeholder="Phone number"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="schoolName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>School name</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={pending}
-                      placeholder="School name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button disabled={pending} className="w-full !mt-10" type="submit">
-              {pending ? (
-                <>
-                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                  Signing Up
-                </>
-              ) : (
-                <>Sign Up</>
-              )}
-            </Button>
-          </form>
-        </Form>
       </div>
+      <Separator className="my-6" />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First name</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={pending}
+                    placeholder="First name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last name</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={pending}
+                    placeholder="Last name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={pending}
+                    type="email"
+                    placeholder="Email"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={pending}
+                    type="password"
+                    placeholder="Password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone</FormLabel>
+                <FormControl>
+                  <CustomPhoneInput
+                    disabled={pending}
+                    placeholder="Phone number"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="schoolName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>School name</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={pending}
+                    placeholder="School name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button disabled={pending} className="w-full !mt-10" type="submit">
+            {pending ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Signing Up
+              </>
+            ) : (
+              <>Sign Up</>
+            )}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };

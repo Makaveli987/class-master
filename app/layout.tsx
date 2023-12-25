@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { SessionProvider, signOut } from "next-auth/react";
 import "./globals.css";
-import { Button } from "@/components/ui/button";
 import Header from "./header";
 import ClientSessionProvider from "./client-session-provider";
 
@@ -20,11 +18,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ClientSessionProvider>
-          <Header />
-          {children}
-        </ClientSessionProvider>
+      <body
+        style={{
+          width: "100vw",
+          height: "100vh",
+        }}
+        className={inter.className}
+      >
+        <ClientSessionProvider>{children}</ClientSessionProvider>
       </body>
     </html>
   );
