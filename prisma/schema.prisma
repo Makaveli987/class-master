@@ -1,0 +1,147 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  id               String @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String
+  phone            String
+  groupId          String?
+  schoolId         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  Enrolments       Enrolment[]
+  Attendance       Attendance[]
+  Group            Group?       @relation(fields: [groupId], references: [id])
+  School           School      @relation(fields: [schoolId], references: [id])
+
+  @@index([groupId])
+  @@index([schoolId])
+}
+
+model Course {
+  id               String @id @default(uuid())
+  name             String
+  description      String
+  pricePerClass    Float
+  totalClasses     Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  Enrolments       Enrolment[]
+  UserPerCourses   UserPerCourse[]
+  Classes          Class[]
+}
+
+model Enrolment {
+  courseId         String
+  studentId        String
+  startDate        DateTime
+  attendedClasses  Int
+  Course           Course       @relation(fields: [courseId], references: [id])
+  Student          Student      @relation(fields: [studentId], references: [id])
+  
+  @@id([courseId, studentId])
+  @@index([courseId])
+  @@index([studentId])
+}
+
+model Group {
+  id               String @id @default(uuid())
+  name             String
+  schoolId         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  Students         Student[]
+  School           School    @relation(fields: [schoolId], references: [id])
+
+  @@index([schoolId])
+}
+
+model User {
+  id               String @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String @unique
+  hashedPassword   String
+  phone            String
+  roleId           String
+  schoolId         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  Role             Role            @relation(fields: [roleId], references: [id])
+  UserPerCourses   UserPerCourse[]
+  School           School      @relation(fields: [schoolId], references: [id])
+  ClassOriginal    Class[]   @relation("originalTeacher")
+  ClassSubstitute  Class[]   @relation("substituteTeacher")
+
+  @@index([roleId])
+  @@index([schoolId])
+}
+
+model Role {
+  id                String @id @default(uuid())
+  type              String
+  Users             User[]
+}
+
+model UserPerCourse {
+  courseId          String
+  userId            String
+  Course            Course  @relation(fields: [courseId], references: [id])
+  User              User    @relation(fields: [userId], references: [id])
+  
+  @@id([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+}
+
+model Class {
+  id                 String @id @default(uuid())
+  courseId           String
+  originalTeacherId  String
+  substituteTeacherId String?
+  canceled           Boolean
+  paid               Boolean
+  attendeeId         String
+  attendeeType       String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  Course             Course    @relation(fields: [courseId], references: [id])
+  OriginalTeacher    User      @relation(fields: [originalTeacherId], references: [id], name: "originalTeacher")
+  SubstituteTeacher  User?     @relation(fields: [substituteTeacherId], references: [id], name: "substituteTeacher")
+  Attendance         Attendance[]
+
+  @@index([courseId])
+  @@index([substituteTeacherId])
+  @@index([originalTeacherId])
+}
+
+model Attendance {
+  classId            String
+  studentId          String
+  attended           Boolean
+  Class              Class    @relation(fields: [classId], references: [id])
+  Student            Student  @relation(fields: [studentId], references: [id])
+  
+  @@id([classId, studentId])
+  @@index([classId])
+  @@index([studentId])
+}
+
+model School {
+  id                 String @id @default(uuid())
+  name               String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  Groups             Group[]
+  Students           Student[]
+  Users              User[]
+}
