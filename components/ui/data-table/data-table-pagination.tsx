@@ -14,28 +14,18 @@ import {
 } from "../select";
 import { Button } from "../button";
 
-// import { Button } from "@/registry/new-york/ui/button";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/registry/new-york/ui/select";
-
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  totalRecords: number;
 }
 
 export function DataTablePagination<TData>({
   table,
+  totalRecords,
 }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex items-center justify-end px-2 mt-4">
-      {/* <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div> */}
+    <div className="flex items-center justify-between px-2 mt-4">
+      <div className="text-sm font-medium">Total: {totalRecords}</div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
@@ -57,7 +47,7 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+        <div className="flex items-center justify-center text-sm font-medium">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>

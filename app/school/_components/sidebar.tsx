@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { RoleType } from "@/lib/models/Roles";
 import { cn } from "@/lib/utils";
 import {
@@ -67,8 +68,6 @@ const navLinks: NavLink[] = [
 ];
 
 export function Sidebar({ className, session }: SidebarProps) {
-  console.log("rendered");
-
   const pathname = usePathname();
   return (
     <div className={cn("pb-12 flex-1 max-w-64 border-r", className)}>
@@ -106,3 +105,29 @@ export function Sidebar({ className, session }: SidebarProps) {
     </div>
   );
 }
+
+Sidebar.Skeleton = function SkeletonSidebar() {
+  return (
+    <div className="pb-12 flex-1 max-w-64 border-r">
+      <div className="h-14 ml-5 flex items-center">
+        <Link href="/school/calendar">
+          <Logo />
+        </Link>
+      </div>
+      <Separator />
+
+      <div className="space-y-4 py-5">
+        <div className="px-3 py-2">
+          <div className="flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <Skeleton
+                key={link.path}
+                className="w-full h-8 flex justify-start items-center"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

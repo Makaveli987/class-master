@@ -25,16 +25,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    console.log("role server:>> 1");
     const role = await request.json();
-
-    console.log("role server:>> ", role);
-
-    // const r = await db.role.create({
-    //   data: {
-    //     type: role,
-    //   },
-    // });
     const r = await db.role.create({ data: { type: role.type } });
     return new NextResponse(JSON.stringify(r), {
       status: 201,

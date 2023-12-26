@@ -12,8 +12,9 @@ export default function SchoolClient({
   const { data: session } = useSession();
 
   return (
-    <div className="flex h-screen ">
-      <Sidebar session={session} />
+    <div className="flex h-screen">
+      {session ? <Sidebar session={session} /> : <Sidebar.Skeleton />}
+
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header session={session} />
         <Separator />

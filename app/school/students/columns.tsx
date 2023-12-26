@@ -3,22 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit2Icon } from "lucide-react";
+import { EditIcon, Trash2Icon } from "lucide-react";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<any>[] = [
+  // {
+  //   accessorKey: "id",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader className="pl-2" column={column} title="Id" />
+  //   ),
+  //   enableSorting: false,
+  // },
   {
-    accessorKey: "status",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
   },
   {
@@ -30,14 +28,33 @@ export const columns: ColumnDef<Payment>[] = [
       const payment = row.original;
 
       return (
-        <span className="font-semibold text-slate-600">{payment.email}</span>
+        <span className="font-semibold text-muted-foreground">
+          {payment.email}
+        </span>
       );
     },
   },
   {
-    accessorKey: "amount",
+    accessorKey: "phone",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Phone"
+      />
+    ),
+    enableSorting: false,
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created" />
+    ),
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated" />
     ),
   },
   {
@@ -46,15 +63,12 @@ export const columns: ColumnDef<Payment>[] = [
       const payment = row.original;
 
       return (
-        <div className="flex gap-2">
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <Edit2Icon className="w-4 h-4" />
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" className="h-8 w-8 p-0 group">
+            <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
           </Button>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <Edit2Icon className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <Edit2Icon className="w-4 h-4" />
+          <Button variant="ghost" className="h-8 w-8 p-0 group">
+            <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
           </Button>
         </div>
       );

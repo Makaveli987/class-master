@@ -2,12 +2,16 @@
 
 import {
   ColumnDef,
+  FilterFn,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
+import { rankItem } from "@tanstack/match-sorter-utils";
 
 import {
   Table,
@@ -17,45 +21,62 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/data-table/table";
-import { Button } from "../button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../select";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { useState } from "react";
+import DebouncedInput from "../debounce-input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  totalPages: number;
+  filterPlaceholder: string;
+  children?: React.ReactNode;
 }
+
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value);
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  });
+  // Return if the item should be filtered in/out
+  return itemRank.passed;
+};
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  totalPages,
+  filterPlaceholder,
+  children,
 }: DataTableProps<TData, TValue>) {
+  const [globalFilter, setGlobalFilter] = useState("");
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      globalFilter,
+    },
+    globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    pageCount: totalPages,
+    getSortedRowModel: getSortedRowModel(),
     initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   });
 
   return (
-    <div className="rounded-md border p-4">
-      <DataTableToolbar table={table} />
-      <div className="border !rounded-md">
+    <div>
+      <div className="flex items-center justify-between">
+        <DebouncedInput
+          value={globalFilter ?? ""}
+          onChange={(value) => setGlobalFilter(String(value))}
+          className="p-2 font-lg shadow border border-block"
+          placeholder={filterPlaceholder}
+        />
+        <div>{children}</div>
+      </div>
+      <div className="border !rounded-md mt-4">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -83,7 +104,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="pl-4" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -105,41 +126,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
-      {/* Paginator */}
-      {/* <div className="flex justify-between mt-6">
-        <div>
-          <Select value="10">
-            <SelectTrigger className="w-[80px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Page size</SelectLabel>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex items-center gap-2">
-          <p>
-            Page {table.getState().pagination.pageIndex + 1} of {totalPages}
-          </p>
-          <Button
-            variant="outline"
-            className="flex justify-center items-center"
-            onClick={() => table.previousPage()}
-          >
-            <ChevronLeftIcon className="w-4 h-4" /> Prev
-          </Button>
-          <Button variant="outline" onClick={() => table.nextPage()}>
-            Next <ChevronRightIcon className="w-4 h-4" />
-          </Button>
-        </div>
-      </div> */}
-      <DataTablePagination table={table} />
+      <DataTablePagination totalRecords={data.length} table={table} />
     </div>
   );
 }

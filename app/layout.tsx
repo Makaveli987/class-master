@@ -22,6 +22,7 @@ export default function RootLayout({
         style={{
           width: "100vw",
           height: "100vh",
+          overflow: "hidden",
         }}
         className={inter.className}
       >
