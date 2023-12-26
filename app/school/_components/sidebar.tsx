@@ -7,6 +7,7 @@ import { RoleType } from "@/lib/models/Roles";
 import { cn } from "@/lib/utils";
 import {
   BarChart2Icon,
+  BookAIcon,
   CalendarIcon,
   SettingsIcon,
   User2Icon,
@@ -54,15 +55,15 @@ const navLinks: NavLink[] = [
     isRestricted: false,
   },
   {
-    path: "/school/teachers",
-    icon: <BarChart2Icon className="w-4 h-4 mr-2" />,
-    label: "Teachers",
+    path: "/school/courses",
+    icon: <BookAIcon className="w-4 h-4 mr-2" />,
+    label: "Courses",
     isRestricted: true,
   },
   {
-    path: "/school/analyticas",
+    path: "/school/teachers",
     icon: <BarChart2Icon className="w-4 h-4 mr-2" />,
-    label: "Analyticas",
+    label: "Teachers",
     isRestricted: true,
   },
 ];
