@@ -1,8 +1,6 @@
 "use client";
-
-import * as React from "react";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-
+import React, { useLayoutEffect, useRef, useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,69 +16,56 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+import "@/components/ui/combobox.scss";
 
-export function Combobox() {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+interface ComboboxProps {
+  options: { label: string; value: string }[];
+  value?: string;
+  onChange: (value: string) => void;
+}
+
+export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
+  const [open, setOpen] = useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          id="combobox-trigger"
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between font-normal"
+          className={cn(
+            "w-full justify-between font-normal",
+            !value && "text-muted-foreground"
+          )}
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            ? options.find((option) => option.value === value)?.label
+            : "Select option..."}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." className="h-9" />
-          <CommandEmpty>No framework found.</CommandEmpty>
+      <PopoverContent className={`p-0 PopoverContent`}>
+        <Command className="w-full">
+          <CommandInput placeholder="Search option..." />
+          <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup>
-            {frameworks.map((framework) => (
+            {options.map((option) => (
               <CommandItem
-                key={framework.value}
-                value={framework.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue);
+                key={option.value}
+                onSelect={() => {
+                  onChange(option.value === value ? "" : option.value);
                   setOpen(false);
                 }}
               >
-                {framework.label}
-                <CheckIcon
+                <Check
                   className={cn(
-                    "ml-auto h-4 w-4",
-                    value === framework.value ? "opacity-100" : "opacity-0"
+                    "mr-2 h-4 w-4",
+                    value === option.value ? "opacity-100" : "opacity-0"
                   )}
                 />
+                {option.label}
               </CommandItem>
             ))}
           </CommandGroup>
@@ -88,4 +73,4 @@ export function Combobox() {
       </PopoverContent>
     </Popover>
   );
-}
+};

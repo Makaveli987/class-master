@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon, PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
@@ -38,6 +39,29 @@ const formSchema = z.object({
   course: z.string().min(1, "Field is required"),
 });
 
+const options = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit ",
+    label: "SvelteKit SvelteKitSvelteKit  ",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
+
 export default function StudentDialog() {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
@@ -49,13 +73,19 @@ export default function StudentDialog() {
       lastName: "",
       email: "",
       phone: "",
-      course: "Test",
+      course: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // setPending(true);
     console.log({ values });
+    setOpen(false);
+
+    toast.success("Student has been created", {
+      description: `${values.firstName} ${values.lastName}`,
+    });
+    form.reset();
 
     // axios
     //   .post("/api/auth/register", { ...values, roleId: adminRoleId })
@@ -83,7 +113,7 @@ export default function StudentDialog() {
         <DialogHeader>
           <DialogTitle>Add Student</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 mt-4">
+        <div className="grid gap-4 mt-8">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <FormField
@@ -161,17 +191,16 @@ export default function StudentDialog() {
 
               <FormField
                 control={form.control}
-                name="phone"
+                name="course"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Course</FormLabel>
                     <FormControl>
-                      {/* <CustomPhoneInput
-                        disabled={pending}
-                        placeholder="Phone number"
-                        {...field}
-                      /> */}
-                      <Combobox />
+                      <Combobox
+                        options={options}
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

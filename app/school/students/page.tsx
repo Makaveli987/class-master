@@ -201,7 +201,7 @@ async function getData(): Promise<any[]> {
     },
     {
       id: "728ed52f",
-      name: "Ivan Ivanovic",
+      name: "Ivan Vidic",
       email: "m@example.com",
       phone: "+381649555678",
       createdAt: "12.01.2028",

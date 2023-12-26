@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "./header";
 import ClientSessionProvider from "./client-session-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +26,15 @@ export default function RootLayout({
         }}
         className={inter.className}
       >
-        <ClientSessionProvider>{children}</ClientSessionProvider>
+        <ClientSessionProvider>
+          <Toaster
+            position="top-center"
+            richColors
+            theme="light"
+            duration={2500}
+          />
+          {children}
+        </ClientSessionProvider>
       </body>
     </html>
   );
