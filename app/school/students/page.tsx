@@ -1,9 +1,9 @@
 import { DataTable } from "@/components/ui/data-table/data-table";
-import { columns } from "./columns";
-import StudentDialog from "./student-dialog";
+import { columns } from "./_components/columns";
+import StudentDialog from "./_components/student-dialog";
 import { getStudents } from "@/actions/get-students";
 
-export default async function Students() {
+export default async function StudentsPage() {
   const data = await getStudents();
 
   return (

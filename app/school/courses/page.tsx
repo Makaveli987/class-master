@@ -2,7 +2,7 @@ import { getCourses } from "@/actions/get-courses";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { columns } from "./columns";
 
-export default async function Courses() {
+export default async function CoursesPage() {
   const data = await getCourses();
 
   return (

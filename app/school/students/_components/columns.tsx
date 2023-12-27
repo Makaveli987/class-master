@@ -2,19 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
+import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
 import { Student } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { EditIcon, Trash2Icon } from "lucide-react";
+import { BookPlusIcon, EditIcon, Trash2Icon } from "lucide-react";
+import Link from "next/link";
 
 export const columns: ColumnDef<Student>[] = [
-  // {
-  //   accessorKey: "id",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader className="pl-2" column={column} title="Id" />
-  //   ),
-  //   enableSorting: false,
-  // },
   {
     accessorKey: "firstName",
     header: ({ column }) => (
@@ -64,20 +59,35 @@ export const columns: ColumnDef<Student>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Updated" />
     ),
+    cell: ({ row }) => {
+      const updated = formatDate(row.original.updatedAt);
+
+      return <span>{updated}</span>;
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
+      const studentId = row.original.id;
       return (
         <div className="flex justify-end gap-2">
-          <Button variant="ghost" className="h-8 w-8 p-0 group ">
-            <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
-          </Button>
-          <Button variant="ghost" className="h-8 w-8 p-0 group">
-            <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
-          </Button>
+          <Tooltip2 text="Add to course" side="top">
+            <Button variant="ghost" className="h-8 w-8 p-0 group ">
+              <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
+            </Button>
+          </Tooltip2>
+          <Tooltip2 text="Edit" side="top">
+            <Link href={`/school/students/${studentId}`}>
+              <Button variant="ghost" className="h-8 w-8 p-0 group ">
+                <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
+              </Button>
+            </Link>
+          </Tooltip2>
+          <Tooltip2 text="Delete" side="top">
+            <Button variant="ghost" className="h-8 w-8 p-0 group">
+              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
+            </Button>
+          </Tooltip2>
         </div>
       );
     },

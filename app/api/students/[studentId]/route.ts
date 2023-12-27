@@ -3,25 +3,30 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: { studentId: string } }
+) {
   try {
     const currentUser = await getCurrentUser();
+    const { studentId } = params;
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const { firstName, lastName, email, phone } = await req.json();
-    const s = await db.student.create({
+    const s = await db.student.update({
+      where: {
+        id: studentId,
+      },
       data: {
         firstName,
         lastName,
         email,
         phone,
-        schoolId: currentUser.schoolId,
       },
     });
-    revalidatePath("/school/students");
 
     return new NextResponse(JSON.stringify(s), {
       status: 201,

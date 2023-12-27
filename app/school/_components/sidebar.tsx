@@ -90,7 +90,9 @@ export function Sidebar({ className, session }: SidebarProps) {
                 shouldRenderLink && (
                   <Link key={link.path} href={link.path}>
                     <Button
-                      variant={pathname === link.path ? "default" : "ghost"}
+                      variant={
+                        pathname.includes(link.path) ? "default" : "ghost"
+                      }
                       className="w-full flex justify-start items-center"
                     >
                       {link.icon}
