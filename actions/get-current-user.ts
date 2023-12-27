@@ -19,7 +19,7 @@ export default async function getCurrentUser() {
         email: session.user.email as string,
       },
       include: {
-        Role: true,
+        role: true,
       },
     });
 

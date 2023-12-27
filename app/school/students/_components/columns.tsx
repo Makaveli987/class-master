@@ -8,6 +8,7 @@ import { Student } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { BookPlusIcon, EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
+import EnrollStudentDialog from "./enroll-dialog";
 
 export const columns: ColumnDef<Student>[] = [
   {
@@ -71,11 +72,13 @@ export const columns: ColumnDef<Student>[] = [
       const studentId = row.original.id;
       return (
         <div className="flex justify-end gap-2">
-          <Tooltip2 text="Add to course" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group ">
-              <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
-            </Button>
-          </Tooltip2>
+          <EnrollStudentDialog>
+            <Tooltip2 text="Add to course" side="top">
+              <Button variant="ghost" className="h-8 w-8 p-0 group ">
+                <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
+              </Button>
+            </Tooltip2>
+          </EnrollStudentDialog>
           <Tooltip2 text="Edit" side="top">
             <Link href={`/school/students/${studentId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">

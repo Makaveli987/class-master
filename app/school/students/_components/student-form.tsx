@@ -91,7 +91,6 @@ export default function StudentForm({
           toast.success("Student has been updated", {
             description: `${values.firstName} ${values.lastName}`,
           });
-          // form.reset();
         }
         revalidatePath("/school/students");
         revalidatePath(`/school/students/${data?.id}`);

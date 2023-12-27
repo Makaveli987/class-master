@@ -1,15 +1,20 @@
 import { db } from "@/lib/db";
-import { getServerSession } from "next-auth";
+import getCurrentUser from "./get-current-user";
 
 export const getCourses = async () => {
   try {
-    const session = await getServerSession();
+    const currentUser = await getCurrentUser();
 
-    const courses = await db.course.findMany();
-
-    // const courses = await db.course.findMany({
-    //   where: { schoolId: session?.user?.School.id },
-    // });
+    const courses = await db.course.findMany({
+      where: { schoolId: currentUser?.schoolId },
+      include: {
+        userPerCourses: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
     return courses;
   } catch (error) {
     console.error("[COURSE] Error fetching courses");

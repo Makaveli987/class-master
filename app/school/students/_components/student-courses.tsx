@@ -1,3 +1,5 @@
+import { getCourses } from "@/actions/get-courses";
+import { getEnrollments } from "@/actions/get-enrolments";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
@@ -5,15 +7,19 @@ import { Course } from "@prisma/client";
 import React from "react";
 
 interface StudentCoursesProps {
-  courses: Course[];
+  studentId: string;
 }
 
 function calcPercentage(x: number, y: number) {
   return (x / y) * 100;
 }
 
-export default function StudentCourses({ courses }: StudentCoursesProps) {
-  if (!courses) {
+export default async function StudentCourses({
+  studentId,
+}: StudentCoursesProps) {
+  const enrollments = await getEnrollments(studentId);
+
+  if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
   }
   return (
