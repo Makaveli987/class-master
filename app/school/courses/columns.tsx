@@ -2,48 +2,49 @@
 
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
-import { formatDate } from "@/lib/utils";
-import { Student } from "@prisma/client";
+import { Course } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon, Trash2Icon } from "lucide-react";
 
-export const columns: ColumnDef<Student>[] = [
-  // {
-  //   accessorKey: "id",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader className="pl-2" column={column} title="Id" />
-  //   ),
-  //   enableSorting: false,
-  // },
+export const columns: ColumnDef<Course>[] = [
   {
-    accessorKey: "firstName",
+    accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <span className="font-semibold">
-        {row.original.firstName} {row.original.lastName}
-      </span>
+      <span className="font-semibold">{row.original.name}</span>
     ),
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
-    ),
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return <span>{payment.email}</span>;
-    },
-  },
-  {
-    accessorKey: "phone",
+    accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader
         className="pl-2 text-xs"
         column={column}
-        title="Phone"
+        title="Description"
+      />
+    ),
+    enableSorting: false,
+  },
+  {
+    accessorKey: "pricePerClass",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Price Per Class"
+      />
+    ),
+    enableSorting: false,
+  },
+  {
+    accessorKey: "totalClasses",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Total Classes"
       />
     ),
     enableSorting: false,
@@ -53,11 +54,6 @@ export const columns: ColumnDef<Student>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created" />
     ),
-    cell: ({ row }) => {
-      const created = formatDate(row.original.createdAt);
-
-      return <span>{created}</span>;
-    },
   },
   {
     accessorKey: "updatedAt",
@@ -68,8 +64,6 @@ export const columns: ColumnDef<Student>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original;
-
       return (
         <div className="flex justify-end gap-2">
           <Button variant="ghost" className="h-8 w-8 p-0 group ">

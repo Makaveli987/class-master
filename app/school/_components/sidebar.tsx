@@ -123,7 +123,7 @@ Sidebar.Skeleton = function SkeletonSidebar() {
             {navLinks.map((link) => (
               <Skeleton
                 key={link.path}
-                className="w-full h-8 flex justify-start items-center"
+                className="w-full h-9 flex justify-start items-center"
               />
             ))}
           </div>

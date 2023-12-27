@@ -19,7 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Student } from "@prisma/client";
+import axios, { AxiosResponse } from "axios";
 import { Loader2Icon, PlusCircleIcon } from "lucide-react";
+import { revalidatePath } from "next/cache";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,31 +39,31 @@ const formSchema = z.object({
   }),
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
   phone: z.string().min(5, "Field is required"),
-  course: z.string().min(1, "Field is required"),
+  // course: z.string().min(1, "Field is required"),
 });
 
-const options = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit ",
-    label: "SvelteKit SvelteKitSvelteKit  ",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+// const options = [
+//   {
+//     value: "next.js",
+//     label: "Next.js",
+//   },
+//   {
+//     value: "sveltekit ",
+//     label: "SvelteKit SvelteKitSvelteKit  ",
+//   },
+//   {
+//     value: "nuxt.js",
+//     label: "Nuxt.js",
+//   },
+//   {
+//     value: "remix",
+//     label: "Remix",
+//   },
+//   {
+//     value: "astro",
+//     label: "Astro",
+//   },
+// ];
 
 export default function StudentDialog() {
   const [open, setOpen] = useState(false);
@@ -73,34 +76,30 @@ export default function StudentDialog() {
       lastName: "",
       email: "",
       phone: "",
-      course: "",
+      // course: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // setPending(true);
+    setPending(true);
     console.log({ values });
     setOpen(false);
 
-    toast.success("Student has been created", {
-      description: `${values.firstName} ${values.lastName}`,
-    });
-    form.reset();
-
-    // axios
-    //   .post("/api/auth/register", { ...values, roleId: adminRoleId })
-    //   .then((response: AxiosResponse<Role[]>) => {
-    //     if (response.status === 201) {
-    //       signIn("credentials", {
-    //         email: values.email,
-    //         password: values.password,
-    //         callbackUrl: "/school",
-    //       }).finally(() => setPending(false));
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    axios
+      .post("/api/students", { ...values })
+      .then((response: AxiosResponse<Student[]>) => {
+        if (response.status === 201) {
+          toast.success("Student has been created", {
+            description: `${values.firstName} ${values.lastName}`,
+          });
+          form.reset();
+        }
+        revalidatePath("/school/students");
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => setPending(false));
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -189,7 +188,7 @@ export default function StudentDialog() {
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="course"
                 render={({ field }) => (
@@ -205,7 +204,7 @@ export default function StudentDialog() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <div className="flex items-center justify-end gap-2">
                 <Button
                   disabled={pending}
