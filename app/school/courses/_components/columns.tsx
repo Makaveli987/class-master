@@ -4,60 +4,44 @@ import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
-import { Student } from "@prisma/client";
+import { Course } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { BookPlusIcon, EditIcon, Trash2Icon } from "lucide-react";
+import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 
-import React from "react";
-import useEnrollDialog from "../_hooks/useEnrollDialog";
-
-function EnrollButton() {
-  const enrollDialog = useEnrollDialog();
-  return (
-    <Button
-      variant="ghost"
-      className="h-8 w-8 p-0 group "
-      onClick={enrollDialog.open}
-    >
-      <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
-    </Button>
-  );
-}
-
-export const columns: ColumnDef<Student>[] = [
+export const columns: ColumnDef<Course>[] = [
   {
-    accessorKey: "firstName",
+    accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => (
-      <span className="font-medium">
-        {row.original.firstName} {row.original.lastName}
-      </span>
-    ),
+    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
-    ),
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return <span>{payment.email}</span>;
-    },
-  },
-  {
-    accessorKey: "phone",
+    accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader
         className="pl-2 text-xs"
         column={column}
-        title="Phone"
+        title="Description"
       />
     ),
     enableSorting: false,
+  },
+  {
+    accessorKey: "pricePerClass",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Price Per Class" />
+    ),
+    cell: ({ row }) => (
+      <span className="font-medium">{row.original.pricePerClass} RSD</span>
+    ),
+  },
+  {
+    accessorKey: "totalClasses",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Total Classes" />
+    ),
   },
   {
     accessorKey: "createdAt",
@@ -84,16 +68,12 @@ export const columns: ColumnDef<Student>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const studentId = row.original.id;
+      const courseId = row.original.id;
+
       return (
         <div className="flex justify-end gap-2">
-          {/* <EnrollStudentDialog> */}
-          <Tooltip2 text="Add to course" side="top">
-            <EnrollButton />
-          </Tooltip2>
-          {/* </EnrollStudentDialog> */}
           <Tooltip2 text="Edit" side="top">
-            <Link href={`/school/students/${studentId}`}>
+            <Link href={`/school/courses/${courseId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">
                 <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
               </Button>

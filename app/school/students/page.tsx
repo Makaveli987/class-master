@@ -2,9 +2,12 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { columns } from "./_components/columns";
 import StudentDialog from "./_components/student-dialog";
 import { getStudents } from "@/actions/get-students";
+import { getCourses } from "@/actions/get-courses";
+import EnrollStudentDialog from "./_components/enroll-dialog";
 
 export default async function StudentsPage() {
-  const data = await getStudents();
+  const students = await getStudents();
+  const courses = await getCourses();
 
   return (
     <div>
@@ -12,12 +15,13 @@ export default async function StudentsPage() {
       <div className="bg-white w-full rounded-md border p-5">
         <DataTable
           columns={columns}
-          data={data || []}
+          data={students || []}
           filterPlaceholder="Search students..."
         >
           <StudentDialog />
         </DataTable>
       </div>
+      <EnrollStudentDialog courses={courses} />
     </div>
   );
 }

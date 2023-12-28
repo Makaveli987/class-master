@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import EnrollStudentDialog from "../_components/enroll-dialog";
+import { getCourses } from "@/actions/get-courses";
 
 export default async function StudentPage({
   params,
@@ -15,6 +16,7 @@ export default async function StudentPage({
   params: { studentId: string };
 }) {
   const student = await getStudent(params.studentId);
+  const courses = await getCourses();
 
   return (
     <div>
@@ -55,7 +57,7 @@ export default async function StudentPage({
                 <StudentCourses studentId={params.studentId} />
               </div>
               <div className="flex justify-end">
-                <EnrollStudentDialog>
+                <EnrollStudentDialog courses={courses} teachers={[]}>
                   <Button className="mt-14 ml-auto">
                     <PlusCircleIcon className="w-4 h-4 mr-2" />
                     Add Course

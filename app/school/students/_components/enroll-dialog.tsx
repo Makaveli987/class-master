@@ -12,37 +12,50 @@ import {
 import { Label } from "@/components/ui/label";
 import { Course, User } from "@prisma/client";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import useEnrollDialog from "../_hooks/useEnrollDialog";
 
 export default function EnrollStudentDialog({
   children,
+  courses,
+  teachers,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  courses?: Course[] | null;
+  teachers?: User[];
 }) {
-  const [open, setOpen] = useState(false);
-  const [courses, setCourses] = useState([]);
-  const [teachers, setTeachers] = useState([]);
+  const dialog = useEnrollDialog();
 
-  useEffect(() => {
-    axios
-      .get<Course[]>("/api/courses")
-      .then((value) => {
-        console.log({ value });
-        const courseOptions = value.data.map((course: Course) => ({
-          value: course.id,
-          label: course.name,
-        }));
-        setCourses(courseOptions);
-      })
-      .catch(() => {
-        toast.error("Something went wrong");
-      });
-  }, []);
+  console.log({ courses });
+  console.log({ teachers });
+
+  const courseOptions = courses?.map((course: Course) => ({
+    value: course.id,
+    label: course.name,
+  }));
+
+  // const [courses, setCourses] = useState([]);
+  // const [teachers, setTeachers] = useState([]);
+
+  // useEffect(() => {
+  //   axios
+  //     .get<Course[]>("/api/courses")
+  //     .then((value) => {
+  //       console.log({ value });
+  //       const courseOptions = value.data.map((course: Course) => ({
+  //         value: course.id,
+  //         label: course.name,
+  //       }));
+  //       setCourses(courseOptions);
+  //     })
+  //     .catch(() => {
+  //       toast.error("Something went wrong");
+  //     });
+  // }, []);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={dialog.isOpen} onOpenChange={dialog.toggle}>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Enroll Student</DialogTitle>
@@ -54,7 +67,7 @@ export default function EnrollStudentDialog({
           <div className="space-y-2">
             <Label>Course</Label>
             <Combobox
-              options={courses}
+              options={courseOptions || []}
               onChange={(value: string) => {
                 console.log(value);
               }}
@@ -62,15 +75,18 @@ export default function EnrollStudentDialog({
           </div>
           <div className="space-y-2">
             <Label>Teacher</Label>
-            <Combobox
+            {/* <Combobox
               options={courses}
               onChange={(value: string) => {
                 console.log(value);
               }}
-            ></Combobox>
+            ></Combobox> */}
           </div>
-          <div className="flex justify-end mt-2">
-            <Button className="ml-auto">Enroll</Button>
+          <div className="flex justify-end gap-2 mt-2">
+            <Button variant="outline" onClick={dialog.close}>
+              Cancel
+            </Button>
+            <Button>Enroll</Button>
           </div>
         </div>
       </DialogContent>

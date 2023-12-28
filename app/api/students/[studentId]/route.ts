@@ -28,6 +28,8 @@ export async function PATCH(
       },
     });
 
+    revalidatePath("/school/courses");
+    revalidatePath(`/school/courses/${studentId}`);
     return new NextResponse(JSON.stringify(s), {
       status: 201,
       headers: {

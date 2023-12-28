@@ -2,7 +2,6 @@ import { NextAuthOptions } from "next-auth";
 import bcrypt from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
-import { User } from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,8 +21,8 @@ export const authOptions: NextAuthOptions = {
             email: credentials.email,
           },
           include: {
-            Role: true,
-            School: true,
+            role: true,
+            school: true,
           },
         });
 

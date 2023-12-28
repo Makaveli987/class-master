@@ -21,3 +21,16 @@ export const getCourses = async () => {
     return null;
   }
 };
+
+export const getCourse = async (courseId: string) => {
+  try {
+    const course = await db.course.findUnique({
+      where: { id: courseId },
+    });
+
+    return course;
+  } catch (error) {
+    console.error("[STUDENTS] Error fetching students ", error);
+    return null;
+  }
+};

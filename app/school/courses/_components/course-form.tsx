@@ -8,56 +8,54 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import axios, { AxiosResponse } from "axios";
-import { Student } from "@prisma/client";
+import { Course, Student } from "@prisma/client";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  firstName: z.string().min(1, "Field is required").min(3, {
-    message: "First name is too short",
+  name: z.string().min(1, "Field is required").min(3, {
+    message: "Name is too short",
   }),
-  lastName: z.string().min(1, "Field is required").min(3, {
-    message: "Last name is too short",
-  }),
-  email: z.string().min(1, "Field is required").email("Enter a valid email"),
-  phone: z.string().min(5, "Field is required"),
+  description: z.string(),
+  pricePerClass: z.string().min(1, "Field is required"),
+  totalClasses: z.string().min(1, "Field is required"),
 });
 
-interface StudentFormProps {
-  data?: Student | null;
+interface CourseFormProps {
+  data?: Course | null;
   setDialogOpen?: Dispatch<SetStateAction<boolean>>;
   action?: "edit" | "create";
 }
 
-export default function StudentForm({
-  data = undefined,
+export default function CourseForm({
+  data,
   setDialogOpen,
   action = "create",
-}: StudentFormProps) {
+}: CourseFormProps) {
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
   const defValues = data
     ? {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
+        name: data.name,
+        description: data.description,
+        pricePerClass: data.pricePerClass.toString(),
+        totalClasses: data.totalClasses.toString(),
       }
     : {
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
+        name: "",
+        description: "",
+        pricePerClass: "",
+        totalClasses: "",
       };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,13 +63,19 @@ export default function StudentForm({
     defaultValues: defValues,
   });
 
-  function createStudent(values: z.infer<typeof formSchema>) {
+  function createUser(values: z.infer<typeof formSchema>) {
+    const payload = {
+      ...values,
+      pricePerClass: parseInt(values.pricePerClass),
+      totalClasses: parseInt(values.totalClasses),
+    };
+
     axios
-      .post("/api/students", { ...values })
+      .post("/api/courses", { ...payload })
       .then((response: AxiosResponse<Student[]>) => {
         if (response.status === 201) {
-          toast.success("Student has been created", {
-            description: `${values.firstName} ${values.lastName}`,
+          toast.success("Course has been created", {
+            description: `${values.name}`,
           });
           form.reset();
           router.refresh();
@@ -79,28 +83,33 @@ export default function StudentForm({
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Student wasn't created!", {
-          description: `${values.firstName} ${values.lastName}`,
+        toast.error("Something went wrong. Course wasn't created!", {
+          description: `${values.name}`,
         });
         console.error(error);
       })
       .finally(() => setPending(false));
   }
 
-  function updateStudent(values: z.infer<typeof formSchema>) {
+  function updateUser(values: z.infer<typeof formSchema>) {
+    const payload = {
+      ...values,
+      pricePerClass: parseInt(values.pricePerClass),
+      totalClasses: parseInt(values.totalClasses),
+    };
+
     axios
-      .patch("/api/students/" + data?.id, { ...values })
+      .patch("/api/courses/" + data?.id, { ...payload })
       .then((response: AxiosResponse<Student[]>) => {
         if (response.status === 201) {
           toast.success("Student has been updated", {
-            description: `${values.firstName} ${values.lastName}`,
+            description: `${values.name}`,
           });
-          router.refresh();
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Student wasn't updated!", {
-          description: `${values.firstName} ${values.lastName}`,
+        toast.error("Something went wrong. Course wasn't updated!", {
+          description: `${values.name}`,
         });
         console.error(error);
       })
@@ -110,7 +119,7 @@ export default function StudentForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
 
-    action === "create" ? createStudent(values) : updateStudent(values);
+    action === "create" ? createUser(values) : updateUser(values);
   }
 
   return (
@@ -122,14 +131,28 @@ export default function StudentForm({
         >
           <FormField
             control={form.control}
-            name="firstName"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>First name</FormLabel>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input disabled={pending} placeholder="Name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Input
                     disabled={pending}
-                    placeholder="First name"
+                    placeholder="Description"
                     {...field}
                   />
                 </FormControl>
@@ -140,14 +163,15 @@ export default function StudentForm({
 
           <FormField
             control={form.control}
-            name="lastName"
+            name="pricePerClass"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last name</FormLabel>
+                <FormLabel>Price per Class</FormLabel>
                 <FormControl>
                   <Input
                     disabled={pending}
-                    placeholder="Last name"
+                    type="number"
+                    placeholder="Price per Class"
                     {...field}
                   />
                 </FormControl>
@@ -158,33 +182,15 @@ export default function StudentForm({
 
           <FormField
             control={form.control}
-            name="email"
+            name="totalClasses"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Total Classes</FormLabel>
                 <FormControl>
                   <Input
                     disabled={pending}
-                    type="email"
-                    placeholder="Email"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <CustomPhoneInput
-                    disabled={pending}
-                    placeholder="Phone number"
+                    type="number"
+                    placeholder="Total Clases"
                     {...field}
                   />
                 </FormControl>
