@@ -123,7 +123,7 @@ export default function CourseForm({
   }
 
   return (
-    <div className="grid gap-4 mt-8">
+    <div className="grid gap-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

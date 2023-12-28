@@ -12,18 +12,27 @@ import Link from "next/link";
 import React from "react";
 import useEnrollDialog from "../_hooks/useEnrollDialog";
 
-function EnrollButton() {
-  const enrollDialog = useEnrollDialog();
-  return (
-    <Button
-      variant="ghost"
-      className="h-8 w-8 p-0 group "
-      onClick={enrollDialog.open}
-    >
-      <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
-    </Button>
-  );
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  asChild?: boolean;
 }
+
+const EnrollButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, asChild = false, ...props }, ref) => {
+    const enrollDialog = useEnrollDialog();
+    return (
+      <Button
+        variant="ghost"
+        className="h-8 w-8 p-0 group "
+        onClick={enrollDialog.open}
+      >
+        <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
+      </Button>
+    );
+  }
+);
+
+EnrollButton.displayName = "EnrollButton";
 
 export const columns: ColumnDef<Student>[] = [
   {

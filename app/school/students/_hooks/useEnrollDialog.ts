@@ -7,7 +7,7 @@ interface EnrollDialogStore {
   toggle: () => void;
 }
 
-const useUserDialog = create<EnrollDialogStore>((set) => ({
+const useEnrollDialog = create<EnrollDialogStore>((set) => ({
   isOpen: false,
   open: () =>
     set({
@@ -17,4 +17,4 @@ const useUserDialog = create<EnrollDialogStore>((set) => ({
   toggle: () => set((state) => ({ isOpen: !state.isOpen })),
 }));
 
-export default useUserDialog;
+export default useEnrollDialog;

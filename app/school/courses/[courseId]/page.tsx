@@ -4,14 +4,13 @@ import CourseForm from "../_components/course-form";
 import { getCourseStats } from "@/actions/get-enrolments";
 import CourseStatsCard from "../_components/course-stats-card";
 import {
-  DollarSignIcon,
+  BookCheckIcon,
+  BookOpenTextIcon,
   GraduationCap,
   PlusCircleIcon,
-  Trash2Icon,
   XIcon,
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
   CardHeader,
@@ -21,6 +20,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tooltip2 } from "@/components/ui/tooltip2";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import CourseTeachersCard from "../_components/course-teachers-card";
 
 export default async function CoursePage({
   params,
@@ -37,12 +39,12 @@ export default async function CoursePage({
         <CourseStatsCard
           title="Total Enrollments"
           amount={courseStats?.totalEnrollments}
-          icon={<DollarSignIcon className="h-5 w-5 text-muted-foreground" />}
+          icon={<BookCheckIcon className="h-5 w-5 text-muted-foreground" />}
         />
         <CourseStatsCard
           title="Active Enrollments"
           amount={courseStats?.activeEnrollments}
-          icon={<GraduationCap className="h-5 w-5 text-muted-foreground" />}
+          icon={<BookOpenTextIcon className="h-5 w-5 text-muted-foreground" />}
         />
         <CourseStatsCard
           title="Teachers"
@@ -50,171 +52,24 @@ export default async function CoursePage({
           icon={<GraduationCap className="h-5 w-5 text-muted-foreground" />}
         />
       </div>
-      <div className="flex gap-6">
-        <div className="bg-white border rounded-xl p-7 shadow-sm flex-1">
-          <h3 className="text-lg font-medium">Course Info</h3>
-          <CourseForm data={course} action="edit" />
-        </div>
 
-        <Card className="flex-1 overflow-auto">
+      <div className="flex gap-6">
+        <Card className="flex-1">
           <CardHeader className="mb-3">
-            <div className="flex">
-              <div>
-                <CardTitle>Teachers</CardTitle>
-                <CardDescription>
-                  Teachers assigned to this course
-                </CardDescription>
-              </div>
-              <Button className="ml-10" variant="ghost">
-                <PlusCircleIcon className="w-5 h-5" />
-              </Button>
-            </div>
+            <CardTitle>Course Info </CardTitle>
+            <CardDescription>
+              This is how others will see course on the site.
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between hover:bg-muted rounded-xl p-2 max-w-[330px] group">
-                <div className="flex items-center ">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Olivia Martin
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                </div>
-                <Tooltip2 text="Unassign teacher">
-                  <Button className="hidden group-hover:block" variant="ghost">
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </Tooltip2>
-              </div>
-              <div className="flex items-center justify-between hover:bg-muted rounded-xl p-2 max-w-[330px] group">
-                <div className="flex items-center ">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Olivia Martin
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                </div>
-                <Tooltip2 text="Unassign teacher">
-                  <Button className="hidden group-hover:block" variant="ghost">
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </Tooltip2>
-              </div>
-              <div className="flex items-center justify-between hover:bg-muted rounded-xl p-2 max-w-[330px] group">
-                <div className="flex items-center ">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Olivia Martin
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                </div>
-                <Tooltip2 text="Unassign teacher">
-                  <Button className="hidden group-hover:block" variant="ghost">
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </Tooltip2>
-              </div>
-              <div className="flex items-center justify-between hover:bg-muted rounded-xl p-2 max-w-[330px] group">
-                <div className="flex items-center ">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Olivia Martin
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                </div>
-                <Tooltip2 text="Unassign teacher">
-                  <Button className="hidden group-hover:block" variant="ghost">
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </Tooltip2>
-              </div>
-              <div className="flex items-center justify-between hover:bg-muted rounded-xl p-2 max-w-[330px] group">
-                <div className="flex items-center ">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Olivia Martin
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                </div>
-                <Tooltip2 text="Unassign teacher">
-                  <Button className="hidden group-hover:block" variant="ghost">
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </Tooltip2>
-              </div>
-              <div className="flex items-center justify-between hover:bg-muted rounded-xl p-2 max-w-[330px] group">
-                <div className="flex items-center ">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Olivia Martin
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                </div>
-                <Tooltip2 text="Unassign teacher">
-                  <Button className="hidden group-hover:block" variant="ghost">
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </Tooltip2>
-              </div>
-              <div className="flex items-center justify-between hover:bg-muted rounded-xl p-2 max-w-[330px] group">
-                <div className="flex items-center ">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>OM</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Olivia Martin
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      olivia.martin@email.com
-                    </p>
-                  </div>
-                </div>
-                <Tooltip2 text="Unassign teacher">
-                  <Button className="hidden group-hover:block" variant="ghost">
-                    <XIcon className="w-4 h-4" />
-                  </Button>
-                </Tooltip2>
-              </div>
-            </div>
+            <CourseForm data={course} action="edit" />
           </CardContent>
         </Card>
+
+        <CourseTeachersCard
+          courseId={params.courseId}
+          teachers={[]}
+        ></CourseTeachersCard>
       </div>
     </div>
     // </div>
