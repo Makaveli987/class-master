@@ -14,12 +14,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { revalidatePath } from "next/cache";
 import axios, { AxiosResponse } from "axios";
-import { Course, Student } from "@prisma/client";
 import { toast } from "sonner";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Course } from "@prisma/client";
 
 const formSchema = z.object({
   name: z.string().min(1, "Field is required").min(3, {
@@ -63,7 +62,7 @@ export default function CourseForm({
     defaultValues: defValues,
   });
 
-  function createUser(values: z.infer<typeof formSchema>) {
+  function createCourse(values: z.infer<typeof formSchema>) {
     const payload = {
       ...values,
       pricePerClass: parseInt(values.pricePerClass),
@@ -72,7 +71,7 @@ export default function CourseForm({
 
     axios
       .post("/api/courses", { ...payload })
-      .then((response: AxiosResponse<Student[]>) => {
+      .then((response: AxiosResponse<Course[]>) => {
         if (response.status === 201) {
           toast.success("Course has been created", {
             description: `${values.name}`,
@@ -91,7 +90,7 @@ export default function CourseForm({
       .finally(() => setPending(false));
   }
 
-  function updateUser(values: z.infer<typeof formSchema>) {
+  function updateCourse(values: z.infer<typeof formSchema>) {
     const payload = {
       ...values,
       pricePerClass: parseInt(values.pricePerClass),
@@ -100,11 +99,12 @@ export default function CourseForm({
 
     axios
       .patch("/api/courses/" + data?.id, { ...payload })
-      .then((response: AxiosResponse<Student[]>) => {
+      .then((response: AxiosResponse<Course[]>) => {
         if (response.status === 201) {
-          toast.success("Student has been updated", {
+          toast.success("Course has been updated", {
             description: `${values.name}`,
           });
+          router.refresh();
         }
       })
       .catch((error) => {
@@ -119,16 +119,13 @@ export default function CourseForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
 
-    action === "create" ? createUser(values) : updateUser(values);
+    action === "create" ? createCourse(values) : updateCourse(values);
   }
 
   return (
     <div className="grid gap-4">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className={action === "create" ? "space-y-4" : "space-y-6"}
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
           <FormField
             control={form.control}
             name="name"

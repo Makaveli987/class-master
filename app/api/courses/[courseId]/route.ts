@@ -5,31 +5,31 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { studentId: string } }
+  { params }: { params: { courseId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
-    const { studentId } = params;
+    const { courseId } = params;
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { firstName, lastName, email, phone } = await req.json();
-    const s = await db.student.update({
+    const { name, description, pricePerClass, totalClasses } = await req.json();
+    const s = await db.course.update({
       where: {
-        id: studentId,
+        id: courseId,
       },
       data: {
-        firstName,
-        lastName,
-        email,
-        phone,
+        name,
+        description,
+        pricePerClass,
+        totalClasses,
       },
     });
 
     revalidatePath("/school/courses");
-    revalidatePath(`/school/courses/${studentId}`);
+    revalidatePath(`/school/courses/${courseId}`);
     return new NextResponse(JSON.stringify(s), {
       status: 201,
       headers: {
@@ -51,19 +51,19 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { studentId: string } }
+  { params }: { params: { courseId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
-    const { studentId } = params;
+    const { courseId } = params;
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const s = await db.student.update({
+    const s = await db.course.update({
       where: {
-        id: studentId,
+        id: courseId,
       },
       data: {
         archived: true,
@@ -71,7 +71,7 @@ export async function DELETE(
     });
 
     revalidatePath("/school/courses");
-    revalidatePath(`/school/courses/${studentId}`);
+    revalidatePath(`/school/courses/${courseId}`);
     return new NextResponse(JSON.stringify(s), {
       status: 200,
       headers: {

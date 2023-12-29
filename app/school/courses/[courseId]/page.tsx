@@ -3,14 +3,7 @@ import React from "react";
 import CourseForm from "../_components/course-form";
 import { getCourseStats } from "@/actions/get-enrolments";
 import CourseStatsCard from "../_components/course-stats-card";
-import {
-  BookCheckIcon,
-  BookOpenTextIcon,
-  GraduationCap,
-  PlusCircleIcon,
-  XIcon,
-} from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { BookCheckIcon, BookOpenTextIcon, GraduationCap } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -18,11 +11,8 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tooltip2 } from "@/components/ui/tooltip2";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import CourseTeachersCard from "../_components/course-teachers-card";
+import { getCourseTeachers } from "@/actions/get-course-teachers";
 
 export default async function CoursePage({
   params,
@@ -30,6 +20,7 @@ export default async function CoursePage({
   params: { courseId: string };
 }) {
   const course = await getCourse(params.courseId);
+  const teachers = await getCourseTeachers(params.courseId);
   const courseStats = await getCourseStats(params.courseId);
 
   return (
@@ -56,7 +47,7 @@ export default async function CoursePage({
       <div className="flex gap-6">
         <Card className="flex-1">
           <CardHeader className="mb-3">
-            <CardTitle>Course Info </CardTitle>
+            <CardTitle>Course Info</CardTitle>
             <CardDescription>
               This is how others will see course on the site.
             </CardDescription>
@@ -72,6 +63,5 @@ export default async function CoursePage({
         ></CourseTeachersCard>
       </div>
     </div>
-    // </div>
   );
 }

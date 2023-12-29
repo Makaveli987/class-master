@@ -10,29 +10,63 @@ import { BookPlusIcon, EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 
 import React from "react";
-import useEnrollDialog from "../_hooks/useEnrollDialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import axios from "axios";
+import { toast } from "sonner";
+import EnrollStudentDialog from "./enroll-dialog";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
+  studentId: string;
 }
 
 const EnrollButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, asChild = false, ...props }, ref) => {
-    const enrollDialog = useEnrollDialog();
+  ({ className, studentId, asChild = false, ...props }, ref) => {
     return (
-      <Button
-        variant="ghost"
-        className="h-8 w-8 p-0 group "
-        onClick={enrollDialog.open}
-      >
-        <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
-      </Button>
+      <EnrollStudentDialog studentId={studentId}>
+        <div>
+          <Tooltip2 text="Add to course" side="top">
+            <Button variant="ghost" className="h-8 w-8 p-0 group ">
+              <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
+            </Button>
+          </Tooltip2>
+        </div>
+      </EnrollStudentDialog>
     );
   }
 );
-
 EnrollButton.displayName = "EnrollButton";
+
+const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, studentId, asChild = false, ...props }, ref) => {
+    function onDelete() {
+      console.log("deelte");
+      axios
+        .delete(`/api/students/${studentId}`)
+        .then(() => toast.success("Student has been archived"))
+        .catch(() =>
+          toast.error("Something bad happend. Student has not been archived!")
+        );
+    }
+
+    return (
+      <ConfirmDialog
+        description="This action will archive the student. You will not be able to schedule classes or assign course for this student."
+        onConfirm={onDelete}
+      >
+        <div>
+          <Tooltip2 text="delete" side="top">
+            <Button variant="ghost" className="h-8 w-8 p-0 group ">
+              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
+            </Button>
+          </Tooltip2>
+        </div>
+      </ConfirmDialog>
+    );
+  }
+);
+DeleteButton.displayName = "DeleteButton";
 
 export const columns: ColumnDef<Student>[] = [
   {
@@ -96,11 +130,7 @@ export const columns: ColumnDef<Student>[] = [
       const studentId = row.original.id;
       return (
         <div className="flex justify-end gap-2">
-          {/* <EnrollStudentDialog> */}
-          <Tooltip2 text="Add to course" side="top">
-            <EnrollButton />
-          </Tooltip2>
-          {/* </EnrollStudentDialog> */}
+          <EnrollButton studentId={studentId} />
           <Tooltip2 text="Edit" side="top">
             <Link href={`/school/students/${studentId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">
@@ -108,11 +138,7 @@ export const columns: ColumnDef<Student>[] = [
               </Button>
             </Link>
           </Tooltip2>
-          <Tooltip2 text="Delete" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group">
-              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
-            </Button>
-          </Tooltip2>
+          <DeleteButton studentId={studentId} />
         </div>
       );
     },

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -13,19 +14,21 @@ import { Label } from "@/components/ui/label";
 import { Course, User } from "@prisma/client";
 import axios from "axios";
 import { toast } from "sonner";
-import useEnrollDialog from "../_hooks/useEnrollDialog";
+import { string } from "zod";
+
+interface EnrollDialogProps {
+  children?: React.ReactNode;
+  courses?: Course[] | null;
+  teachers?: User[];
+  studentId?: string;
+}
 
 export default function EnrollStudentDialog({
   children,
   courses,
   teachers,
-}: {
-  children?: React.ReactNode;
-  courses?: Course[] | null;
-  teachers?: User[];
-}) {
-  const dialog = useEnrollDialog();
-
+  studentId,
+}: EnrollDialogProps) {
   console.log({ courses });
   console.log({ teachers });
 
@@ -54,7 +57,7 @@ export default function EnrollStudentDialog({
   // }, []);
 
   return (
-    <Dialog open={dialog.isOpen} onOpenChange={dialog.toggle}>
+    <Dialog>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -83,9 +86,9 @@ export default function EnrollStudentDialog({
             ></Combobox> */}
           </div>
           <div className="flex justify-end gap-2 mt-2">
-            <Button variant="outline" onClick={dialog.close}>
-              Cancel
-            </Button>
+            <DialogClose>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
             <Button>Enroll</Button>
           </div>
         </div>

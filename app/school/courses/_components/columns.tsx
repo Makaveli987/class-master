@@ -1,13 +1,52 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
 import { Course } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import axios from "axios";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
+import React from "react";
+import { toast } from "sonner";
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  asChild?: boolean;
+  courseId: string;
+}
+
+const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, courseId, asChild = false, ...props }, ref) => {
+    function onDelete() {
+      axios
+        .delete(`/api/courses/${courseId}`)
+        .then(() => toast.success("Course has been archived"))
+        .catch(() =>
+          toast.error("Something bad happend. Course has not been archived!")
+        );
+    }
+
+    return (
+      <ConfirmDialog
+        description="This action will archive the course. You will not be able to assign students and teachers to this course."
+        onConfirm={onDelete}
+      >
+        <div>
+          <Tooltip2 text="delete" side="top">
+            <Button variant="ghost" className="h-8 w-8 p-0 group ">
+              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
+            </Button>
+          </Tooltip2>
+        </div>
+      </ConfirmDialog>
+    );
+  }
+);
+DeleteButton.displayName = "DeleteButton";
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -79,11 +118,7 @@ export const columns: ColumnDef<Course>[] = [
               </Button>
             </Link>
           </Tooltip2>
-          <Tooltip2 text="Delete" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group">
-              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
-            </Button>
-          </Tooltip2>
+          <DeleteButton courseId="courseId" />
         </div>
       );
     },

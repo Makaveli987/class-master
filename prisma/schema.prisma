@@ -9,52 +9,54 @@ generator client {
 }
 
 model Student {
-  id               String @id @default(uuid())
-  firstName        String
-  lastName         String
-  email            String
-  phone            String
-  groupId          String?
-  schoolId         String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  enrolments       Enrollment[]
-  attendance       Attendance[]
-  group            Group?       @relation(fields: [groupId], references: [id])
-  school           School      @relation(fields: [schoolId], references: [id])
+  id         String       @id @default(uuid())
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  groupId    String?
+  schoolId   String
+  archived   Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  enrolments Enrollment[]
+  attendance Attendance[]
+  group      Group?       @relation(fields: [groupId], references: [id])
+  school     School       @relation(fields: [schoolId], references: [id])
 
   @@index([groupId])
   @@index([schoolId])
 }
 
 model Course {
-  id               String @id @default(uuid())
-  name             String
-  description      String
-  pricePerClass    Float
-  totalClasses     Int
-  schoolId         String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  enrolments       Enrollment[]
-  userPerCourses   UserPerCourse[]
-  classes          Class[]
-  school           School      @relation(fields: [schoolId], references: [id])
+  id             String          @id @default(uuid())
+  name           String
+  description    String
+  pricePerClass  Float
+  totalClasses   Int
+  schoolId       String
+  archived       Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  enrolments     Enrollment[]
+  userPerCourses UserPerCourse[]
+  classes        Class[]
+  school         School          @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId])
 }
 
 model Enrollment {
-  courseId         String
-  studentId        String
-  teacherId        String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  attendedClasses  Int
-  course           Course       @relation(fields: [courseId], references: [id])
-  student          Student      @relation(fields: [studentId], references: [id])
-  teacher          User      @relation(fields: [teacherId], references: [id])
-  
+  courseId        String
+  studentId       String
+  teacherId       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  attendedClasses Int
+  course          Course   @relation(fields: [courseId], references: [id])
+  student         Student  @relation(fields: [studentId], references: [id])
+  teacher         User     @relation(fields: [teacherId], references: [id])
+
   @@id([courseId, studentId])
   @@index([courseId])
   @@index([studentId])
@@ -62,74 +64,76 @@ model Enrollment {
 }
 
 model Group {
-  id               String @id @default(uuid())
-  name             String
-  schoolId         String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  students         Student[]
-  school           School    @relation(fields: [schoolId], references: [id])
+  id        String    @id @default(uuid())
+  name      String
+  schoolId  String
+  archived  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  students  Student[]
+  school    School    @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId])
 }
 
 model User {
-  id               String @id @default(uuid())
-  firstName        String
-  lastName         String
-  email            String @unique
-  hashedPassword   String
-  phone            String
-  roleId           String
-  schoolId         String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  role             Role            @relation(fields: [roleId], references: [id])
-  userPerCourses   UserPerCourse[]
-  school           School      @relation(fields: [schoolId], references: [id])
-  classOriginal    Class[]   @relation("originalTeacher")
-  classSubstitute  Class[]   @relation("substituteTeacher")
-  enrolments       Enrollment[]
+  id              String          @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String          @unique
+  hashedPassword  String
+  phone           String
+  roleId          String
+  schoolId        String
+  archived        Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  role            Role            @relation(fields: [roleId], references: [id])
+  userPerCourses  UserPerCourse[]
+  school          School          @relation(fields: [schoolId], references: [id])
+  classOriginal   Class[]         @relation("originalTeacher")
+  classSubstitute Class[]         @relation("substituteTeacher")
+  enrolments      Enrollment[]
 
   @@index([roleId])
   @@index([schoolId])
 }
 
 model Role {
-  id                String @id @default(uuid())
-  type              String
-  users             User[]
+  id    String @id @default(uuid())
+  type  String
+  users User[]
 }
 
 model UserPerCourse {
-  courseId          String
-  userId            String
-  course            Course  @relation(fields: [courseId], references: [id])
-  user              User    @relation(fields: [userId], references: [id])
-  
+  courseId String
+  userId   String
+  course   Course @relation(fields: [courseId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+
   @@id([courseId, userId])
   @@index([courseId])
   @@index([userId])
 }
 
 model Class {
-  id                 String @id @default(uuid())
-  courseId           String
-  originalTeacherId  String
+  id                  String       @id @default(uuid())
+  courseId            String
+  originalTeacherId   String
   substituteTeacherId String?
-  canceled           Boolean
-  paid               Boolean
-  attendeeId         String
-  attendeeType       String
-  startDate          DateTime
-  endDate            DateTime
-  duration           Int
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  course             Course    @relation(fields: [courseId], references: [id])
-  originalTeacher    User      @relation(fields: [originalTeacherId], references: [id], name: "originalTeacher")
-  substituteTeacher  User?     @relation(fields: [substituteTeacherId], references: [id], name: "substituteTeacher")
-  attendance         Attendance[]
+  canceled            Boolean
+  paid                Boolean
+  attendeeId          String
+  attendeeType        String
+  startDate           DateTime
+  endDate             DateTime
+  duration            Int
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  course              Course       @relation(fields: [courseId], references: [id])
+  originalTeacher     User         @relation(fields: [originalTeacherId], references: [id], name: "originalTeacher")
+  substituteTeacher   User?        @relation(fields: [substituteTeacherId], references: [id], name: "substituteTeacher")
+  attendance          Attendance[]
 
   @@index([courseId])
   @@index([substituteTeacherId])
@@ -137,24 +141,24 @@ model Class {
 }
 
 model Attendance {
-  classId            String
-  studentId          String
-  attended           Boolean
-  class              Class    @relation(fields: [classId], references: [id])
-  student            Student  @relation(fields: [studentId], references: [id])
-  
+  classId   String
+  studentId String
+  attended  Boolean
+  class     Class   @relation(fields: [classId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id])
+
   @@id([classId, studentId])
   @@index([classId])
   @@index([studentId])
 }
 
 model School {
-  id                 String @id @default(uuid())
-  name               String
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  groups             Group[]
-  students           Student[]
-  users              User[]
-  courses            Course[]
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  groups    Group[]
+  students  Student[]
+  users     User[]
+  courses   Course[]
 }

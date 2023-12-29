@@ -1,14 +1,22 @@
 import React from "react";
 import { getStudent } from "@/actions/get-students";
-import { Separator } from "@/components/ui/separator";
+
 import StudentForm from "../_components/student-form";
 import StudentCourses from "../_components/student-courses";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getCourses } from "@/actions/get-courses";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import EnrollStudentDialog from "../_components/enroll-dialog";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
-import EnrollStudentDialog from "../_components/enroll-dialog";
-import { getCourses } from "@/actions/get-courses";
+import { Separator } from "@/components/ui/separator";
 
 export default async function StudentPage({
   params,
@@ -21,72 +29,62 @@ export default async function StudentPage({
   return (
     <div>
       <h3 className="pb-4 font-semibold tracking-tight text-xl">Students</h3>
-      <div className="bg-white border rounded-md p-4">
-        <Tabs defaultValue="profile">
-          <TabsList>
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="courses">Courses</TabsTrigger>
-            <TabsTrigger value="classes">Classes</TabsTrigger>
-          </TabsList>
-          <TabsContent value="profile">
-            <div className="p-4 max-w-3xl">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium">Profile</h3>
-                  <p className="text-sm text-muted-foreground">
-                    This is how others will see student on the site.
-                  </p>
-                </div>
-                <Separator />
+      <Card>
+        <CardContent className="mt-6">
+          <Tabs defaultValue="profile">
+            <TabsList>
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="courses">Courses</TabsTrigger>
+              <TabsTrigger value="classes">Classes</TabsTrigger>
+            </TabsList>
 
+            <TabsContent value="profile">
+              <CardHeader className="pl-2">
+                <CardTitle>Profile</CardTitle>
+                <CardDescription>
+                  This is how others will see student on the site.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-2 max-w-3xl">
                 <StudentForm data={student} action="edit" />
-              </div>
-            </div>
-          </TabsContent>
-          <TabsContent value="courses">
-            <div className="bg-white max-w-3xl p-4">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium">Courses</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Courses the student attended
-                  </p>
-                </div>
-                <Separator />
+              </CardContent>
+            </TabsContent>
 
+            <TabsContent value="courses">
+              <CardHeader className="pl-2">
+                <CardTitle>Courses</CardTitle>
+                <CardDescription>Courses the student attended</CardDescription>
+              </CardHeader>
+              <CardContent className="p-2 max-w-3xl">
                 <StudentCourses studentId={params.studentId} />
-              </div>
-              <div className="flex justify-end">
-                <EnrollStudentDialog courses={courses} teachers={[]}>
-                  <Button className="mt-14 ml-auto">
-                    <PlusCircleIcon className="w-4 h-4 mr-2" />
-                    Add Course
-                  </Button>
-                </EnrollStudentDialog>
-              </div>
-            </div>
-          </TabsContent>
+                {/* <Separator className="mt-6" /> */}
+                <div className="flex justify-end">
+                  <EnrollStudentDialog courses={courses} teachers={[]}>
+                    <Button className="mt-12 ml-auto">
+                      <PlusCircleIcon className="w-4 h-4 mr-2" />
+                      Add Course
+                    </Button>
+                  </EnrollStudentDialog>
+                </div>
+              </CardContent>
+            </TabsContent>
 
-          <TabsContent value="classes">
-            <div className="space-y-6 p-4">
-              <div>
-                <h3 className="text-lg font-medium">Classes</h3>
-                <p className="text-sm text-muted-foreground">
-                  Classes the student attended
-                </p>
-              </div>
-              <Separator />
-
-              <DataTable
-                columns={[]}
-                data={[]}
-                filterPlaceholder="Search classes..."
-              />
-              {/* <StudentCourses courses={[]} /> */}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+            <TabsContent value="classes">
+              <CardHeader className="pl-2">
+                <CardTitle>Classes</CardTitle>
+                <CardDescription>Classes the student attended</CardDescription>
+              </CardHeader>
+              <CardContent className="p-2">
+                <DataTable
+                  columns={[]}
+                  data={[]}
+                  filterPlaceholder="Search classes..."
+                />
+              </CardContent>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }

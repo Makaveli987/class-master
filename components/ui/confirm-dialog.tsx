@@ -10,7 +10,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import useConfirmDialog from "@/hooks/use-confirm-dialog";
 
 interface ConfirmDialogProps {
   children?: React.ReactNode;
@@ -25,21 +24,13 @@ export function ConfirmDialog({
   description,
   onConfirm,
 }: ConfirmDialogProps) {
-  //   const [open, setOpen] = useState(false);
-  const confirmDialog = useConfirmDialog();
-
   return (
-    <AlertDialog
-      open={confirmDialog.isOpen}
-      onOpenChange={confirmDialog.toggle}
-    >
+    <AlertDialog>
       {children && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {confirmDialog.description}
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

@@ -6,7 +6,7 @@ export const getStudents = async () => {
     const currentUser = await getCurrentUser();
 
     const students = await db.student.findMany({
-      where: { schoolId: currentUser?.schoolId },
+      where: { schoolId: currentUser?.schoolId, archived: false },
     });
     return students;
   } catch (error) {
@@ -18,7 +18,7 @@ export const getStudents = async () => {
 export const getStudent = async (studentId: string) => {
   try {
     const student = await db.student.findUnique({
-      where: { id: studentId },
+      where: { id: studentId, archived: false },
     });
 
     return student;

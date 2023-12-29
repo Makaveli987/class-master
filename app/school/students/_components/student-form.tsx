@@ -114,12 +114,9 @@ export default function StudentForm({
   }
 
   return (
-    <div className="grid gap-4 mt-8">
+    <div className="grid gap-4">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className={action === "create" ? "space-y-4" : "space-y-6"}
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="firstName"

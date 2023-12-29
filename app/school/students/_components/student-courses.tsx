@@ -24,6 +24,7 @@ export default async function StudentCourses({
   }
   return (
     <div className="space-y-6">
+      <Separator />
       <div className="flex justify-between items-start">
         <span className="text-sm font-semibold leading-none">
           Engleski jezik A2

@@ -11,7 +11,7 @@ export default async function StudentsPage() {
 
   return (
     <div>
-      <h3 className="pb-4 font-semibold tracking-tight text-xl">Students</h3>
+      <h3 className="pb-4 font-medium tracking-tight text-xl">Students</h3>
       <div className="bg-white w-full rounded-md border p-5">
         <DataTable
           columns={columns}
