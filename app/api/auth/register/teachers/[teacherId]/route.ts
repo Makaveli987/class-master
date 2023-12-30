@@ -3,41 +3,31 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { teacherId: string } }
+) {
   try {
     const currentUser = await getCurrentUser();
+    const { teacherId } = params;
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { firstName, lastName, email, phone } = await req.json();
-
-    if (!firstName || !lastName || !email || !phone) {
-      return new NextResponse(
-        JSON.stringify({ error: "Missing required fields" }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    }
-
-    const s = await db.student.create({
+    const s = await db.user.update({
+      where: {
+        id: teacherId,
+      },
       data: {
-        firstName,
-        lastName,
-        email,
-        phone,
-        schoolId: currentUser.schoolId,
+        archived: true,
       },
     });
-    revalidatePath("/school/students");
 
+    revalidatePath("/school/teachers");
+    revalidatePath(`/school/teachers/${teacherId}`);
     return new NextResponse(JSON.stringify(s), {
-      status: 201,
+      status: 200,
       headers: {
         "Content-Type": "application/json",
       },

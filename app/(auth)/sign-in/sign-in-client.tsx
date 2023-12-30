@@ -11,21 +11,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { signIn, useSession } from "next-auth/react";
 import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
@@ -36,6 +28,9 @@ export default function SignInClient() {
   const [pending, setPending] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
+  const params = useSearchParams();
+
+  const error = params.get("error");
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -46,6 +41,7 @@ export default function SignInClient() {
   });
 
   useEffect(() => {
+    console.log("params", error);
     // Redirect to home if already signed in
     if (session) {
       router.replace("/");
@@ -125,6 +121,9 @@ export default function SignInClient() {
               </FormItem>
             )}
           />
+          {error && (
+            <div className="text-rose-600 text-sm font-medium">*{error}</div>
+          )}
           <Button disabled={pending} className="w-full !mt-10" type="submit">
             {pending ? (
               <>

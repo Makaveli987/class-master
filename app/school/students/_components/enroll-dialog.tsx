@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Combobox } from "@/components/ui/combobox";
+import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
 import {
   Dialog,
   DialogClose,
@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Course, User } from "@prisma/client";
 import axios from "axios";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { string } from "zod";
 
@@ -23,38 +24,43 @@ interface EnrollDialogProps {
   studentId?: string;
 }
 
+interface Options {
+  value: string;
+  label: string;
+}
+
 export default function EnrollStudentDialog({
   children,
-  courses,
-  teachers,
   studentId,
+  courses,
+  teachers = [],
 }: EnrollDialogProps) {
-  console.log({ courses });
-  console.log({ teachers });
+  const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
+  const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
 
-  const courseOptions = courses?.map((course: Course) => ({
-    value: course.id,
-    label: course.name,
-  }));
-
-  // const [courses, setCourses] = useState([]);
-  // const [teachers, setTeachers] = useState([]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get<Course[]>("/api/courses")
-  //     .then((value) => {
-  //       console.log({ value });
-  //       const courseOptions = value.data.map((course: Course) => ({
-  //         value: course.id,
-  //         label: course.name,
-  //       }));
-  //       setCourses(courseOptions);
-  //     })
-  //     .catch(() => {
-  //       toast.error("Something went wrong");
-  //     });
-  // }, []);
+  useEffect(() => {
+    if (!courses) {
+      axios
+        .get<Course[]>("/api/courses")
+        .then((value) => {
+          console.log({ value });
+          const options = value.data.map((course: Course) => ({
+            value: course.id,
+            label: course.name,
+          }));
+          setCoursesOptions(options);
+        })
+        .catch(() => {
+          toast.error("Something went wrong");
+        });
+    } else {
+      const options = courses.map((course: Course) => ({
+        value: course.id,
+        label: course.name,
+      }));
+      setCoursesOptions(options);
+    }
+  }, []);
 
   return (
     <Dialog>
@@ -70,7 +76,7 @@ export default function EnrollStudentDialog({
           <div className="space-y-2">
             <Label>Course</Label>
             <Combobox
-              options={courseOptions || []}
+              options={courseOptions}
               onChange={(value: string) => {
                 console.log(value);
               }}

@@ -19,5 +19,5 @@ export function formatDate(date: Date) {
   // @ts-ignore
   if (minutes < 10) minutes = "0" + minutes;
 
-  return `${day}-${month}-${year}   ${hour}:${minutes}`;
+  return `${day}.${month}.${year}   ${hour}:${minutes}`;
 }

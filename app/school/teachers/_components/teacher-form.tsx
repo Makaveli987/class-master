@@ -16,10 +16,13 @@ import { Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios, { AxiosResponse } from "axios";
-import { Student } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import { toast } from "sonner";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
+import { RoleType } from "@/lib/models/Roles";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -29,21 +32,25 @@ const formSchema = z.object({
     message: "Last name is too short",
   }),
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
+  password: z.string().min(1, "Field is required"),
   phone: z.string().min(5, "Field is required"),
+  roleId: z.string().min(1, "Field is required"),
 });
 
-interface StudentFormProps {
-  data?: Student | null;
+interface TeacherFormProps {
+  data?: User | null;
   setDialogOpen?: Dispatch<SetStateAction<boolean>>;
   action?: "edit" | "create";
 }
 
-export default function StudentForm({
+export default function TeacherForm({
   data = undefined,
   setDialogOpen,
   action = "create",
-}: StudentFormProps) {
+}: TeacherFormProps) {
+  // const [teacherRoleId, setTeacherRoleId] = useState<string | undefined>();
   const [pending, setPending] = useState(false);
+  const [roleOptions, setRoleOptions] = useState<ComboboxOptions[]>([]);
   const router = useRouter();
 
   const defValues = data
@@ -52,12 +59,15 @@ export default function StudentForm({
         lastName: data.lastName,
         email: data.email,
         phone: data.phone,
+        roleId: data.roleId,
       }
     : {
         firstName: "",
         lastName: "",
         email: "",
+        password: "",
         phone: "",
+        roleId: "",
       };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,41 +75,54 @@ export default function StudentForm({
     defaultValues: defValues,
   });
 
-  function createStudent(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
     axios
-      .post("/api/students", { ...values })
-      .then((response: AxiosResponse<Student[]>) => {
+      .get("/api/roles")
+      .then((response: AxiosResponse<Role[]>) => {
+        const options = response.data.map((role) => ({
+          label: role.type === RoleType.ADMIN ? "Admin" : "Teacher",
+          value: role.id,
+        }));
+        setRoleOptions(options);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  function createTeacher(values: z.infer<typeof formSchema>) {
+    setPending(true);
+    axios
+      .post("/api/auth/register/teachers", { ...values })
+      .then((response: AxiosResponse<User[]>) => {
         if (response.status === 201) {
-          toast.success("Student has been created", {
+          toast.success("Teacher has been updated", {
             description: `${values.firstName} ${values.lastName}`,
           });
-          form.reset();
-          router.refresh();
-          setDialogOpen?.(false);
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Student wasn't created!", {
-          description: `${values.firstName} ${values.lastName}`,
-        });
         console.error(error);
       })
-      .finally(() => setPending(false));
+      .finally(() => {
+        setPending(false);
+      });
   }
 
-  function updateStudent(values: z.infer<typeof formSchema>) {
+  function updateTeacher(values: z.infer<typeof formSchema>) {
+    setPending(true);
     axios
-      .patch("/api/students/" + data?.id, { ...values })
-      .then((response: AxiosResponse<Student[]>) => {
+      .patch("/api/auth/register/teacher" + data?.id, { ...values })
+      .then((response: AxiosResponse<User[]>) => {
         if (response.status === 200) {
-          toast.success("Student has been updated", {
+          toast.success("Teacher has been updated", {
             description: `${values.firstName} ${values.lastName}`,
           });
           router.refresh();
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Student wasn't updated!", {
+        toast.error("Something went wrong. Teacher wasn't updated!", {
           description: `${values.firstName} ${values.lastName}`,
         });
         console.error(error);
@@ -108,9 +131,7 @@ export default function StudentForm({
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setPending(true);
-
-    action === "create" ? createStudent(values) : updateStudent(values);
+    action === "create" ? createTeacher(values) : updateTeacher(values);
   }
 
   return (
@@ -172,6 +193,27 @@ export default function StudentForm({
             )}
           />
 
+          {action === "create" && (
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={pending}
+                      type="password"
+                      placeholder="Password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           <FormField
             control={form.control}
             name="phone"
@@ -183,6 +225,25 @@ export default function StudentForm({
                     disabled={pending}
                     placeholder="Phone number"
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="roleId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone</FormLabel>
+                <FormControl>
+                  <DropdownSelect
+                    disabled={pending}
+                    options={roleOptions}
+                    onChange={field.onChange}
+                    value={field.value}
                   />
                 </FormControl>
                 <FormMessage />
@@ -203,6 +264,20 @@ export default function StudentForm({
                 variant="outline"
               >
                 Close
+              </Button>
+            )}
+
+            {action === "edit" && (
+              <Button
+                disabled={pending}
+                onClick={() => {
+                  form.reset();
+                  setDialogOpen?.(false);
+                }}
+                className="!mt-6 mr-auto pl-0"
+                variant="link"
+              >
+                Reset Password
               </Button>
             )}
 

@@ -26,6 +26,10 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
+        if (user?.archived) {
+          throw new Error("Inactive user");
+        }
+
         if (!user || !user?.hashedPassword) {
           throw new Error("Invalid credentials");
         }
@@ -59,9 +63,11 @@ export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24h
   },
   pages: {
     signIn: "/sign-in",
+    error: "/sign-in",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

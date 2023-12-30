@@ -10,13 +10,13 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
 export default function Header({ session }: HeaderProps) {
   const initials = `${session?.user.firstName[0]}${session?.user.lastName[0]}`;
   const fullName = `${session?.user.firstName} ${session?.user.lastName}`;
-  const role = session?.user.Role.type === "ADMIN" ? "Admin" : "Teacher";
+  const role = session?.user.role.type === "ADMIN" ? "Admin" : "Teacher";
 
   return (
     <div className="h-14 w-full flex items-center justify-between px-6">
       <span className="text-sm text-slate-600 font-semibold flex items-center justify-center gap-2">
         <GraduationCapIcon className="w-5 h-5" />
-        {session?.user.School.name}
+        {session?.user.school.name}
       </span>
       {session ? (
         <div className="flex gap-4 items-center">

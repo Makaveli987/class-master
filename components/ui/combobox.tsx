@@ -18,13 +18,24 @@ import {
 
 import "@/components/ui/combobox.scss";
 
+export interface ComboboxOptions {
+  label: string;
+  value: string;
+}
+
 interface ComboboxProps {
-  options: { label: string; value: string }[];
+  disabled?: boolean;
+  options: ComboboxOptions[];
   value?: string;
   onChange: (value: string) => void;
 }
 
-export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
+export const Combobox = ({
+  options,
+  value,
+  onChange,
+  disabled,
+}: ComboboxProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -48,7 +59,7 @@ export const Combobox = ({ options, value, onChange }: ComboboxProps) => {
       </PopoverTrigger>
       <PopoverContent className={`p-0 PopoverContent`}>
         <Command className="w-full">
-          <CommandInput placeholder="Search option..." />
+          <CommandInput disabled={disabled} placeholder="Search option..." />
           <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup>
             {options.map((option) => (

@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { formatDate } from "@/lib/utils";
-import { Student } from "@prisma/client";
+import { cn, formatDate } from "@/lib/utils";
+import { Student, User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { BookPlusIcon, EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
@@ -13,51 +13,36 @@ import React from "react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import axios from "axios";
 import { toast } from "sonner";
-import EnrollStudentDialog from "./enroll-dialog";
+import { Badge } from "@/components/ui/badge";
+import { RoleType } from "@/lib/models/Roles";
 import { useRouter } from "next/navigation";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  studentId: string;
+  teacherId: string;
 }
 
-const EnrollButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, studentId, asChild = false, ...props }, ref) => {
-    return (
-      <EnrollStudentDialog studentId={studentId}>
-        <div>
-          <Tooltip2 text="Add to course" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group ">
-              <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
-            </Button>
-          </Tooltip2>
-        </div>
-      </EnrollStudentDialog>
-    );
-  }
-);
-EnrollButton.displayName = "EnrollButton";
-
 const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, studentId, asChild = false, ...props }, ref) => {
+  ({ className, teacherId, asChild = false, ...props }, ref) => {
     const router = useRouter();
+
     function onDelete() {
       console.log("deelte");
       axios
-        .delete(`/api/students/${studentId}`)
+        .delete(`/api/auth/register/teachers/${teacherId}`)
         .then(() => {
-          toast.success("Student has been archived");
+          toast.success("Teachers has been archived");
           router.refresh();
         })
         .catch(() =>
-          toast.error("Something bad happend. Student has not been archived!")
+          toast.error("Something bad happend. Teachers has not been archived!")
         );
     }
 
     return (
       <ConfirmDialog
-        description="This action will archive the student. You will not be able to schedule classes or assign course for this student."
+        description="This action will archive the teacher. You will not be able to assign this teacher to courses and students."
         onConfirm={onDelete}
       >
         <div>
@@ -73,7 +58,7 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 DeleteButton.displayName = "DeleteButton";
 
-export const columns: ColumnDef<Student>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "firstName",
     header: ({ column }) => (
@@ -130,20 +115,45 @@ export const columns: ColumnDef<Student>[] = [
     },
   },
   {
+    accessorKey: "role",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Role"
+      />
+    ),
+    cell: ({ row }) => {
+      // @ts-ignore
+      const role = row.original.role?.type;
+      return (
+        <Badge
+          variant="default"
+          className={cn(
+            role === RoleType.ADMIN
+              ? "bg-violet-500 hover:bg-violet-500"
+              : "bg-green-600 hover:bg-green-600"
+          )}
+        >
+          {role === RoleType.ADMIN ? "Admin" : "Teacher"}
+        </Badge>
+      );
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
-      const studentId = row.original.id;
+      const teacherId = row.original.id;
       return (
         <div className="flex justify-end gap-2">
-          <EnrollButton studentId={studentId} />
           <Tooltip2 text="Edit" side="top">
-            <Link href={`/school/students/${studentId}`}>
+            <Link href={`/school/teachers/${teacherId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">
                 <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton studentId={studentId} />
+          <DeleteButton teacherId={teacherId} />
         </div>
       );
     },

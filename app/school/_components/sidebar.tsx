@@ -9,6 +9,7 @@ import {
   BarChart2Icon,
   BookAIcon,
   CalendarIcon,
+  GraduationCapIcon,
   SettingsIcon,
   User2Icon,
   Users2Icon,
@@ -62,7 +63,7 @@ const navLinks: NavLink[] = [
   },
   {
     path: "/school/teachers",
-    icon: <BarChart2Icon className="w-4 h-4 mr-2" />,
+    icon: <GraduationCapIcon className="w-4 h-4 mr-2" />,
     label: "Teachers",
     isRestricted: true,
   },
@@ -83,7 +84,7 @@ export function Sidebar({ className, session }: SidebarProps) {
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
-              const isAdmin = session?.user.Role.type === RoleType.ADMIN;
+              const isAdmin = session?.user.role.type === RoleType.ADMIN;
               const shouldRenderLink = !link.isRestricted || isAdmin;
 
               return (

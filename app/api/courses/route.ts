@@ -49,6 +49,19 @@ export async function POST(req: Request) {
     }
 
     const { name, description, pricePerClass, totalClasses } = await req.json();
+
+    if (!name || !description || !pricePerClass || !totalClasses) {
+      return new NextResponse(
+        JSON.stringify({ error: "Missing required fields" }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     const s = await db.course.create({
       data: {
         name,

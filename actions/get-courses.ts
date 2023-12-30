@@ -17,7 +17,7 @@ export const getCourses = async () => {
     });
     return courses;
   } catch (error) {
-    console.error("[COURSE] Error fetching courses");
+    console.error("[COURSES] Error fetching courses");
     return null;
   }
 };
@@ -30,7 +30,7 @@ export const getCourse = async (courseId: string) => {
 
     return course;
   } catch (error) {
-    console.error("[STUDENTS] Error fetching students ", error);
+    console.error("[COURSES] Error fetching students ", error);
     return null;
   }
 };

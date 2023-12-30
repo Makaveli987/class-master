@@ -1,21 +1,21 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { db } from "@/lib/db";
+import getCurrentUser from "@/actions/get-current-user";
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, email, password, phone, roleId, schoolName } =
+    const { firstName, lastName, email, password, phone, roleId } =
       await request.json();
 
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !password ||
-      !phone ||
-      !roleId ||
-      !schoolName
-    ) {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!firstName || !lastName || !email || !password || !phone || !roleId) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -41,12 +41,6 @@ export async function POST(request: Request) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const school = await db.school.create({
-      data: {
-        name: schoolName,
-      },
-    });
-
     const user = await db.user.create({
       data: {
         firstName,
@@ -55,11 +49,14 @@ export async function POST(request: Request) {
         hashedPassword,
         phone,
         roleId,
-        schoolId: school.id,
+        schoolId: currentUser.schoolId,
       },
     });
 
-    // Return the created user
+    user.hashedPassword = "";
+
+    revalidatePath("/school/courses");
+
     return new NextResponse(JSON.stringify(user), {
       status: 201,
       headers: {

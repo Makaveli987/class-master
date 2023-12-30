@@ -15,12 +15,11 @@ export default async function CoursesPage() {
           <DataTable
             columns={columns}
             data={data || []}
-            filterPlaceholder="Search students..."
+            filterPlaceholder="Search courses..."
           >
             <CourseDialog />
           </DataTable>
         </CardContent>
-        {/* </div> */}
       </Card>
     </>
   );

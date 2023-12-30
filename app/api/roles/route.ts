@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   try {
     const roles = await db.role.findMany();
     return new NextResponse(JSON.stringify(roles), {
-      status: 201,
+      status: 200,
       headers: {
         "Content-Type": "application/json",
       },

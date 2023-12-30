@@ -2,7 +2,6 @@ import { getCourse } from "@/actions/get-courses";
 import React from "react";
 import CourseForm from "../_components/course-form";
 import { getCourseStats } from "@/actions/get-enrolments";
-import CourseStatsCard from "../_components/course-stats-card";
 import { BookCheckIcon, BookOpenTextIcon, GraduationCap } from "lucide-react";
 import {
   Card,
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import CourseTeachersCard from "../_components/course-teachers-card";
 import { getCourseTeachers } from "@/actions/get-course-teachers";
+import StatsCard from "@/components/cards/stats-card";
 
 export default async function CoursePage({
   params,
@@ -27,17 +27,17 @@ export default async function CoursePage({
     <div>
       <h3 className="pb-4 font-semibold tracking-tight text-xl">Courses</h3>
       <div className="mb-6 flex gap-6">
-        <CourseStatsCard
+        <StatsCard
           title="Total Enrollments"
           amount={courseStats?.totalEnrollments}
           icon={<BookCheckIcon className="h-5 w-5 text-muted-foreground" />}
         />
-        <CourseStatsCard
+        <StatsCard
           title="Active Enrollments"
           amount={courseStats?.activeEnrollments}
           icon={<BookOpenTextIcon className="h-5 w-5 text-muted-foreground" />}
         />
-        <CourseStatsCard
+        <StatsCard
           title="Teachers"
           amount={courseStats?.totalTeachers}
           icon={<GraduationCap className="h-5 w-5 text-muted-foreground" />}

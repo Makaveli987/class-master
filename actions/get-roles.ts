@@ -5,7 +5,7 @@ export const getAdminRole = async () => {
     const adminRole = await db.role.findFirst({ where: { type: "ADMIN" } });
     return adminRole;
   } catch (error) {
-    console.error("Error fetching ADMIN role");
+    console.error("[ROLES] Error fetching ADMIN role");
     return null;
   }
 };

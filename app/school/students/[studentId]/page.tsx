@@ -16,7 +16,7 @@ import {
 import EnrollStudentDialog from "../_components/enroll-dialog";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 
 export default async function StudentPage({
   params,
@@ -57,7 +57,7 @@ export default async function StudentPage({
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
                 <StudentCourses studentId={params.studentId} />
-                {/* <Separator className="mt-6" /> */}
+
                 <div className="flex justify-end">
                   <EnrollStudentDialog courses={courses} teachers={[]}>
                     <Button className="mt-12 ml-auto">

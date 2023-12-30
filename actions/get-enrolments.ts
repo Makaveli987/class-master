@@ -12,7 +12,7 @@ export const getEnrollments = async (studentId: string) => {
     });
     return enrollments;
   } catch (error) {
-    console.error("Error fetching ADMIN role");
+    console.error("[ENROLLMENTS] Error fetching ADMIN role");
     return null;
   }
 };
@@ -39,7 +39,7 @@ export const getCourseStats = async (courseId: string) => {
 
     return { totalEnrollments, activeEnrollments, totalTeachers };
   } catch (error) {
-    console.error("Error fetching Enrollements");
+    console.error("[ENROLLMENTS] Error fetching Enrollements");
     return null;
   }
 };

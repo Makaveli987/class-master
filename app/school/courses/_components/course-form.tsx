@@ -100,7 +100,7 @@ export default function CourseForm({
     axios
       .patch("/api/courses/" + data?.id, { ...payload })
       .then((response: AxiosResponse<Course[]>) => {
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success("Course has been updated", {
             description: `${values.name}`,
           });
@@ -220,7 +220,7 @@ export default function CourseForm({
               {pending ? (
                 <>
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                  Save
+                  Saving
                 </>
               ) : (
                 <>Save</>
