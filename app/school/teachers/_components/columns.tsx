@@ -28,15 +28,14 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const router = useRouter();
 
     function onDelete() {
-      console.log("deelte");
       axios
         .delete(`/api/auth/register/teachers/${teacherId}`)
         .then(() => {
-          toast.success("Teachers has been archived");
+          toast.success("Teacher has been archived");
           router.refresh();
         })
         .catch(() =>
-          toast.error("Something bad happend. Teachers has not been archived!")
+          toast.error("Something bad happend. Teacher has not been archived!")
         );
     }
 

@@ -1,14 +1,11 @@
-import { getCourse } from "@/actions/get-courses";
+import { getCourse, getCourses } from "@/actions/get-courses";
 import React from "react";
-import { getCourseStats } from "@/actions/get-enrolments";
+
 import {
   BookAIcon,
   BookCheckIcon,
   BookOpenTextIcon,
-  BookTemplateIcon,
   BookTextIcon,
-  BookTypeIcon,
-  GraduationCap,
 } from "lucide-react";
 import {
   Card,
@@ -17,24 +14,33 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { getCourseTeachers } from "@/actions/get-course-teachers";
 import StatsCard from "@/components/cards/stats-card";
 import TeacherForm from "../_components/teacher-form";
 import AssignedCoursesCard from "../_components/assigned-courses-card";
 import { getTeachersStats } from "@/actions/get-teachers-stats";
+import { getAssignedCourses } from "@/actions/get-assigned-courses";
+import { getTeacher } from "@/actions/get-teachers";
 
 export default async function TeacherPage({
   params,
 }: {
   params: { teacherId: string };
 }) {
-  //   const course = await getCourse(params.courseId);
-  //   const teachers = await getCourseTeachers(params.courseId);
-  const teacherStats = await getTeachersStats(params.teacherId);
+  const teacherData = getTeacher(params.teacherId);
+  const teacherStatsData = getTeachersStats(params.teacherId);
+  const coursesData = getCourses();
+  const assignedCoursesData = getAssignedCourses(params.teacherId);
+
+  const [teacher, teacherStats, courses, assignedCourses] = await Promise.all([
+    teacherData,
+    teacherStatsData,
+    coursesData,
+    assignedCoursesData,
+  ]);
 
   return (
     <div>
-      <h3 className="pb-4 font-semibold tracking-tight text-xl">Courses</h3>
+      <h3 className="pb-4 font-semibold tracking-tight text-xl">Teachers</h3>
       <div className="mb-6 flex gap-6">
         <StatsCard
           title="Total Enrollments"
@@ -67,13 +73,14 @@ export default async function TeacherPage({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <TeacherForm data={null} action="edit" />
+            <TeacherForm data={teacher} action="edit" />
           </CardContent>
         </Card>
 
         <AssignedCoursesCard
           teacherId={params.teacherId}
-          courses={[]}
+          courses={courses}
+          assignedCourses={assignedCourses}
         ></AssignedCoursesCard>
       </div>
     </div>

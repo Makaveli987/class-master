@@ -44,3 +44,41 @@ export async function DELETE(
     );
   }
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { teacherId: string } }
+) {
+  try {
+    const currentUser = await getCurrentUser();
+    const { teacherId } = params;
+
+    const { email, firstName, lastName, phone, roleId } = await req.json();
+
+    if (!currentUser) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const s = await db.user.update({
+      where: {
+        id: teacherId,
+      },
+      data: {
+        email,
+        firstName,
+        lastName,
+        phone,
+        roleId,
+      },
+    });
+
+    revalidatePath("/school/teachers");
+    revalidatePath(`/school/teachers/${teacherId}`);
+    return new NextResponse(JSON.stringify(s), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {}
+}

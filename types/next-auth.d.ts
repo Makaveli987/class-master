@@ -6,11 +6,11 @@ declare module "next-auth" {
     user: {
       archived: any;
       id: string;
-      Role: Role;
+      role: Role;
       firstName: string;
       lastName: string;
       email: string;
-      School: School;
+      school: School;
     };
   }
 }

@@ -11,17 +11,26 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import CourseTeachersCard from "../_components/course-teachers-card";
-import { getCourseTeachers } from "@/actions/get-course-teachers";
 import StatsCard from "@/components/cards/stats-card";
+import { getAssignedTeachers } from "@/actions/get-assigned-teachers";
+import { getTeachers } from "@/actions/get-teachers";
 
 export default async function CoursePage({
   params,
 }: {
   params: { courseId: string };
 }) {
-  const course = await getCourse(params.courseId);
-  const teachers = await getCourseTeachers(params.courseId);
-  const courseStats = await getCourseStats(params.courseId);
+  const courseData = getCourse(params.courseId);
+  const assignedTeachersData = getAssignedTeachers(params.courseId);
+  const teachersData = getTeachers();
+  const courseStatsData = getCourseStats(params.courseId);
+
+  const [course, assignedTeachers, teachers, courseStats] = await Promise.all([
+    courseData,
+    assignedTeachersData,
+    teachersData,
+    courseStatsData,
+  ]);
 
   return (
     <div>
@@ -59,7 +68,8 @@ export default async function CoursePage({
 
         <CourseTeachersCard
           courseId={params.courseId}
-          teachers={[]}
+          teachers={teachers}
+          assignedTeachers={assignedTeachers}
         ></CourseTeachersCard>
       </div>
     </div>

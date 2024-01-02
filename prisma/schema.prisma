@@ -106,12 +106,12 @@ model Role {
 }
 
 model UserPerCourse {
+  id       String @id @default(uuid())
   courseId String
   userId   String
-  course   Course @relation(fields: [courseId], references: [id])
-  user     User   @relation(fields: [userId], references: [id])
+  course   Course? @relation(fields: [courseId], references: [id])
+  user     User?   @relation(fields: [userId], references: [id])
 
-  @@id([courseId, userId])
   @@index([courseId])
   @@index([userId])
 }

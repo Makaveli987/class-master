@@ -43,7 +43,6 @@ export default function EnrollStudentDialog({
       axios
         .get<Course[]>("/api/courses")
         .then((value) => {
-          console.log({ value });
           const options = value.data.map((course: Course) => ({
             value: course.id,
             label: course.name,

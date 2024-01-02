@@ -11,7 +11,7 @@ import {
 
 export interface DropdownSelectOptions {
   value: string;
-  label?: string;
+  label: string;
 }
 
 interface DropdownSelectProps {

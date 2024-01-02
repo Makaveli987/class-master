@@ -43,7 +43,6 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, studentId, asChild = false, ...props }, ref) => {
     const router = useRouter();
     function onDelete() {
-      console.log("deelte");
       axios
         .delete(`/api/students/${studentId}`)
         .then(() => {
@@ -61,7 +60,7 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         onConfirm={onDelete}
       >
         <div>
-          <Tooltip2 text="delete" side="top">
+          <Tooltip2 text="Delete" side="top">
             <Button variant="ghost" className="h-8 w-8 p-0 group ">
               <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
             </Button>

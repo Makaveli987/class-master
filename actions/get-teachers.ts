@@ -24,10 +24,9 @@ export const getTeachers = async () => {
 
 export const getTeacher = async (teacherId: string) => {
   try {
-    const teacher = await db.student.findUnique({
+    const teacher = await db.user.findFirst({
       where: { id: teacherId, archived: false },
     });
-
     return teacher;
   } catch (error) {
     console.error("[TEACHERS] Error fetching teacher ", error);

@@ -23,19 +23,12 @@ import { useRouter } from "next/navigation";
 import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
 import { RoleType } from "@/lib/models/Roles";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
-
-const formSchema = z.object({
-  firstName: z.string().min(1, "Field is required").min(3, {
-    message: "First name is too short",
-  }),
-  lastName: z.string().min(1, "Field is required").min(3, {
-    message: "Last name is too short",
-  }),
-  email: z.string().min(1, "Field is required").email("Enter a valid email"),
-  password: z.string().min(1, "Field is required"),
-  phone: z.string().min(5, "Field is required"),
-  roleId: z.string().min(1, "Field is required"),
-});
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface TeacherFormProps {
   data?: User | null;
@@ -48,10 +41,24 @@ export default function TeacherForm({
   setDialogOpen,
   action = "create",
 }: TeacherFormProps) {
-  // const [teacherRoleId, setTeacherRoleId] = useState<string | undefined>();
+  const [newPassword, setNewPassword] = useState("");
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [roleOptions, setRoleOptions] = useState<ComboboxOptions[]>([]);
   const router = useRouter();
+
+  let formSchema = z.object({
+    firstName: z.string().min(1, "Field is required").min(3, {
+      message: "First name is too short",
+    }),
+    lastName: z.string().min(1, "Field is required").min(3, {
+      message: "Last name is too short",
+    }),
+    email: z.string().min(1, "Field is required").email("Enter a valid email"),
+    password: z.string(),
+    phone: z.string().min(5, "Field is required"),
+    roleId: z.string().min(1, "Field is required"),
+  });
 
   const defValues = data
     ? {
@@ -70,6 +77,15 @@ export default function TeacherForm({
         roleId: "",
       };
 
+  const makeFieldOptional = (schema: any, fieldName: string) => {
+    return schema.extend({
+      [fieldName]: schema.shape[fieldName].optional(),
+    });
+  };
+
+  if (action === "edit") {
+    formSchema = makeFieldOptional(formSchema, "password");
+  }
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defValues,
@@ -90,14 +106,17 @@ export default function TeacherForm({
       });
   }, []);
 
-  function createTeacher(values: z.infer<typeof formSchema>) {
-    setPending(true);
+  function handleResetPassword() {
     axios
-      .post("/api/auth/register/teachers", { ...values })
+      .patch("/api/auth/register/reset-password", {
+        teacherId: data?.id,
+        password: newPassword,
+      })
       .then((response: AxiosResponse<User[]>) => {
-        if (response.status === 201) {
-          toast.success("Teacher has been updated", {
-            description: `${values.firstName} ${values.lastName}`,
+        if (response.status === 200) {
+          router.refresh();
+          toast.success("Password has been reset.", {
+            description: `${data?.firstName} ${data?.lastName}`,
           });
         }
       })
@@ -107,18 +126,42 @@ export default function TeacherForm({
       .finally(() => {
         setPending(false);
       });
+    setNewPassword("");
+    setIsPopoverOpen(false);
+  }
+
+  function createTeacher(values: z.infer<typeof formSchema>) {
+    setPending(true);
+    axios
+      .post("/api/auth/register/teachers", { ...values })
+      .then((response: AxiosResponse<User[]>) => {
+        if (response.status === 201) {
+          router.refresh();
+          toast.success("Teacher has been updated", {
+            description: `${values.firstName} ${values.lastName}`,
+          });
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Teacher wasn't updated!", {
+          description: `${values.firstName} ${values.lastName}`,
+        });
+      })
+      .finally(() => {
+        setPending(false);
+      });
   }
 
   function updateTeacher(values: z.infer<typeof formSchema>) {
     setPending(true);
     axios
-      .patch("/api/auth/register/teacher" + data?.id, { ...values })
+      .patch("/api/auth/register/teachers/" + data?.id, { ...values })
       .then((response: AxiosResponse<User[]>) => {
         if (response.status === 200) {
+          router.refresh();
           toast.success("Teacher has been updated", {
             description: `${values.firstName} ${values.lastName}`,
           });
-          router.refresh();
         }
       })
       .catch((error) => {
@@ -131,6 +174,8 @@ export default function TeacherForm({
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    formSchema.parse(values);
+
     action === "create" ? createTeacher(values) : updateTeacher(values);
   }
 
@@ -237,7 +282,7 @@ export default function TeacherForm({
             name="roleId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone</FormLabel>
+                <FormLabel>Role</FormLabel>
                 <FormControl>
                   <DropdownSelect
                     disabled={pending}
@@ -267,19 +312,36 @@ export default function TeacherForm({
               </Button>
             )}
 
-            {action === "edit" && (
-              <Button
-                disabled={pending}
-                onClick={() => {
-                  form.reset();
-                  setDialogOpen?.(false);
-                }}
-                className="!mt-6 mr-auto pl-0"
-                variant="link"
-              >
-                Reset Password
-              </Button>
-            )}
+            <Popover
+              open={isPopoverOpen}
+              onOpenChange={() => setIsPopoverOpen((current) => !current)}
+            >
+              <PopoverTrigger asChild>
+                {action === "edit" && (
+                  <Button
+                    disabled={pending}
+                    className="!mt-6 mr-auto pl-0"
+                    variant="link"
+                  >
+                    Reset Password
+                  </Button>
+                )}
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <p className="pb-2 text-sm font-medium">New Password</p>
+                <Input
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  type="password"
+                  placeholder="Enter new password..."
+                ></Input>
+                <div className="flex justify-end mt-4">
+                  <Button className="ml-auto" onClick={handleResetPassword}>
+                    Reset
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             <Button
               disabled={pending || !form.formState.isDirty}
