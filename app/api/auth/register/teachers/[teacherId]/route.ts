@@ -24,6 +24,12 @@ export async function DELETE(
       },
     });
 
+    const deleteCoursePeruser = await db.userPerCourse.deleteMany({
+      where: {
+        userId: teacherId,
+      },
+    });
+
     revalidatePath("/school/teachers");
     revalidatePath(`/school/teachers/${teacherId}`);
     return new NextResponse(JSON.stringify(s), {

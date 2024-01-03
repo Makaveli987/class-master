@@ -65,7 +65,7 @@ export const Combobox = ({
             {options.map((option) => (
               <CommandItem
                 className="cursor-pointer"
-                key={option.value}
+                key={option?.value}
                 onSelect={() => {
                   onChange(option.value === value ? "" : option.value);
                   setOpen(false);

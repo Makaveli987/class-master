@@ -10,7 +10,11 @@ export const getCourses = async () => {
       include: {
         userPerCourses: {
           include: {
-            user: true,
+            user: {
+              where: {
+                archived: false,
+              },
+            },
           },
         },
       },

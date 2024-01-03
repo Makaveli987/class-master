@@ -6,11 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(date: Date) {
-  let month = "" + (date.getMonth() + 1),
-    day = "" + date.getDate(),
-    year = date.getFullYear(),
-    hour = date.getHours(),
-    minutes = date.getMinutes();
+  let month = "" + (date?.getMonth() + 1),
+    day = "" + date?.getDate(),
+    year = date?.getFullYear(),
+    hour = date?.getHours(),
+    minutes = date?.getMinutes();
 
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;

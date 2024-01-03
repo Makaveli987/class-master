@@ -4,13 +4,25 @@ import React from "react";
 import TeacherDialog from "./_components/teacher-dialog";
 import { getTeachers } from "@/actions/get-teachers";
 import { columns } from "./_components/columns";
+import {
+  HydrationBoundary,
+  QueryClient,
+  dehydrate,
+} from "@tanstack/react-query";
 
 export default async function TeacherPage() {
   const teachers = await getTeachers();
+  // const queryClient = new QueryClient();
+
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["teachers"],
+  //   queryFn: getTeachers,
+  // });
 
   return (
     <div>
       <h3 className="pb-4 font-medium tracking-tight text-xl">Teachers</h3>
+      {/* <HydrationBoundary state={dehydrate(queryClient)}> */}
       <Card className="pt-6">
         <CardContent>
           <DataTable
@@ -22,6 +34,7 @@ export default async function TeacherPage() {
           </DataTable>
         </CardContent>
       </Card>
+      {/* </HydrationBoundary> */}
     </div>
   );
 }

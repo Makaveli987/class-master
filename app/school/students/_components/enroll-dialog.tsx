@@ -37,6 +37,10 @@ export default function EnrollStudentDialog({
 }: EnrollDialogProps) {
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<string>();
+  const [selectedteacher, setSelectedTeacher] = useState<string>();
+
+  console.log("courses", courses);
 
   useEffect(() => {
     if (!courses) {
@@ -53,11 +57,15 @@ export default function EnrollStudentDialog({
           toast.error("Something went wrong");
         });
     } else {
-      const options = courses.map((course: Course) => ({
+      const cOptions = courses.map((course: Course) => ({
         value: course.id,
         label: course.name,
       }));
-      setCoursesOptions(options);
+      const tOptions = courses.map((course: Course) => ({
+        value: course.id,
+        label: course.name,
+      }));
+      setCoursesOptions(cOptions);
     }
   }, []);
 
@@ -75,25 +83,38 @@ export default function EnrollStudentDialog({
           <div className="space-y-2">
             <Label>Course</Label>
             <Combobox
+              value={selectedCourse}
               options={courseOptions}
               onChange={(value: string) => {
-                console.log(value);
+                const selectedCourse = courses?.find(
+                  (course) => course.id === value
+                );
+                console.log("selectedCourse :>> ", selectedCourse);
+                // @ts-ignore
+                const tOptions = selectedCourse.userPerCourses.map((item) => ({
+                  value: item.user?.id,
+                  label: `${item.user?.firstName} ${item.user?.lastName}`,
+                }));
+                setTeachersOptions(tOptions);
+                setSelectedCourse(value);
               }}
             ></Combobox>
           </div>
           <div className="space-y-2">
             <Label>Teacher</Label>
-            {/* <Combobox
-              options={courses}
+            <Combobox
+              value={selectedteacher}
+              options={teachersOptions}
               onChange={(value: string) => {
+                setSelectedTeacher(value);
                 console.log(value);
               }}
-            ></Combobox> */}
+            ></Combobox>
           </div>
           <div className="flex justify-end gap-2 mt-2">
-            <DialogClose>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
+            <Button asChild variant="outline">
+              <DialogClose>Cancel</DialogClose>
+            </Button>
             <Button>Enroll</Button>
           </div>
         </div>
