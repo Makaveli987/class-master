@@ -59,6 +59,8 @@ export default function EnrollStudentDialog({
   studentId,
   courses,
 }: EnrollDialogProps) {
+  const [open, setOpen] = useState(false);
+
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
 
@@ -95,7 +97,8 @@ export default function EnrollStudentDialog({
       })
       .catch((error) => {
         toast.error("Something went wrong. Teacher wasn't enrolled!");
-      });
+      })
+      .finally(() => setOpen(false));
   }
 
   // function updateTeacher(values: z.infer<typeof formSchema>) {
@@ -126,7 +129,9 @@ export default function EnrollStudentDialog({
 
   return (
     <Dialog
+      open={open}
       onOpenChange={() => {
+        setOpen((current) => !current);
         setTimeout(() => {
           form.reset();
         }, 100);
@@ -214,9 +219,8 @@ export default function EnrollStudentDialog({
                 <Button asChild variant="outline">
                   <DialogClose>Cancel</DialogClose>
                 </Button>
-                <DialogClose>
-                  <Button type="submit">Enroll</Button>
-                </DialogClose>
+
+                <Button type="submit">Enroll</Button>
               </div>
             </form>
           </Form>

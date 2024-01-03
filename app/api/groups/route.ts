@@ -1,0 +1,74 @@
+import getCurrentUser from "@/actions/get-current-user";
+import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
+
+export async function POST(req: Request) {
+  try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const { name, studentIds } = await req.json();
+
+    if (!name) {
+      return new NextResponse(
+        JSON.stringify({ error: "Missing required fields" }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    const result = await db.$transaction(async (tx) => {
+      // Step 1: Create the group
+      const group = await tx.group.create({
+        data: {
+          name,
+          schoolId: currentUser.schoolId,
+          // other fields if necessary
+        },
+      });
+
+      // Step 2: Attach each student to the group
+      await Promise.all(
+        studentIds.map((studentId: string) =>
+          tx.student.update({
+            where: {
+              id: studentId,
+            },
+            data: {
+              groupId: group.id,
+            },
+          })
+        )
+      );
+
+      return group; // return the created group
+    });
+
+    revalidatePath("/school/groups");
+
+    return new NextResponse(JSON.stringify(result), {
+      status: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    return new NextResponse(
+      JSON.stringify({ error: "Internal Server Error" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}

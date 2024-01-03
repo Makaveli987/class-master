@@ -41,7 +41,6 @@ export default function SignInClient() {
   });
 
   useEffect(() => {
-    console.log("params", error);
     // Redirect to home if already signed in
     if (session) {
       router.replace("/school");

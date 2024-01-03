@@ -11,7 +11,7 @@ import { PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 import CourseForm from "./course-form";
 
-export default function StudentDialog() {
+export default function CourseDialog() {
   const [open, setOpen] = useState(false);
 
   return (
