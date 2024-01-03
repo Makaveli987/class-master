@@ -8,12 +8,12 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios, { AxiosResponse } from "axios";
 import { Role, User } from "@prisma/client";

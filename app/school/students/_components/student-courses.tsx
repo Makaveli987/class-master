@@ -24,35 +24,40 @@ export default async function StudentCourses({
   }
   return (
     <div className="space-y-6">
-      <Separator />
-      <div className="flex justify-between items-start">
-        <span className="text-sm font-semibold leading-none">
-          Engleski jezik A2
-        </span>
-        <div className="flex flex-col space-y-1 text-right">
-          <p className="text-sm leading-none">Natasa Blagojevic</p>
-          <p className="text-xs leading-none text-muted-foreground">Teacher</p>
-        </div>
-        <div className="w-[180px] flex justify-end">
-          <Badge className="bg-green-600 hover:bg-green-600">Completed</Badge>
-        </div>
-      </div>
-
-      <Separator />
-
-      <div className="flex justify-between items-start">
-        <span className="text-sm font-semibold leading-none">
-          Engleski jezik A2
-        </span>
-        <div className="flex flex-col space-y-1 text-right">
-          <p className="text-sm leading-none">Natasa Blagojevic</p>
-          <p className="text-xs leading-none text-muted-foreground">Teacher</p>
-        </div>
-        <div className="w-[180px] flex flex-col gap-2">
-          <p className="text-sm text-right font-semibold leading-none">27/40</p>
-          <Progress value={calcPercentage(27, 40)} />
-        </div>
-      </div>
+      {enrollments.map((enrollment) => (
+        <>
+          <Separator />
+          <div className="flex justify-between items-start">
+            <span className="text-sm font-semibold leading-none">
+              {enrollment.course.name}
+            </span>
+            <div className="flex flex-col space-y-1 text-right">
+              <p className="text-sm leading-none">
+                {enrollment.teacher.firstName} {enrollment.teacher.lastName}
+              </p>
+              <p className="text-xs leading-none text-muted-foreground">
+                Teacher
+              </p>
+            </div>
+            <div className="w-[180px] flex justify-end">
+              {enrollment.attendedClasses === 40 ? (
+                <Badge className="bg-green-600 hover:bg-green-600">
+                  Completed
+                </Badge>
+              ) : (
+                <div className="w-[180px] flex flex-col gap-2">
+                  <p className="text-sm text-right font-semibold leading-none">
+                    {enrollment.attendedClasses}/40
+                  </p>
+                  <Progress
+                    value={calcPercentage(enrollment.attendedClasses, 40)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      ))}
     </div>
   );
 }

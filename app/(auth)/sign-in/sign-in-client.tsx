@@ -44,7 +44,7 @@ export default function SignInClient() {
     console.log("params", error);
     // Redirect to home if already signed in
     if (session) {
-      router.replace("/");
+      router.replace("/school");
     }
   }, [session, router]);
 

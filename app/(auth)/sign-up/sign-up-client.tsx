@@ -72,7 +72,7 @@ const SignUpClient = () => {
   useEffect(() => {
     // Redirect to home if already signed in
     if (session) {
-      router.replace("/");
+      router.replace("/school");
     }
   }, [session, router]);
 

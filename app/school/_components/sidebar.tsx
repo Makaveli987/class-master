@@ -84,7 +84,7 @@ export function Sidebar({ className, session }: SidebarProps) {
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
-              const isAdmin = session?.user.role.type === RoleType.ADMIN;
+              const isAdmin = session?.user?.role?.type === RoleType.ADMIN;
               const shouldRenderLink = !link.isRestricted || isAdmin;
 
               return (

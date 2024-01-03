@@ -10,67 +10,128 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
-import { Course, User } from "@prisma/client";
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { Course, Enrollment, User } from "@prisma/client";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { string } from "zod";
+import { string, z } from "zod";
+import axios, { AxiosResponse } from "axios";
+import router from "next/router";
+import { useRouter } from "next/navigation";
 
 interface EnrollDialogProps {
   children?: React.ReactNode;
   courses?: Course[] | null;
-  teachers?: User[];
-  studentId?: string;
+  studentId: string;
 }
 
-interface Options {
-  value: string;
-  label: string;
+interface IEnrollment {
+  courseId: string;
+  teacherId: string;
+  studentId: string;
+  goals: string;
 }
+
+const formSchema = z.object({
+  courseId: z.string().min(1, "Field is required").min(3, {
+    message: "First name is too short",
+  }),
+  teacherId: z.string().min(1, "Field is required").min(3, {
+    message: "Last name is too short",
+  }),
+  goals: z.string(),
+});
 
 export default function EnrollStudentDialog({
   children,
   studentId,
   courses,
-  teachers = [],
 }: EnrollDialogProps) {
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<string>();
-  const [selectedteacher, setSelectedTeacher] = useState<string>();
 
-  console.log("courses", courses);
+  const router = useRouter();
+
+  const defValues = {
+    courseId: "",
+    teacherId: "",
+    goals: "",
+  };
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: defValues,
+  });
 
   useEffect(() => {
-    if (!courses) {
-      axios
-        .get<Course[]>("/api/courses")
-        .then((value) => {
-          const options = value.data.map((course: Course) => ({
-            value: course.id,
-            label: course.name,
-          }));
-          setCoursesOptions(options);
-        })
-        .catch(() => {
-          toast.error("Something went wrong");
-        });
-    } else {
-      const cOptions = courses.map((course: Course) => ({
-        value: course.id,
-        label: course.name,
-      }));
-      const tOptions = courses.map((course: Course) => ({
-        value: course.id,
-        label: course.name,
-      }));
-      setCoursesOptions(cOptions);
-    }
+    console.log("courses", courses);
+    const cOptions = courses?.map((course: Course) => ({
+      value: course.id,
+      label: course.name,
+    }));
+    setCoursesOptions(cOptions || []);
   }, []);
 
+  function createEnrollment(values: IEnrollment) {
+    axios
+      .post("/api/enrollment", { ...values })
+      .then((response: AxiosResponse<Enrollment[]>) => {
+        if (response.status === 201) {
+          router.refresh();
+          toast.success("Student successfully enrolled.");
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Teacher wasn't enrolled!");
+      });
+  }
+
+  // function updateTeacher(values: z.infer<typeof formSchema>) {
+  //   setPending(true);
+  //   axios
+  //     .patch("/api/auth/register/teachers/" + data?.id, { ...values })
+  //     .then((response: AxiosResponse<User[]>) => {
+  //       if (response.status === 200) {
+  //         router.refresh();
+  //         toast.success("Teacher has been updated", {
+  //           description: `${values.firstName} ${values.lastName}`,
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       toast.error("Something went wrong. Teacher wasn't updated!", {
+  //         description: `${values.firstName} ${values.lastName}`,
+  //       });
+  //       console.error(error);
+  //     })
+  //     .finally(() => setPending(false));
+  // }
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    createEnrollment({ ...values, studentId });
+    // action === "create" ? createTeacher(values) : updateTeacher(values);
+  }
+
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={() => {
+        setTimeout(() => {
+          form.reset();
+        }, 100);
+      }}
+    >
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -80,43 +141,85 @@ export default function EnrollStudentDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-5 mt-3">
-          <div className="space-y-2">
-            <Label>Course</Label>
-            <Combobox
-              value={selectedCourse}
-              options={courseOptions}
-              onChange={(value: string) => {
-                const selectedCourse = courses?.find(
-                  (course) => course.id === value
-                );
-                console.log("selectedCourse :>> ", selectedCourse);
-                // @ts-ignore
-                const tOptions = selectedCourse.userPerCourses.map((item) => ({
-                  value: item.user?.id,
-                  label: `${item.user?.firstName} ${item.user?.lastName}`,
-                }));
-                setTeachersOptions(tOptions);
-                setSelectedCourse(value);
-              }}
-            ></Combobox>
-          </div>
-          <div className="space-y-2">
-            <Label>Teacher</Label>
-            <Combobox
-              value={selectedteacher}
-              options={teachersOptions}
-              onChange={(value: string) => {
-                setSelectedTeacher(value);
-                console.log(value);
-              }}
-            ></Combobox>
-          </div>
-          <div className="flex justify-end gap-2 mt-2">
-            <Button asChild variant="outline">
-              <DialogClose>Cancel</DialogClose>
-            </Button>
-            <Button>Enroll</Button>
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="courseId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Course</FormLabel>
+                    <FormControl>
+                      <DropdownSelect
+                        options={courseOptions}
+                        onChange={(value) => {
+                          const selectedCourse = courses?.find(
+                            (course) => course.id === value
+                          );
+                          // @ts-ignore
+                          const tOptions = selectedCourse?.userPerCourses?.map(
+                            (item: any) => ({
+                              value: item.user?.id,
+                              label: `${item.user?.firstName} ${item.user?.lastName}`,
+                            })
+                          );
+                          setTeachersOptions(tOptions);
+                          field.onChange(value);
+                        }}
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="teacherId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teacher</FormLabel>
+                    <FormControl>
+                      <DropdownSelect
+                        disabled={!form.getValues().courseId}
+                        options={teachersOptions}
+                        onChange={field.onChange}
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="goals"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Goals</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        className="h-32"
+                        placeholder="Type the goals here..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end gap-2 mt-2">
+                <Button asChild variant="outline">
+                  <DialogClose>Cancel</DialogClose>
+                </Button>
+                <DialogClose>
+                  <Button type="submit">Enroll</Button>
+                </DialogClose>
+              </div>
+            </form>
+          </Form>
         </div>
       </DialogContent>
     </Dialog>

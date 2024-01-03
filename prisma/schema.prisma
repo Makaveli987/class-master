@@ -47,9 +47,11 @@ model Course {
 }
 
 model Enrollment {
+  id              String   @id @default(uuid())
   courseId        String
   studentId       String
   teacherId       String
+  courseGoals     String?  @db.Text
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   attendedClasses Int
@@ -57,7 +59,6 @@ model Enrollment {
   student         Student  @relation(fields: [studentId], references: [id])
   teacher         User     @relation(fields: [teacherId], references: [id])
 
-  @@id([courseId, studentId])
   @@index([courseId])
   @@index([studentId])
   @@index([teacherId])
@@ -106,7 +107,7 @@ model Role {
 }
 
 model UserPerCourse {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   courseId String
   userId   String
   course   Course? @relation(fields: [courseId], references: [id])

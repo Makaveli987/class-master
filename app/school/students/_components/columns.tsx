@@ -22,22 +22,22 @@ export interface ButtonProps
   studentId: string;
 }
 
-const EnrollButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, studentId, asChild = false, ...props }, ref) => {
-    return (
-      <EnrollStudentDialog studentId={studentId}>
-        <div>
-          <Tooltip2 text="Add to course" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group ">
-              <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
-            </Button>
-          </Tooltip2>
-        </div>
-      </EnrollStudentDialog>
-    );
-  }
-);
-EnrollButton.displayName = "EnrollButton";
+// const EnrollButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+//   ({ className, studentId, asChild = false, ...props }, ref) => {
+//     return (
+//       <EnrollStudentDialog studentId={studentId}>
+//         <div>
+//           <Tooltip2 text="Add to course" side="top">
+//             <Button variant="ghost" className="h-8 w-8 p-0 group ">
+//               <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
+//             </Button>
+//           </Tooltip2>
+//         </div>
+//       </EnrollStudentDialog>
+//     );
+//   }
+// );
+// EnrollButton.displayName = "EnrollButton";
 
 const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, studentId, asChild = false, ...props }, ref) => {
@@ -134,7 +134,7 @@ export const columns: ColumnDef<Student>[] = [
       const studentId = row.original.id;
       return (
         <div className="flex justify-end gap-2">
-          <EnrollButton studentId={studentId} />
+          {/* <EnrollButton studentId={studentId} /> */}
           <Tooltip2 text="Edit" side="top">
             <Link href={`/school/students/${studentId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">

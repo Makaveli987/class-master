@@ -79,7 +79,7 @@ export default function CourseTeachersCard({
     <Card className="flex-1 h-[524px]">
       <CardHeader className="mb-3 relative max-w-[348px]">
         <CardTitle>Teachers</CardTitle>
-        <CardDescription>Teachers assigned to this course</CardDescription>
+        <CardDescription>Teachers that can teach this course</CardDescription>
         <Tooltip2 text="Assign teacher">
           <Button className="absolute right-0 top-4" variant="ghost">
             <PlusCircleIcon className="w-5 h-5" />
