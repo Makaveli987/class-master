@@ -4,8 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import axios from "axios";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/authOptions";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  if (session == null) {
+    return redirect("/sign-in");
+  }
   // const [isLoading, setIsLoading] = useState(false);
   // const [role, setRole] = useState("");
 
