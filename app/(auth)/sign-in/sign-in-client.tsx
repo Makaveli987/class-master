@@ -11,11 +11,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
 
@@ -26,8 +26,6 @@ const loginSchema = z.object({
 
 export default function SignInClient() {
   const [pending, setPending] = useState(false);
-  const router = useRouter();
-  const { data: session } = useSession();
   const params = useSearchParams();
 
   const error = params.get("error");
@@ -39,18 +37,6 @@ export default function SignInClient() {
       password: "",
     },
   });
-
-  useEffect(() => {
-    // Redirect to home if already signed in
-    if (session) {
-      router.replace("/school");
-    }
-  }, [session, router]);
-
-  if (session) {
-    // Optionally render null or a loading indicator while redirecting
-    return null;
-  }
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     setPending(true);

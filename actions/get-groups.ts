@@ -21,3 +21,24 @@ export const getGroups = async () => {
     return null;
   }
 };
+
+export const getGroup = async (groupId: string) => {
+  try {
+    const group = await db.group.findFirst({
+      where: { id: groupId, archived: false },
+      include: {
+        students: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+    return group;
+  } catch (error) {
+    console.error("[GROUPS] Error fetching groups ", error);
+    return null;
+  }
+};

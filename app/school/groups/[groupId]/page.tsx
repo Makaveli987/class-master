@@ -1,11 +1,4 @@
-import React from "react";
-import { getStudent } from "@/actions/get-students";
-
-import StudentForm from "../_components/student-form";
-import StudentCourses from "../_components/student-courses";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getCourses } from "@/actions/get-courses";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,23 +6,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import EnrollStudentDialog from "../_components/enroll-dialog";
-import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircleIcon } from "lucide-react";
-import { getEnrollments } from "@/actions/get-enrolments";
-// import { Separator } from "@/components/ui/separator";
+import React from "react";
+import EnrollStudentDialog from "../../students/_components/enroll-dialog";
+import StudentCourses from "../../students/_components/student-courses";
+import GroupForm from "../_components/group-form";
+import { getStudents } from "@/actions/get-students";
+import { getCourses } from "@/actions/get-courses";
+import { getGroup } from "@/actions/get-groups";
 
-export default async function StudentPage({
+export default async function GroupPage({
   params,
 }: {
-  params: { studentId: string };
+  params: { groupId: string };
 }) {
-  const student = await getStudent(params.studentId);
+  const group = await getGroup(params.groupId);
+  const students = await getStudents();
   const courses = await getCourses();
 
   return (
     <div>
-      <h3 className="pb-4 font-medium tracking-tight text-xl">Students</h3>
+      <h3 className="pb-4 font-medium tracking-tight text-xl">Groups</h3>
       <Card>
         <CardContent className="mt-6">
           <Tabs defaultValue="profile">
@@ -43,26 +42,26 @@ export default async function StudentPage({
               <CardHeader className="pl-2">
                 <CardTitle>Profile</CardTitle>
                 <CardDescription>
-                  This is how others will see student on the site.
+                  This is how others will see group on the site.
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
-                <StudentForm data={student} action="edit" />
+                <GroupForm group={group} students={students} action="edit" />
               </CardContent>
             </TabsContent>
 
             <TabsContent value="courses">
               <CardHeader className="pl-2">
                 <CardTitle>Courses</CardTitle>
-                <CardDescription>Courses the student attended</CardDescription>
+                <CardDescription>Courses the group attended</CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
-                <StudentCourses studentId={params.studentId} />
+                <StudentCourses studentId={params.groupId} />
 
                 <div className="flex justify-end">
                   <EnrollStudentDialog
                     courses={courses}
-                    studentId={params.studentId}
+                    studentId={params.groupId}
                   >
                     <Button className="mt-12 ml-auto">
                       <PlusCircleIcon className="w-4 h-4 mr-2" />
@@ -76,7 +75,7 @@ export default async function StudentPage({
             <TabsContent value="classes">
               <CardHeader className="pl-2">
                 <CardTitle>Classes</CardTitle>
-                <CardDescription>Classes the student attended</CardDescription>
+                <CardDescription>Classes the group attended</CardDescription>
               </CardHeader>
               <CardContent className="p-2">
                 <DataTable

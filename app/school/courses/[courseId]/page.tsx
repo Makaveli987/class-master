@@ -34,7 +34,7 @@ export default async function CoursePage({
 
   return (
     <div>
-      <h3 className="pb-4 font-semibold tracking-tight text-xl">Courses</h3>
+      <h3 className="pb-4 font-medium tracking-tight text-xl">Courses</h3>
       <div className="mb-6 flex gap-6">
         <StatsCard
           title="Total Enrollments"

@@ -16,23 +16,23 @@ import { toast } from "sonner";
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  courseId: string;
+  groupId: string;
 }
 
 const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, courseId, asChild = false, ...props }, ref) => {
+  ({ className, groupId, asChild = false, ...props }, ref) => {
     function onDelete() {
       axios
-        .delete(`/api/courses/${courseId}`)
-        .then(() => toast.success("Course has been archived"))
+        .delete(`/api/groups/${groupId}`)
+        .then(() => toast.success("Group has been archived"))
         .catch(() =>
-          toast.error("Something bad happend. Course has not been archived!")
+          toast.error("Something bad happend. Group has not been archived!")
         );
     }
 
     return (
       <ConfirmDialog
-        description="This action will archive the course. You will not be able to assign students and teachers to this course."
+        description="This action will archive the group. You will not be able to assign students and classes to this group."
         onConfirm={onDelete}
       >
         <div>
@@ -95,18 +95,18 @@ export const columns: ColumnDef<Group>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const courseId = row.original.id;
+      const groupId = row.original.id;
 
       return (
         <div className="flex justify-end gap-2">
           <Tooltip2 text="Edit" side="top">
-            <Link href={`/school/courses/${courseId}`}>
+            <Link href={`/school/groups/${groupId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">
                 <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton courseId="courseId" />
+          <DeleteButton groupId={groupId} />
         </div>
       );
     },
