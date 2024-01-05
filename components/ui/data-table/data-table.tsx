@@ -3,6 +3,7 @@
 import {
   ColumnDef,
   FilterFn,
+  Row,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -30,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   filterPlaceholder: string;
   children?: React.ReactNode;
+  onRowClick?: (row: any, index?: number) => void;
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -48,6 +50,7 @@ export function DataTable<TData, TValue>({
   data,
   filterPlaceholder,
   children,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -100,6 +103,10 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className="cursor-pointer"
+                  onClick={() => {
+                    onRowClick?.(row.original);
+                  }}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >

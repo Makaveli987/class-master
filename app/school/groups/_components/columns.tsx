@@ -5,7 +5,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
-import { Course, Group } from "@prisma/client";
+import { Group } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { EditIcon, Trash2Icon } from "lucide-react";
@@ -16,14 +16,14 @@ import { toast } from "sonner";
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  courseId: string;
+  groupId: string;
 }
 
 const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, courseId, asChild = false, ...props }, ref) => {
+  ({ className, groupId, asChild = false, ...props }, ref) => {
     function onDelete() {
       axios
-        .delete(`/api/courses/${courseId}`)
+        .delete(`/api/groups/${groupId}`)
         .then(() => toast.success("Course has been archived"))
         .catch(() =>
           toast.error("Something bad happend. Course has not been archived!")
@@ -95,18 +95,18 @@ export const columns: ColumnDef<Group>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const courseId = row.original.id;
+      const groupId = row.original.id;
 
       return (
         <div className="flex justify-end gap-2">
           <Tooltip2 text="Edit" side="top">
-            <Link href={`/school/courses/${courseId}`}>
+            <Link href={`/school/groups/${groupId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">
                 <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton courseId="courseId" />
+          <DeleteButton groupId="groupId" />
         </div>
       );
     },

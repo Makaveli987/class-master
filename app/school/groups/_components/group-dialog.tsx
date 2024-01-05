@@ -212,7 +212,9 @@ export default function GroupDialog({ students }: GroupDialogProps) {
               <Button asChild variant="outline">
                 <DialogClose>Cancel</DialogClose>
               </Button>
-              <Button type="submit">Save</Button>
+              <Button disabled={!form.formState.isDirty} type="submit">
+                Save
+              </Button>
             </div>
           </form>
         </Form>

@@ -11,6 +11,7 @@ export const getTeachersStats = async (teacherId: string) => {
 
     const activeEnrollments = await db.enrollment.count({
       where: {
+        teacherId,
         attendedClasses: {
           lt: course?.totalClasses,
         },

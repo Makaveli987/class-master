@@ -5,23 +5,17 @@ import { getStudents } from "@/actions/get-students";
 import { getCourses } from "@/actions/get-courses";
 import EnrollStudentDialog from "./_components/enroll-dialog";
 import { Card, CardContent } from "@/components/ui/card";
+import StudentsTable from "./_components/students-table";
 
 export default async function StudentsPage() {
   const students = await getStudents();
-  // const courses = await getCourses();
 
   return (
     <div>
       <h3 className="pb-4 font-medium tracking-tight text-xl">Students</h3>
       <Card className="pt-6">
         <CardContent>
-          <DataTable
-            columns={columns}
-            data={students || []}
-            filterPlaceholder="Search students..."
-          >
-            <StudentDialog />
-          </DataTable>
+          <StudentsTable students={students || []} />
         </CardContent>
       </Card>
     </div>
