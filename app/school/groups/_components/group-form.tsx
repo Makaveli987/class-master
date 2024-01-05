@@ -74,7 +74,7 @@ export default function GroupForm({
 
     console.log("group", group);
     // @ts-ignore
-    const assignedStudentsOptions = group.students?.map((student) => ({
+    const assignedStudentsOptions = group?.students?.map((student) => ({
       value: student.id,
       label: `${student.firstName} ${student.lastName}`,
     }));
@@ -83,7 +83,7 @@ export default function GroupForm({
 
     const options = stdOptions?.filter(
       (studentOption) =>
-        !assignedStudentsOptions.some(
+        !assignedStudentsOptions?.some(
           (assignedStudent: ComboboxOptions) =>
             studentOption.value === assignedStudent.value
         )

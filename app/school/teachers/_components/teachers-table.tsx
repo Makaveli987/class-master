@@ -11,7 +11,7 @@ interface TeachersTableProps {
   teachers: User[];
 }
 
-export default function StudentsTable({ teachers }: TeachersTableProps) {
+export default function TeachersTable({ teachers }: TeachersTableProps) {
   const router = useRouter();
   return (
     <DataTable
