@@ -1,9 +1,8 @@
-import { getCourses } from "@/actions/get-courses";
 import { getEnrollments } from "@/actions/get-enrolments";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Course } from "@prisma/client";
+import { formatDate } from "@/lib/utils";
 import React from "react";
 
 interface StudentCoursesProps {
@@ -28,9 +27,15 @@ export default async function StudentCourses({
         <>
           <Separator />
           <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold leading-none">
-              {enrollment.course.name}
-            </span>
+            <div className="flex flex-col space-y-1 text-left">
+              <p className="text-sm font-semibold leading-none">
+                {enrollment.course.name}
+              </p>
+              <p className="text-xs leading-none text-muted-foreground">
+                <span className="font-medium">started:</span>{" "}
+                {formatDate(enrollment.createdAt).slice(0, -6)}
+              </p>
+            </div>
             <div className="flex flex-col space-y-1 text-right">
               <p className="text-sm leading-none">
                 {enrollment.teacher.firstName} {enrollment.teacher.lastName}

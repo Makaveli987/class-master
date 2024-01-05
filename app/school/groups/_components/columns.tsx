@@ -24,15 +24,15 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     function onDelete() {
       axios
         .delete(`/api/groups/${groupId}`)
-        .then(() => toast.success("Course has been archived"))
+        .then(() => toast.success("Group has been archived"))
         .catch(() =>
-          toast.error("Something bad happend. Course has not been archived!")
+          toast.error("Something bad happend. Group has not been archived!")
         );
     }
 
     return (
       <ConfirmDialog
-        description="This action will archive the course. You will not be able to assign students and teachers to this course."
+        description="This action will archive the group. You will not be able to assign students and classes to this group."
         onConfirm={onDelete}
       >
         <div>
@@ -106,7 +106,7 @@ export const columns: ColumnDef<Group>[] = [
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton groupId="groupId" />
+          <DeleteButton groupId={groupId} />
         </div>
       );
     },

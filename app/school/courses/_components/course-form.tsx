@@ -99,7 +99,7 @@ export default function CourseForm({
 
     axios
       .patch("/api/courses/" + data?.id, { ...payload })
-      .then((response: AxiosResponse<Course[]>) => {
+      .then((response: AxiosResponse<Course>) => {
         if (response.status === 200) {
           toast.success("Course has been updated", {
             description: `${values.name}`,
