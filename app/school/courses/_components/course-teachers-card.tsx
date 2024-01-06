@@ -97,9 +97,14 @@ export default function CourseTeachersCard({
               {assignedTeachers?.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="flex items-center justify-between hover:bg-muted rounded-lg p-2 max-w-[330px] group"
+                  className="flex items-center justify-between hover:bg-muted rounded-lg p-2 max-w-[330px] group cursor-pointer"
                 >
-                  <div className="flex items-center ">
+                  <div
+                    className="flex items-center "
+                    onClick={() =>
+                      router.push(`/school/teachers/${teacher.user.id}`)
+                    }
+                  >
                     <Avatar className="h-9 w-9">
                       <AvatarFallback>
                         {teacher?.user?.firstName?.[0]}

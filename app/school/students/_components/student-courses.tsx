@@ -1,9 +1,12 @@
+"use client";
 import { getEnrollments } from "@/actions/get-enrolments";
+import EnrollStudentDialog from "@/components/enrolled-courses/enroll-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
+import useEnrollDialog from "@/hooks/useEnrollDialog";
 import { formatDate } from "@/lib/utils";
 import {
   Edit2Icon,
@@ -16,26 +19,27 @@ import React from "react";
 
 interface StudentCoursesProps {
   studentId: string;
+  enrollments: any[];
 }
 
 function calcPercentage(x: number, y: number) {
   return (x / y) * 100;
 }
 
-export default async function StudentCourses({
+export default function StudentCourses({
   studentId,
+  enrollments,
 }: StudentCoursesProps) {
-  const enrollments = await getEnrollments(studentId);
-
+  const enrollDialog = useEnrollDialog();
   if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
   }
   return (
-    <div className="space-y-6">
+    <div>
       {enrollments.map((enrollment) => (
-        <>
+        <div key={enrollment.id}>
           <Separator />
-          <div className="grid grid-cols-7 gap-4">
+          <div className="grid grid-cols-7 gap-4 py-6 pl-2 hover:bg-muted cursor-pointer">
             <div className="flex flex-col col-span-2 space-y-1 text-left">
               <p className="text-sm font-semibold leading-none">
                 {enrollment.course.name}
@@ -76,7 +80,28 @@ export default async function StudentCourses({
                 </Button>
               </Tooltip2>
               <Tooltip2 text="Edit" side="top">
-                <Button variant="ghost" className="h-8 w-8 p-0 group ">
+                <Button
+                  variant="ghost"
+                  className="h-8 w-8 p-0 group"
+                  onClick={() => {
+                    console.log({
+                      courseId: enrollment.course.id,
+                      teacherId: enrollment.teacher.id,
+                      courseGoals: enrollment.courseGoals,
+                    });
+
+                    enrollDialog.open(
+                      {
+                        enrollmentId: enrollment.id,
+                        courseId: enrollment.course.id,
+                        teacherId: enrollment.teacher.id,
+                        courseGoals: enrollment.courseGoals,
+                      },
+                      "student",
+                      "edit"
+                    );
+                  }}
+                >
                   <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
                 </Button>
               </Tooltip2>
@@ -87,7 +112,7 @@ export default async function StudentCourses({
               </Tooltip2>
             </div>
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

@@ -41,7 +41,7 @@ interface IEnrollment {
   courseId: string;
   teacherId: string;
   studentId: string;
-  goals: string;
+  courseGoals: string;
 }
 
 const formSchema = z.object({
@@ -51,7 +51,7 @@ const formSchema = z.object({
   teacherId: z.string().min(1, "Field is required").min(3, {
     message: "Last name is too short",
   }),
-  goals: z.string(),
+  courseGoals: z.string(),
 });
 
 export default function EnrollStudentDialog({
@@ -69,7 +69,7 @@ export default function EnrollStudentDialog({
   const defValues = {
     courseId: "",
     teacherId: "",
-    goals: "",
+    courseGoals: "",
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -200,7 +200,7 @@ export default function EnrollStudentDialog({
 
               <FormField
                 control={form.control}
-                name="goals"
+                name="courseGoals"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Goals</FormLabel>

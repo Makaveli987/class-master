@@ -3,9 +3,13 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: { enrollmentId: string } }
+) {
   try {
     const currentUser = await getCurrentUser();
+    const { enrollmentId } = params;
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -24,20 +28,22 @@ export async function POST(req: Request) {
         }
       );
     }
-
-    const enrollment = await db.enrollment.create({
+    const enrollment = await db.enrollment.update({
+      where: {
+        id: enrollmentId,
+      },
       data: {
         courseId,
         teacherId,
         studentId,
         courseGoals,
-        attendedClasses: 0,
       },
     });
-    revalidatePath(`/school/students/${studentId}`);
 
+    revalidatePath("/school/enrollment");
+    revalidatePath(`/school/enrollment/${enrollmentId}`);
     return new NextResponse(JSON.stringify(enrollment), {
-      status: 201,
+      status: 200,
       headers: {
         "Content-Type": "application/json",
       },

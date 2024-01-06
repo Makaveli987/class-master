@@ -223,15 +223,19 @@ export default function GroupForm({
               <div className="flex flex-col">
                 {selectedStudents.map((student, index) => (
                   <div
-                    className="flex justify-between items-center hover:bg-muted transition-all rounded-lg p-1 group"
+                    className="flex justify-between items-center hover:bg-muted transition-all rounded-lg p-1 group cursor-pointer"
                     key={student.value}
+                    onClick={() =>
+                      router.push(`/school/students/${student.value}`)
+                    }
                   >
                     <p className="text-sm ml-2">
                       {index + 1}. {student.label}
                     </p>
                     <Button
                       disabled={pending}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         handleRemoveStudent(student.value);
                       }}
                       className="w-6 h-6 p-1"

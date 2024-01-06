@@ -13,10 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import EnrollStudentDialog from "../_components/enroll-dialog";
+// import EnrollStudentDialog from "../_components/enroll-dialog";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import { getEnrollments } from "@/actions/get-enrolments";
+import EnrollStudentDialog, {
+  EnrollDialogCourse,
+} from "@/components/enrolled-courses/enroll-dialog";
 // import { Separator } from "@/components/ui/separator";
 
 export default async function StudentPage({
@@ -25,7 +28,8 @@ export default async function StudentPage({
   params: { studentId: string };
 }) {
   const student = await getStudent(params.studentId);
-  const courses = await getCourses();
+  const courses = (await getCourses()) as EnrollDialogCourse[];
+  const enrollments = await getEnrollments(params.studentId);
 
   return (
     <div>
@@ -57,11 +61,14 @@ export default async function StudentPage({
                 <CardDescription>Courses the student attended</CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-4xl">
-                <StudentCourses studentId={params.studentId} />
+                <StudentCourses
+                  enrollments={enrollments || []}
+                  studentId={params.studentId}
+                />
 
                 <div className="flex justify-end">
                   <EnrollStudentDialog
-                    courses={courses}
+                    courses={courses || []}
                     studentId={params.studentId}
                   >
                     <Button className="mt-12 ml-auto">

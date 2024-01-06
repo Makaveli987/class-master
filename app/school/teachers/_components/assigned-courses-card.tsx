@@ -131,9 +131,14 @@ export default function AssignedTeachersCard({
               {assignedCourses?.map((course) => (
                 <div
                   key={course.id}
-                  className="flex items-center justify-between hover:bg-muted rounded-lg p-2 h-12 max-w-[330px] group"
+                  className="flex items-center justify-between hover:bg-muted rounded-lg p-2 h-12 max-w-[330px] group cursor-pointer"
                 >
-                  <div className="flex items-center ">
+                  <div
+                    className="flex items-center"
+                    onClick={() =>
+                      router.push(`/school/courses/${course.course.id}`)
+                    }
+                  >
                     <div className="ml-4 ">
                       <p className="text-sm font-medium leading-none">
                         {course.course.name}

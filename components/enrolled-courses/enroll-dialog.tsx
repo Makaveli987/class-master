@@ -23,35 +23,32 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Course, Enrollment, User } from "@prisma/client";
+import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { string, z } from "zod";
 import axios, { AxiosResponse } from "axios";
 import router from "next/router";
 import { useRouter } from "next/navigation";
+import useEnrollDialog, { EnrollData } from "@/hooks/useEnrollDialog";
+
+export interface EnrollDialogCourse extends Course {
+  userPerCourses: EnrollDialogUserPerCourse[];
+}
+interface EnrollDialogUserPerCourse extends UserPerCourse {
+  user: User;
+}
 
 interface EnrollDialogProps {
   children?: React.ReactNode;
-  courses?: Course[] | null;
+  courses?: EnrollDialogCourse[] | null;
   studentId: string;
-}
-
-interface IEnrollment {
-  courseId: string;
-  teacherId: string;
-  studentId: string;
-  goals: string;
 }
 
 const formSchema = z.object({
-  courseId: z.string().min(1, "Field is required").min(3, {
-    message: "First name is too short",
-  }),
-  teacherId: z.string().min(1, "Field is required").min(3, {
-    message: "Last name is too short",
-  }),
-  goals: z.string(),
+  courseId: z.string().min(1, "Field is required"),
+  teacherId: z.string().min(1, "Field is required"),
+  courseGoals: z.string(),
 });
 
 export default function EnrollStudentDialog({
@@ -59,34 +56,45 @@ export default function EnrollStudentDialog({
   studentId,
   courses,
 }: EnrollDialogProps) {
-  const [open, setOpen] = useState(false);
-
+  const [isPending, setIsPending] = useState<boolean>(false);
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
 
   const router = useRouter();
-
-  const defValues = {
-    courseId: "",
-    teacherId: "",
-    goals: "",
-  };
+  const enrollDialog = useEnrollDialog();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: defValues,
+    defaultValues: enrollDialog.data,
   });
 
   useEffect(() => {
-    console.log("courses", courses);
     const cOptions = courses?.map((course: Course) => ({
       value: course.id,
       label: course.name,
     }));
     setCoursesOptions(cOptions || []);
-  }, []);
+  }, [courses]);
 
-  function createEnrollment(values: IEnrollment) {
+  useEffect(() => {
+    form.setValue("courseId", enrollDialog.data?.courseId);
+    form.setValue("teacherId", enrollDialog.data?.teacherId);
+    form.setValue("courseGoals", enrollDialog.data?.courseGoals);
+
+    filterTeachersOptions(enrollDialog.data.courseId);
+  }, [enrollDialog.data, form]);
+
+  function filterTeachersOptions(courseId: string) {
+    const selectedCourse = courses?.find((course) => course.id === courseId);
+
+    const tOptions = selectedCourse?.userPerCourses?.map((item: any) => ({
+      value: item.user?.id,
+      label: `${item.user?.firstName} ${item.user?.lastName}`,
+    }));
+    setTeachersOptions(tOptions || []);
+  }
+
+  function createEnrollment(values: EnrollData) {
     axios
       .post("/api/enrollment", { ...values })
       .then((response: AxiosResponse<Enrollment[]>) => {
@@ -96,42 +104,56 @@ export default function EnrollStudentDialog({
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Teacher wasn't enrolled!");
+        toast.error("Something went wrong. Student wasn't enrolled!");
       })
-      .finally(() => setOpen(false));
+      .finally(() => {
+        setIsPending(false);
+        enrollDialog.close();
+      });
   }
 
-  // function updateTeacher(values: z.infer<typeof formSchema>) {
-  //   setPending(true);
-  //   axios
-  //     .patch("/api/auth/register/teachers/" + data?.id, { ...values })
-  //     .then((response: AxiosResponse<User[]>) => {
-  //       if (response.status === 200) {
-  //         router.refresh();
-  //         toast.success("Teacher has been updated", {
-  //           description: `${values.firstName} ${values.lastName}`,
-  //         });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Something went wrong. Teacher wasn't updated!", {
-  //         description: `${values.firstName} ${values.lastName}`,
-  //       });
-  //       console.error(error);
-  //     })
-  //     .finally(() => setPending(false));
-  // }
+  function updateEnrollment(values: EnrollData) {
+    axios
+      .patch("/api/enrollment/" + enrollDialog.data.enrollmentId, { ...values })
+      .then((response: AxiosResponse<Enrollment[]>) => {
+        if (response.status === 200) {
+          router.refresh();
+          toast.success("Student enrollment successfully updated.");
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Student enrollment wasn't updated!");
+      })
+      .finally(() => {
+        setIsPending(false);
+        enrollDialog.close();
+      });
+  }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createEnrollment({ ...values, studentId });
-    // action === "create" ? createTeacher(values) : updateTeacher(values);
+    setIsPending(true);
+    enrollDialog.action === "create"
+      ? createEnrollment({ ...values, studentId })
+      : updateEnrollment({ ...values, studentId });
   }
 
   return (
     <Dialog
-      open={open}
+      open={enrollDialog.isOpen}
       onOpenChange={() => {
-        setOpen((current) => !current);
+        if (enrollDialog.isOpen) {
+          enrollDialog.close();
+        } else {
+          enrollDialog.open(
+            {
+              courseId: enrollDialog.data.courseId,
+              teacherId: enrollDialog.data.teacherId,
+              courseGoals: enrollDialog.data.courseGoals,
+            },
+            "student",
+            "create"
+          );
+        }
         setTimeout(() => {
           form.reset();
         }, 100);
@@ -149,6 +171,7 @@ export default function EnrollStudentDialog({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
+                disabled={isPending}
                 control={form.control}
                 name="courseId"
                 render={({ field }) => (
@@ -156,19 +179,12 @@ export default function EnrollStudentDialog({
                     <FormLabel>Course</FormLabel>
                     <FormControl>
                       <DropdownSelect
+                        disabled={isPending}
                         options={courseOptions}
                         onChange={(value) => {
-                          const selectedCourse = courses?.find(
-                            (course) => course.id === value
-                          );
-                          // @ts-ignore
-                          const tOptions = selectedCourse?.userPerCourses?.map(
-                            (item: any) => ({
-                              value: item.user?.id,
-                              label: `${item.user?.firstName} ${item.user?.lastName}`,
-                            })
-                          );
-                          setTeachersOptions(tOptions);
+                          form.setValue("teacherId", "");
+                          console.log("object :>> ", form.getValues());
+                          filterTeachersOptions(value);
                           field.onChange(value);
                         }}
                         value={field.value}
@@ -187,7 +203,7 @@ export default function EnrollStudentDialog({
                     <FormLabel>Teacher</FormLabel>
                     <FormControl>
                       <DropdownSelect
-                        disabled={!form.getValues().courseId}
+                        disabled={!form.getValues().courseId || isPending}
                         options={teachersOptions}
                         onChange={field.onChange}
                         value={field.value}
@@ -200,12 +216,13 @@ export default function EnrollStudentDialog({
 
               <FormField
                 control={form.control}
-                name="goals"
+                name="courseGoals"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Goals</FormLabel>
                     <FormControl>
                       <Textarea
+                        disabled={isPending}
                         className="h-32"
                         placeholder="Type the goals here..."
                         {...field}
@@ -220,7 +237,9 @@ export default function EnrollStudentDialog({
                   <DialogClose>Cancel</DialogClose>
                 </Button>
 
-                <Button type="submit">Enroll</Button>
+                <Button disabled={isPending} type="submit">
+                  Enroll
+                </Button>
               </div>
             </form>
           </Form>
