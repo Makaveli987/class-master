@@ -56,7 +56,7 @@ export default async function GroupPage({
                 <CardDescription>Courses the group attended</CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
-                <StudentCourses studentId={params.groupId} />
+                <StudentCourses studentId={params.groupId} enrollments={[]} />
 
                 <div className="flex justify-end">
                   <EnrollStudentDialog
