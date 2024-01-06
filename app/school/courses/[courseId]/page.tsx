@@ -1,7 +1,6 @@
 import { getCourse } from "@/actions/get-courses";
 import React from "react";
 import CourseForm from "../_components/course-form";
-import { getCourseStats } from "@/actions/get-enrolments";
 import { BookCheckIcon, BookOpenTextIcon, GraduationCap } from "lucide-react";
 import {
   Card,
@@ -14,6 +13,7 @@ import CourseTeachersCard from "../_components/course-teachers-card";
 import StatsCard from "@/components/cards/stats-card";
 import { getAssignedTeachers } from "@/actions/get-assigned-teachers";
 import { getTeachers } from "@/actions/get-teachers";
+import { getCourseStats } from "@/actions/get-course-stats";
 
 export default async function CoursePage({
   params,

@@ -5,28 +5,26 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
+import { Enrollment } from "@prisma/client";
 import {
   Edit2Icon,
   EditIcon,
   MessageCirclePlusIcon,
-  MessageSquarePlusIcon,
   Trash2Icon,
 } from "lucide-react";
 import React from "react";
 
-interface StudentCoursesProps {
-  studentId: string;
+interface EnrolledCoursesProps {
+  enrollments: any[] | null;
 }
 
 function calcPercentage(x: number, y: number) {
   return (x / y) * 100;
 }
 
-export default async function StudentCourses({
-  studentId,
-}: StudentCoursesProps) {
-  const enrollments = await getEnrollments(studentId);
-
+export default async function EnrolledCourses({
+  enrollments,
+}: EnrolledCoursesProps) {
   if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
   }

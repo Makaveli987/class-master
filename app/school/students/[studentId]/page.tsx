@@ -56,7 +56,7 @@ export default async function StudentPage({
                 <CardTitle>Courses</CardTitle>
                 <CardDescription>Courses the student attended</CardDescription>
               </CardHeader>
-              <CardContent className="p-2 max-w-3xl">
+              <CardContent className="p-2 max-w-4xl">
                 <StudentCourses studentId={params.studentId} />
 
                 <div className="flex justify-end">

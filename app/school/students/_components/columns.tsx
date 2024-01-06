@@ -134,7 +134,6 @@ export const columns: ColumnDef<Student>[] = [
       const studentId = row.original.id;
       return (
         <div className="flex justify-end gap-2">
-          {/* <EnrollButton studentId={studentId} /> */}
           <Tooltip2 text="Edit" side="top">
             <Link href={`/school/students/${studentId}`}>
               <Button variant="ghost" className="h-8 w-8 p-0 group ">

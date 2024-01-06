@@ -16,30 +16,3 @@ export const getEnrollments = async (studentId: string) => {
     return null;
   }
 };
-
-export const getCourseStats = async (courseId: string) => {
-  try {
-    const course = await getCourse(courseId);
-
-    const totalEnrollments = await db.enrollment.count({
-      where: { courseId },
-    });
-
-    const activeEnrollments = await db.enrollment.count({
-      where: {
-        attendedClasses: {
-          lt: course?.totalClasses,
-        },
-      },
-    });
-
-    const totalTeachers = await db.userPerCourse.count({
-      where: { courseId },
-    });
-
-    return { totalEnrollments, activeEnrollments, totalTeachers };
-  } catch (error) {
-    console.error("[ENROLLMENTS] Error fetching Enrollements");
-    return null;
-  }
-};
