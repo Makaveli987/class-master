@@ -1,6 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import React from "react";
 import { getTeachers } from "@/actions/get-teachers";
+import { Card, CardContent } from "@/components/ui/card";
 import TeachersTable from "./_components/teachers-table";
 
 export default async function TeacherPage() {

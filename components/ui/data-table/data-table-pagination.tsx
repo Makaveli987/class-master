@@ -5,6 +5,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
+import { Button } from "../button";
 import {
   Select,
   SelectContent,
@@ -12,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../select";
-import { Button } from "../button";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;

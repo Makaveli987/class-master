@@ -1,11 +1,12 @@
 "use client";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 import {
   Form,
   FormControl,
@@ -15,13 +16,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Role } from "@prisma/client";
-import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 import { Separator } from "@/components/ui/separator";
-import { signIn, useSession } from "next-auth/react";
+import { Role } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {

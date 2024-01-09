@@ -3,10 +3,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
@@ -22,8 +22,7 @@ import { User } from "@prisma/client";
 import axios from "axios";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import router from "next/router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface CourseTeachersCardProps {

@@ -1,21 +1,13 @@
 "use client";
-import { getEnrollments } from "@/actions/get-enrolments";
-import EnrollStudentDialog from "@/components/enrolled-courses/enroll-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import useEnrollDialog from "@/hooks/useEnrollDialog";
+import useEnrollDialog, { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { formatDate } from "@/lib/utils";
-import {
-  Edit2Icon,
-  EditIcon,
-  MessageCirclePlusIcon,
-  MessageSquarePlusIcon,
-  Trash2Icon,
-} from "lucide-react";
-import React from "react";
+import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
 
 interface StudentCoursesProps {
   studentId: string;
@@ -97,8 +89,8 @@ export default function StudentCourses({
                         teacherId: enrollment.teacher.id,
                         courseGoals: enrollment.courseGoals,
                       },
-                      "student",
-                      "edit"
+                      EnrollUserType.STUDENT,
+                      DialogAction.EDIT
                     );
                   }}
                 >

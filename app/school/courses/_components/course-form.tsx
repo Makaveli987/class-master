@@ -1,24 +1,25 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import axios, { AxiosResponse } from "axios";
-import { toast } from "sonner";
-import { Dispatch, SetStateAction, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Course } from "@prisma/client";
+import axios, { AxiosResponse } from "axios";
+import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   name: z.string().min(1, "Field is required").min(3, {
@@ -32,13 +33,13 @@ const formSchema = z.object({
 interface CourseFormProps {
   data?: Course | null;
   setDialogOpen?: Dispatch<SetStateAction<boolean>>;
-  action?: "edit" | "create";
+  action?: DialogAction;
 }
 
 export default function CourseForm({
   data,
   setDialogOpen,
-  action = "create",
+  action = DialogAction.CREATE,
 }: CourseFormProps) {
   const [pending, setPending] = useState(false);
   const router = useRouter();
@@ -119,7 +120,9 @@ export default function CourseForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
 
-    action === "create" ? createCourse(values) : updateCourse(values);
+    action === DialogAction.CREATE
+      ? createCourse(values)
+      : updateCourse(values);
   }
 
   return (
@@ -197,7 +200,7 @@ export default function CourseForm({
           />
 
           <div className="flex items-center justify-end gap-2">
-            {action === "create" && (
+            {action === DialogAction.CREATE && (
               <Button
                 disabled={pending}
                 type="reset"

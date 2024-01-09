@@ -1,9 +1,4 @@
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { columns } from "./_components/columns";
-import StudentDialog from "./_components/student-dialog";
 import { getStudents } from "@/actions/get-students";
-import { getCourses } from "@/actions/get-courses";
-import EnrollStudentDialog from "./_components/enroll-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import StudentsTable from "./_components/students-table";
 

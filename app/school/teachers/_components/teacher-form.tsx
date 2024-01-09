@@ -1,45 +1,45 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { ComboboxOptions } from "@/components/ui/combobox";
+import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2Icon } from "lucide-react";
-import { z } from "zod";
-import axios, { AxiosResponse } from "axios";
-import { Role, User } from "@prisma/client";
-import { toast } from "sonner";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
-import { RoleType } from "@/lib/models/Roles";
-import { DropdownSelect } from "@/components/ui/dropdown-select";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { RoleType } from "@/lib/models/Roles";
+import { DialogAction } from "@/lib/models/dialog-actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Role, User } from "@prisma/client";
+import axios, { AxiosResponse } from "axios";
+import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 interface TeacherFormProps {
   data?: User | null;
   setDialogOpen?: Dispatch<SetStateAction<boolean>>;
-  action?: "edit" | "create";
+  action?: DialogAction;
 }
 
 export default function TeacherForm({
   data = undefined,
   setDialogOpen,
-  action = "create",
+  action = DialogAction.CREATE,
 }: TeacherFormProps) {
   const [newPassword, setNewPassword] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -83,7 +83,7 @@ export default function TeacherForm({
     });
   };
 
-  if (action === "edit") {
+  if (action === DialogAction.EDIT) {
     formSchema = makeFieldOptional(formSchema, "password");
   }
   const form = useForm<z.infer<typeof formSchema>>({
@@ -176,7 +176,9 @@ export default function TeacherForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     formSchema.parse(values);
 
-    action === "create" ? createTeacher(values) : updateTeacher(values);
+    action === DialogAction.CREATE
+      ? createTeacher(values)
+      : updateTeacher(values);
   }
 
   return (
@@ -238,7 +240,7 @@ export default function TeacherForm({
             )}
           />
 
-          {action === "create" && (
+          {action === DialogAction.CREATE && (
             <FormField
               control={form.control}
               name="password"
@@ -297,7 +299,7 @@ export default function TeacherForm({
           />
 
           <div className="flex items-center justify-end gap-2">
-            {action === "create" && (
+            {action === DialogAction.CREATE && (
               <Button
                 disabled={pending}
                 type="reset"
@@ -317,7 +319,7 @@ export default function TeacherForm({
               onOpenChange={() => setIsPopoverOpen((current) => !current)}
             >
               <PopoverTrigger asChild>
-                {action === "edit" && (
+                {action === DialogAction.EDIT && (
                   <Button
                     disabled={pending}
                     className="!mt-6 mr-auto pl-0"

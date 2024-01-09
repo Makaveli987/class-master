@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import { db } from "@/lib/db";
 import getCurrentUser from "@/actions/get-current-user";
+import { db } from "@/lib/db";
+import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {

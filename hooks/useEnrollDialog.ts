@@ -1,27 +1,34 @@
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { create } from "zustand";
 
 export interface EnrollData {
   courseId: string;
   teacherId: string;
-  studentId?: string;
+  userId?: string;
   courseGoals: string;
   enrollmentId?: string;
 }
 
-type EnrollUserType = "student" | "group";
-type EnrollAction = "create" | "edit";
+export const EnrollUserType = {
+  STUDENT: "STUDENT",
+  GROUP: "GROUP",
+} as const;
+
+// eslint-disable-next-line no-redeclare
+export type EnrollUserType =
+  (typeof EnrollUserType)[keyof typeof EnrollUserType];
 
 interface EnrollDialogStore {
   isOpen: boolean;
   open: (
     data: EnrollData,
     userType: EnrollUserType,
-    action: EnrollAction
+    action: DialogAction
   ) => void;
   close: () => void;
   data: EnrollData;
   userType: EnrollUserType;
-  action: EnrollAction;
+  action: DialogAction;
 }
 
 const emptyData = {
@@ -33,15 +40,15 @@ const emptyData = {
 
 const useEnrollDialog = create<EnrollDialogStore>((set) => ({
   isOpen: false,
-  action: "create",
+  action: DialogAction.CREATE,
   data: {
     courseId: "",
     teacherId: "",
     courseGoals: "",
     enrollmentId: "",
   },
-  userType: "student",
-  open: (data: EnrollData, userType: EnrollUserType, action: EnrollAction) => {
+  userType: EnrollUserType.STUDENT,
+  open: (data: EnrollData, userType: EnrollUserType, action: DialogAction) => {
     const enrollData = data ? data : emptyData;
     set({ isOpen: true, data: enrollData, userType, action });
   },
@@ -49,8 +56,8 @@ const useEnrollDialog = create<EnrollDialogStore>((set) => ({
     set({
       isOpen: false,
       data: emptyData,
-      userType: "student",
-      action: "create",
+      userType: EnrollUserType.STUDENT,
+      action: DialogAction.CREATE,
     }),
 }));
 

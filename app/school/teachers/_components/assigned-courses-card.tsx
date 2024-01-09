@@ -1,17 +1,14 @@
 "use client";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
@@ -20,11 +17,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { AssignedCourse } from "@/lib/models/AssignedCourse";
-import { Course, User, UserPerCourse } from "@prisma/client";
+import { Course } from "@prisma/client";
 import axios from "axios";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface CourseTeachersCardProps {

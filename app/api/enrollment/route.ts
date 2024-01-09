@@ -11,9 +11,10 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { courseId, teacherId, studentId, courseGoals } = await req.json();
+    const { courseId, teacherId, userId, courseGoals, userType } =
+      await req.json();
 
-    if (!courseId || !teacherId || !studentId) {
+    if (!courseId || !teacherId || !userId) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -25,16 +26,30 @@ export async function POST(req: Request) {
       );
     }
 
-    const enrollment = await db.enrollment.create({
-      data: {
-        courseId,
-        teacherId,
-        studentId,
-        courseGoals,
-        attendedClasses: 0,
-      },
-    });
-    revalidatePath(`/school/students/${studentId}`);
+    let enrollment = null;
+    if (userType === "GROUP") {
+      enrollment = await db.enrollment.create({
+        data: {
+          courseId,
+          teacherId,
+          courseGoals,
+          attendedClasses: 0,
+          groupId: userId,
+        },
+      });
+      revalidatePath(`/school/groups/${userId}`);
+    } else {
+      enrollment = await db.enrollment.create({
+        data: {
+          courseId,
+          teacherId,
+          courseGoals,
+          attendedClasses: 0,
+          studentId: userId,
+        },
+      });
+      revalidatePath(`/school/students/${userId}`);
+    }
 
     return new NextResponse(JSON.stringify(enrollment), {
       status: 201,

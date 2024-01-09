@@ -2,22 +2,22 @@
 import { Button } from "@/components/ui/button";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { signIn } from "next-auth/react";
-import { Loader2Icon } from "lucide-react";
-import Link from "next/link";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Field is required").email("Enter a valid email"),

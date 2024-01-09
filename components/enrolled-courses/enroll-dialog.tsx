@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
+import { ComboboxOptions } from "@/components/ui/combobox";
 import {
   Dialog,
   DialogClose,
@@ -13,24 +13,26 @@ import {
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import useEnrollDialog, {
+  EnrollData,
+  EnrollUserType,
+} from "@/hooks/useEnrollDialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";
-import { useState, useEffect, useRef } from "react";
-import { toast } from "sonner";
-import { string, z } from "zod";
 import axios, { AxiosResponse } from "axios";
-import router from "next/router";
 import { useRouter } from "next/navigation";
-import useEnrollDialog, { EnrollData } from "@/hooks/useEnrollDialog";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export interface EnrollDialogCourse extends Course {
   userPerCourses: EnrollDialogUserPerCourse[];
@@ -42,7 +44,8 @@ interface EnrollDialogUserPerCourse extends UserPerCourse {
 interface EnrollDialogProps {
   children?: React.ReactNode;
   courses?: EnrollDialogCourse[] | null;
-  studentId: string;
+  userId: string;
+  userType: EnrollUserType;
 }
 
 const formSchema = z.object({
@@ -51,14 +54,17 @@ const formSchema = z.object({
   courseGoals: z.string(),
 });
 
-export default function EnrollStudentDialog({
+export default function EnrollDialog({
   children,
-  studentId,
+  userId,
   courses,
+  userType,
 }: EnrollDialogProps) {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
+
+  console.log("userType :>> ", userType);
 
   const router = useRouter();
   const enrollDialog = useEnrollDialog();
@@ -96,7 +102,11 @@ export default function EnrollStudentDialog({
 
   function createEnrollment(values: EnrollData) {
     axios
-      .post("/api/enrollment", { ...values })
+      .post("/api/enrollment", {
+        ...values,
+        userType,
+        userId,
+      })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {
           router.refresh();
@@ -114,7 +124,11 @@ export default function EnrollStudentDialog({
 
   function updateEnrollment(values: EnrollData) {
     axios
-      .patch("/api/enrollment/" + enrollDialog.data.enrollmentId, { ...values })
+      .patch("/api/enrollment/" + enrollDialog.data.enrollmentId, {
+        ...values,
+        userType,
+        userId,
+      })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 200) {
           router.refresh();
@@ -132,9 +146,9 @@ export default function EnrollStudentDialog({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    enrollDialog.action === "create"
-      ? createEnrollment({ ...values, studentId })
-      : updateEnrollment({ ...values, studentId });
+    enrollDialog.action === DialogAction.CREATE
+      ? createEnrollment({ ...values })
+      : updateEnrollment({ ...values });
   }
 
   return (
@@ -150,8 +164,8 @@ export default function EnrollStudentDialog({
               teacherId: enrollDialog.data.teacherId,
               courseGoals: enrollDialog.data.courseGoals,
             },
-            "student",
-            "create"
+            userType,
+            DialogAction.CREATE
           );
         }
         setTimeout(() => {

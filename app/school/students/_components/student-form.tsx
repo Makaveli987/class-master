@@ -1,25 +1,26 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import axios, { AxiosResponse } from "axios";
 import { Student } from "@prisma/client";
-import { toast } from "sonner";
-import { Dispatch, SetStateAction, useState } from "react";
+import axios, { AxiosResponse } from "axios";
+import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -35,13 +36,13 @@ const formSchema = z.object({
 interface StudentFormProps {
   data?: Student | null;
   setDialogOpen?: Dispatch<SetStateAction<boolean>>;
-  action?: "edit" | "create";
+  action?: DialogAction;
 }
 
 export default function StudentForm({
   data = undefined,
   setDialogOpen,
-  action = "create",
+  action = DialogAction.CREATE,
 }: StudentFormProps) {
   const [pending, setPending] = useState(false);
   const router = useRouter();
@@ -110,7 +111,9 @@ export default function StudentForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
 
-    action === "create" ? createStudent(values) : updateStudent(values);
+    action === DialogAction.CREATE
+      ? createStudent(values)
+      : updateStudent(values);
   }
 
   return (
@@ -191,7 +194,7 @@ export default function StudentForm({
           />
 
           <div className="flex items-center justify-end gap-2">
-            {action === "create" && (
+            {action === DialogAction.CREATE && (
               <Button
                 disabled={pending}
                 type="reset"

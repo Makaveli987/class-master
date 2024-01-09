@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RoleType } from "@/lib/models/Roles";
 import { cn } from "@/lib/utils";
 import {
-  BarChart2Icon,
   BookAIcon,
   CalendarIcon,
   GraduationCapIcon,
@@ -17,7 +16,7 @@ import {
 import { Session } from "next-auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { HTMLAttributes, ReactElement } from "react";
+import { HTMLAttributes, ReactElement } from "react";
 
 interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   session: Session | null;

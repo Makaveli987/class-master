@@ -6,15 +6,14 @@ import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
 import { Student } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { BookPlusIcon, EditIcon, Trash2Icon } from "lucide-react";
+import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 
-import React from "react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import axios from "axios";
-import { toast } from "sonner";
-import EnrollStudentDialog from "./enroll-dialog";
 import { useRouter } from "next/navigation";
+import React from "react";
+import { toast } from "sonner";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

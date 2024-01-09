@@ -3,7 +3,6 @@
 import {
   ColumnDef,
   FilterFn,
-  Row,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -22,9 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/data-table/table";
-import { DataTablePagination } from "./data-table-pagination";
 import { useState } from "react";
 import DebouncedInput from "../debounce-input";
+import { DataTablePagination } from "./data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

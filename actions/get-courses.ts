@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import getCurrentUser from "./get-current-user";
-import { EnrollDialogCourse } from "@/components/enrolled-courses/enroll-dialog";
 
 export const getCourses = async () => {
   try {

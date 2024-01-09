@@ -9,13 +9,17 @@ import {
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircleIcon } from "lucide-react";
-import React from "react";
-import EnrollStudentDialog from "../../students/_components/enroll-dialog";
+import { getCourses } from "@/actions/get-courses";
+import { getGroupEnrollments } from "@/actions/get-enrolments";
+import { getGroup } from "@/actions/get-groups";
+import { getStudents } from "@/actions/get-students";
+import EnrollDialog, {
+  EnrollDialogCourse,
+} from "@/components/enrolled-courses/enroll-dialog";
+import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import StudentCourses from "../../students/_components/student-courses";
 import GroupForm from "../_components/group-form";
-import { getStudents } from "@/actions/get-students";
-import { getCourses } from "@/actions/get-courses";
-import { getGroup } from "@/actions/get-groups";
 
 export default async function GroupPage({
   params,
@@ -24,7 +28,8 @@ export default async function GroupPage({
 }) {
   const group = await getGroup(params.groupId);
   const students = await getStudents();
-  const courses = await getCourses();
+  const courses = (await getCourses()) as EnrollDialogCourse[];
+  const enrollments = await getGroupEnrollments(params.groupId);
 
   return (
     <div>
@@ -46,7 +51,11 @@ export default async function GroupPage({
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
-                <GroupForm group={group} students={students} action="edit" />
+                <GroupForm
+                  group={group}
+                  students={students}
+                  action={DialogAction.EDIT}
+                />
               </CardContent>
             </TabsContent>
 
@@ -56,18 +65,22 @@ export default async function GroupPage({
                 <CardDescription>Courses the group attended</CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
-                <StudentCourses studentId={params.groupId} enrollments={[]} />
+                <StudentCourses
+                  studentId={params.groupId}
+                  enrollments={enrollments || []}
+                />
 
                 <div className="flex justify-end">
-                  <EnrollStudentDialog
-                    courses={courses}
-                    studentId={params.groupId}
+                  <EnrollDialog
+                    courses={courses || []}
+                    userId={params.groupId}
+                    userType={EnrollUserType.GROUP}
                   >
                     <Button className="mt-12 ml-auto">
                       <PlusCircleIcon className="w-4 h-4 mr-2" />
                       Add Course
                     </Button>
-                  </EnrollStudentDialog>
+                  </EnrollDialog>
                 </div>
               </CardContent>
             </TabsContent>

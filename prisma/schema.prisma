@@ -9,39 +9,39 @@ generator client {
 }
 
 model Student {
-  id              String       @id @default(uuid())
-  firstName       String
-  lastName        String
-  email           String
-  phone           String
-  groupId         String?
-  schoolId        String
-  archived        Boolean      @default(false)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  enrolments      Enrollment[]
-  attendance      Attendance[]
-  group           Group?       @relation(fields: [groupId], references: [id])
-  school          School       @relation(fields: [schoolId], references: [id])
+  id         String       @id @default(uuid())
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  groupId    String?
+  schoolId   String
+  archived   Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  enrolments Enrollment[]
+  attendance Attendance[]
+  group      Group?       @relation(fields: [groupId], references: [id])
+  school     School       @relation(fields: [schoolId], references: [id])
 
   @@index([groupId])
   @@index([schoolId])
 }
 
 model Course {
-  id              String          @id @default(uuid())
-  name            String
-  description     String
-  pricePerClass   Float
-  totalClasses    Int
-  schoolId        String
-  archived        Boolean         @default(false)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  enrolments      Enrollment[]
-  userPerCourses  UserPerCourse[]
-  classes         Class[]
-  school          School          @relation(fields: [schoolId], references: [id])
+  id             String          @id @default(uuid())
+  name           String
+  description    String
+  pricePerClass  Float
+  totalClasses   Int
+  schoolId       String
+  archived       Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  enrolments     Enrollment[]
+  userPerCourses UserPerCourse[]
+  classes        Class[]
+  school         School          @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId])
 }
@@ -57,8 +57,8 @@ model Enrollment {
   updatedAt       DateTime @updatedAt
   attendedClasses Int
   course          Course   @relation(fields: [courseId], references: [id])
-  student         Student?  @relation(fields: [studentId], references: [id])
-  group           Group?  @relation(fields: [groupId], references: [id])
+  student         Student? @relation(fields: [studentId], references: [id])
+  group           Group?   @relation(fields: [groupId], references: [id])
   teacher         User     @relation(fields: [teacherId], references: [id])
 
   @@index([courseId])
@@ -68,15 +68,15 @@ model Enrollment {
 }
 
 model Group {
-  id              String    @id @default(uuid())
-  name            String
-  schoolId        String
-  archived        Boolean   @default(false)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  students        Student[]
-  school          School    @relation(fields: [schoolId], references: [id])
-  enrolments      Enrollment[]
+  id         String       @id @default(uuid())
+  name       String
+  schoolId   String
+  archived   Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  students   Student[]
+  school     School       @relation(fields: [schoolId], references: [id])
+  enrolments Enrollment[]
 
   @@index([schoolId])
 }
@@ -105,17 +105,17 @@ model User {
 }
 
 model Role {
-  id              String @id @default(uuid())
-  type            String
-  users           User[]
+  id    String @id @default(uuid())
+  type  String
+  users User[]
 }
 
 model UserPerCourse {
-  id              String  @id @default(uuid())
-  courseId        String
-  userId          String
-  course          Course? @relation(fields: [courseId], references: [id])
-  user            User?   @relation(fields: [userId], references: [id])
+  id       String  @id @default(uuid())
+  courseId String
+  userId   String
+  course   Course? @relation(fields: [courseId], references: [id])
+  user     User?   @relation(fields: [userId], references: [id])
 
   @@index([courseId])
   @@index([userId])
@@ -146,11 +146,11 @@ model Class {
 }
 
 model Attendance {
-  classId         String
-  studentId       String
-  attended        Boolean
-  class           Class   @relation(fields: [classId], references: [id])
-  student         Student @relation(fields: [studentId], references: [id])
+  classId   String
+  studentId String
+  attended  Boolean
+  class     Class   @relation(fields: [classId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id])
 
   @@id([classId, studentId])
   @@index([classId])
@@ -158,12 +158,12 @@ model Attendance {
 }
 
 model School {
-  id              String    @id @default(uuid())
-  name            String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  groups          Group[]
-  students        Student[]
-  users           User[]
-  courses         Course[]
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  groups    Group[]
+  students  Student[]
+  users     User[]
+  courses   Course[]
 }

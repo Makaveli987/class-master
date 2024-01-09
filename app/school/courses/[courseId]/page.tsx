@@ -1,19 +1,19 @@
+import { getAssignedTeachers } from "@/actions/get-assigned-teachers";
+import { getCourseStats } from "@/actions/get-course-stats";
 import { getCourse } from "@/actions/get-courses";
-import React from "react";
-import CourseForm from "../_components/course-form";
-import { BookCheckIcon, BookOpenTextIcon, GraduationCap } from "lucide-react";
+import { getTeachers } from "@/actions/get-teachers";
+import StatsCard from "@/components/cards/stats-card";
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@/components/ui/card";
+import { DialogAction } from "@/lib/models/dialog-actions";
+import { BookCheckIcon, BookOpenTextIcon, GraduationCap } from "lucide-react";
+import CourseForm from "../_components/course-form";
 import CourseTeachersCard from "../_components/course-teachers-card";
-import StatsCard from "@/components/cards/stats-card";
-import { getAssignedTeachers } from "@/actions/get-assigned-teachers";
-import { getTeachers } from "@/actions/get-teachers";
-import { getCourseStats } from "@/actions/get-course-stats";
 
 export default async function CoursePage({
   params,
@@ -62,7 +62,7 @@ export default async function CoursePage({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <CourseForm data={course} action="edit" />
+            <CourseForm data={course} action={DialogAction.EDIT} />
           </CardContent>
         </Card>
 

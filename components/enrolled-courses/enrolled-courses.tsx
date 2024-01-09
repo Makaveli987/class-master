@@ -1,18 +1,10 @@
-import { getEnrollments } from "@/actions/get-enrolments";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
-import { Enrollment } from "@prisma/client";
-import {
-  Edit2Icon,
-  EditIcon,
-  MessageCirclePlusIcon,
-  Trash2Icon,
-} from "lucide-react";
-import React from "react";
+import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
 
 interface EnrolledCoursesProps {
   enrollments: any[] | null;

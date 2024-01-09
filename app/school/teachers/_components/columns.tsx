@@ -4,18 +4,17 @@ import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { cn, formatDate } from "@/lib/utils";
-import { Student, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { BookPlusIcon, EditIcon, Trash2Icon } from "lucide-react";
+import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
-
-import React from "react";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import axios from "axios";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { RoleType } from "@/lib/models/Roles";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import React from "react";
+import { toast } from "sonner";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

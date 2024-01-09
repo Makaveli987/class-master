@@ -1,6 +1,6 @@
-import { GraduationCapIcon, School2Icon, SchoolIcon } from "lucide-react";
+import { GraduationCapIcon } from "lucide-react";
 import { Session } from "next-auth";
-import React, { HTMLAttributes } from "react";
+import { HTMLAttributes } from "react";
 import { AccountMenu } from "./account-menu";
 
 interface HeaderProps extends HTMLAttributes<HTMLDivElement> {

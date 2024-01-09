@@ -1,8 +1,8 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
-import { Sidebar } from "./sidebar";
-import Header from "./header";
 import { useSession } from "next-auth/react";
+import Header from "./header";
+import { Sidebar } from "./sidebar";
 
 export default function SchoolClient({
   children,

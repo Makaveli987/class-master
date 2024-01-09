@@ -15,9 +15,10 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { courseId, teacherId, studentId, courseGoals } = await req.json();
+    const { courseId, teacherId, userId, courseGoals, userType } =
+      await req.json();
 
-    if (!courseId || !teacherId || !studentId) {
+    if (!courseId || !teacherId || !userId || !userType) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -28,17 +29,37 @@ export async function PATCH(
         }
       );
     }
-    const enrollment = await db.enrollment.update({
-      where: {
-        id: enrollmentId,
-      },
-      data: {
-        courseId,
-        teacherId,
-        studentId,
-        courseGoals,
-      },
-    });
+
+    let enrollment = null;
+    if (userType === "GROUP") {
+      enrollment = await db.enrollment.update({
+        where: {
+          id: enrollmentId,
+        },
+        data: {
+          courseId,
+          teacherId,
+          courseGoals,
+          attendedClasses: 0,
+          groupId: userId,
+        },
+      });
+      revalidatePath(`/school/groups/${userId}`);
+    } else {
+      enrollment = await db.enrollment.update({
+        where: {
+          id: enrollmentId,
+        },
+        data: {
+          courseId,
+          teacherId,
+          courseGoals,
+          attendedClasses: 0,
+          studentId: userId,
+        },
+      });
+      revalidatePath(`/school/students/${userId}`);
+    }
 
     revalidatePath("/school/enrollment");
     revalidatePath(`/school/enrollment/${enrollmentId}`);

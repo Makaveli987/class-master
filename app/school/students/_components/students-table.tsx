@@ -1,10 +1,9 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { Student } from "@prisma/client";
-import React from "react";
+import { useRouter } from "next/navigation";
 import { columns } from "./columns";
 import StudentDialog from "./student-dialog";
-import { useRouter } from "next/navigation";
 
 interface StudentsTableProps {
   students: Student[];

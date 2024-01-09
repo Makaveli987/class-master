@@ -1,7 +1,6 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { User } from "@prisma/client";
-import React from "react";
 import { columns } from "./columns";
 
 import { useRouter } from "next/navigation";

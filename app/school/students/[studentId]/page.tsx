@@ -1,10 +1,4 @@
-import React from "react";
 import { getStudent } from "@/actions/get-students";
-
-import StudentForm from "../_components/student-form";
-import StudentCourses from "../_components/student-courses";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCourses } from "@/actions/get-courses";
 import {
   Card,
@@ -13,14 +7,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import EnrollStudentDialog from "../_components/enroll-dialog";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import StudentCourses from "../_components/student-courses";
+import StudentForm from "../_components/student-form";
+import { getStudentEnrollments } from "@/actions/get-enrolments";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
-import { getEnrollments } from "@/actions/get-enrolments";
-import EnrollStudentDialog, {
+import EnrollDialog, {
   EnrollDialogCourse,
 } from "@/components/enrolled-courses/enroll-dialog";
-// import { Separator } from "@/components/ui/separator";
+import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 
 export default async function StudentPage({
   params,
@@ -29,7 +27,7 @@ export default async function StudentPage({
 }) {
   const student = await getStudent(params.studentId);
   const courses = (await getCourses()) as EnrollDialogCourse[];
-  const enrollments = await getEnrollments(params.studentId);
+  const enrollments = await getStudentEnrollments(params.studentId);
 
   return (
     <div>
@@ -51,7 +49,7 @@ export default async function StudentPage({
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
-                <StudentForm data={student} action="edit" />
+                <StudentForm data={student} action={DialogAction.EDIT} />
               </CardContent>
             </TabsContent>
 
@@ -67,15 +65,16 @@ export default async function StudentPage({
                 />
 
                 <div className="flex justify-end">
-                  <EnrollStudentDialog
+                  <EnrollDialog
                     courses={courses || []}
-                    studentId={params.studentId}
+                    userId={params.studentId}
+                    userType={EnrollUserType.STUDENT}
                   >
                     <Button className="mt-12 ml-auto">
                       <PlusCircleIcon className="w-4 h-4 mr-2" />
                       Add Course
                     </Button>
-                  </EnrollStudentDialog>
+                  </EnrollDialog>
                 </div>
               </CardContent>
             </TabsContent>

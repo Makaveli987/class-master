@@ -1,7 +1,6 @@
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { getGroups } from "@/actions/get-groups";
 import { getStudents } from "@/actions/get-students";
+import { Card, CardContent } from "@/components/ui/card";
 import GroupsTable from "./_components/groups-table";
 
 export default async function GroupsPage() {

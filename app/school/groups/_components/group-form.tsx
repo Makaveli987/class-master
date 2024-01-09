@@ -1,25 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ComboboxOptions, Combobox } from "@/components/ui/combobox";
-import { DialogClose } from "@/components/ui/dialog";
+import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
 import {
+  Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-  Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Group, Student } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -28,7 +28,7 @@ interface GroupFormProps {
   students?: Student[] | null;
   group?: Group | null;
   setDialogOpen?: Dispatch<SetStateAction<boolean>>;
-  action?: "edit" | "create";
+  action?: DialogAction;
 }
 
 interface GroupPayload {
@@ -47,7 +47,7 @@ export default function GroupForm({
   students,
   group,
   setDialogOpen,
-  action = "create",
+  action = DialogAction.CREATE,
 }: GroupFormProps) {
   const [pending, setPending] = useState(false);
   const [studentOptions, setStudentOptions] = useState<ComboboxOptions[]>([]);
@@ -181,7 +181,9 @@ export default function GroupForm({
       studentIds,
     };
 
-    action === "create" ? createGroup(payload) : updateGroup(payload);
+    action === DialogAction.CREATE
+      ? createGroup(payload)
+      : updateGroup(payload);
   }
   return (
     <Form {...form}>
@@ -250,7 +252,7 @@ export default function GroupForm({
           )}
         </div>
         <div className="flex items-center justify-end gap-2">
-          {action === "create" && (
+          {action === DialogAction.CREATE && (
             <Button
               disabled={pending}
               type="reset"

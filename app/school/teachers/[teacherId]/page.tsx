@@ -1,25 +1,25 @@
-import { getCourse, getCourses } from "@/actions/get-courses";
-import React from "react";
+import { getCourses } from "@/actions/get-courses";
 
+import { getAssignedCourses } from "@/actions/get-assigned-courses";
+import { getTeacher } from "@/actions/get-teachers";
+import { getTeachersStats } from "@/actions/get-teachers-stats";
+import StatsCard from "@/components/cards/stats-card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import {
   BookAIcon,
   BookCheckIcon,
   BookOpenTextIcon,
   BookTextIcon,
 } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import StatsCard from "@/components/cards/stats-card";
-import TeacherForm from "../_components/teacher-form";
 import AssignedCoursesCard from "../_components/assigned-courses-card";
-import { getTeachersStats } from "@/actions/get-teachers-stats";
-import { getAssignedCourses } from "@/actions/get-assigned-courses";
-import { getTeacher } from "@/actions/get-teachers";
+import TeacherForm from "../_components/teacher-form";
 
 export default async function TeacherPage({
   params,
@@ -73,7 +73,7 @@ export default async function TeacherPage({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <TeacherForm data={teacher} action="edit" />
+            <TeacherForm data={teacher} action={DialogAction.EDIT} />
           </CardContent>
         </Card>
 
