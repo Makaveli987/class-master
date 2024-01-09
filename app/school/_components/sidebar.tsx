@@ -71,15 +71,17 @@ const navLinks: NavLink[] = [
 export function Sidebar({ className, session }: SidebarProps) {
   const pathname = usePathname();
   return (
-    <div className={cn("pb-12 flex-1 max-w-64 border-r", className)}>
+    <div
+      className={cn("pb-12 flex-1 max-w-64 border-r bg-slate-900", className)}
+    >
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
           <Logo />
         </Link>
       </div>
 
-      <Separator />
-      <div className="space-y-4 py-5">
+      <Separator className="bg-slate-700" />
+      <div className="space-y-4 py-5 text-slate-300">
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
@@ -93,7 +95,11 @@ export function Sidebar({ className, session }: SidebarProps) {
                       variant={
                         pathname.includes(link.path) ? "default" : "ghost"
                       }
-                      className="w-full flex justify-start items-center"
+                      className={cn(
+                        "w-full flex justify-start items-center",
+                        !pathname.includes(link.path) &&
+                          "hover:bg-slate-700 hover:text-slate-100"
+                      )}
                     >
                       {link.icon}
                       {link.label}

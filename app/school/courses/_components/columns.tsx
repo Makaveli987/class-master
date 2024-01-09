@@ -10,6 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 
@@ -21,10 +22,14 @@ export interface ButtonProps
 
 const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, courseId, asChild = false, ...props }, ref) => {
+    const router = useRouter();
     function onDelete() {
       axios
         .delete(`/api/courses/${courseId}`)
-        .then(() => toast.success("Course has been archived"))
+        .then(() => {
+          router.refresh();
+          toast.success("Course has been archived");
+        })
         .catch(() =>
           toast.error("Something bad happend. Course has not been archived!")
         );
@@ -33,7 +38,7 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <ConfirmDialog
         description="This action will archive the course. You will not be able to assign students and teachers to this course."
-        onConfirm={onDelete}
+        onConfirm={() => onDelete()}
       >
         <div>
           <Tooltip2 text="Delete" side="top">
@@ -118,7 +123,7 @@ export const columns: ColumnDef<Course>[] = [
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton courseId="courseId" />
+          <DeleteButton courseId={courseId} />
         </div>
       );
     },

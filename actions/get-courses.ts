@@ -6,7 +6,7 @@ export const getCourses = async () => {
     const currentUser = await getCurrentUser();
 
     const courses = await db.course.findMany({
-      where: { schoolId: currentUser?.schoolId },
+      where: { schoolId: currentUser?.schoolId, archived: false },
       include: {
         userPerCourses: {
           include: {

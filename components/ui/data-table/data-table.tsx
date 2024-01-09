@@ -103,14 +103,19 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   className="cursor-pointer"
-                  onClick={() => {
-                    onRowClick?.(row.original);
-                  }}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="pl-4" key={cell.id}>
+                    <TableCell
+                      className="pl-4"
+                      key={cell.id}
+                      onClick={() => {
+                        if (cell.column.id !== "actions") {
+                          onRowClick?.(row.original);
+                        }
+                      }}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
