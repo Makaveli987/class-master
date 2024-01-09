@@ -79,7 +79,7 @@ export function Sidebar({ className, session }: SidebarProps) {
   const pathname = usePathname();
   return (
     <div
-      className={cn("pb-12 flex-1 max-w-64 border-r bg-slate-950", className)}
+      className={cn("pb-12 flex-1 max-w-64 border-r bg-[#020817]", className)}
     >
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
