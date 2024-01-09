@@ -9,6 +9,7 @@ export const getStudentsEnrollments = async () => {
       include: {
         teacher: true,
         course: true,
+        student: true,
       },
     });
     return enrollments;
@@ -26,6 +27,7 @@ export const getGroupsEnrollments = async () => {
       include: {
         teacher: true,
         course: true,
+        student: true,
       },
     });
     return enrollments;

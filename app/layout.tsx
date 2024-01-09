@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ClientSessionProvider from "./client-session-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 // import ReactQueryProvider from "@/lib/react-query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,17 +28,24 @@ export default function RootLayout({
         }}
         className={inter.className}
       >
-        {/* <ReactQueryProvider> */}
-        <ClientSessionProvider>
-          <Toaster
-            position="top-center"
-            richColors
-            theme="light"
-            duration={2500}
-          />
-          {children}
-        </ClientSessionProvider>
-        {/* </ReactQueryProvider> */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {/* <ReactQueryProvider> */}
+          <ClientSessionProvider>
+            <Toaster
+              position="top-center"
+              richColors
+              theme="light"
+              duration={2500}
+            />
+            {children}
+          </ClientSessionProvider>
+          {/* </ReactQueryProvider> */}
+        </ThemeProvider>
       </body>
     </html>
   );

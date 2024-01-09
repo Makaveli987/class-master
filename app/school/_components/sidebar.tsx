@@ -79,7 +79,7 @@ export function Sidebar({ className, session }: SidebarProps) {
   const pathname = usePathname();
   return (
     <div
-      className={cn("pb-12 flex-1 max-w-64 border-r bg-slate-900", className)}
+      className={cn("pb-12 flex-1 max-w-64 border-r bg-slate-950", className)}
     >
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
@@ -87,7 +87,7 @@ export function Sidebar({ className, session }: SidebarProps) {
         </Link>
       </div>
 
-      <Separator className="bg-slate-700" />
+      <Separator className="bg-[#1E293B]" />
       <div className="space-y-4 py-5 text-slate-300">
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
@@ -124,7 +124,7 @@ export function Sidebar({ className, session }: SidebarProps) {
 
 Sidebar.Skeleton = function SkeletonSidebar() {
   return (
-    <div className="pb-12 flex-1 max-w-64 border-r bg-slate-900">
+    <div className="pb-12 flex-1 max-w-64 border-r bg-slate-950">
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
           <Logo />

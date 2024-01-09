@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { cn, formatDate } from "@/lib/utils";
-import { User } from "@prisma/client";
+import { calcPercentage, cn, formatDate } from "@/lib/utils";
+import { Enrollment, User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
@@ -15,6 +15,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
+import { EnrollmentData } from "@/lib/models/EnrollmentData";
+import { Progress } from "@/components/ui/progress";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -56,39 +58,43 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 DeleteButton.displayName = "DeleteButton";
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<EnrollmentData>[] = [
   {
-    accessorKey: "firstName",
+    accessorKey: "student.firstName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Student" />
     ),
     cell: ({ row }) => (
       <span className="font-medium">
-        {row.original.firstName} {row.original.lastName}
+        {row.original.student.firstName} {row.original.student.lastName}
       </span>
     ),
   },
   {
-    accessorKey: "course",
+    accessorKey: "course.name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Course" />
     ),
     cell: ({ row }) => {
-      const payment = row.original;
+      const enrollment = row.original;
 
-      return <span>{payment.email}</span>;
+      return <span>{enrollment.course.name}</span>;
     },
   },
   {
-    accessorKey: "teacher",
+    accessorKey: "teacher.firstName",
     header: ({ column }) => (
       <DataTableColumnHeader
         className="pl-2 text-xs"
         column={column}
-        title="Phone"
+        title="Teacher"
       />
     ),
-    enableSorting: false,
+    cell: ({ row }) => (
+      <span className="">
+        {row.original.teacher.firstName} {row.original.teacher.lastName}
+      </span>
+    ),
   },
   {
     accessorKey: "createdAt",
@@ -115,12 +121,25 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "progress",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated" />
+      <DataTableColumnHeader column={column} title="Attended Classes" />
     ),
     cell: ({ row }) => {
-      const updated = formatDate(row.original.updatedAt);
-
-      return <span>{updated}</span>;
+      return (
+        <div className="max-w-[220px]">
+          {row.original.attendedClasses === 40 ? (
+            <Badge className="bg-green-600 hover:bg-green-600">Completed</Badge>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-right font-semibold leading-none">
+                {row.original.attendedClasses}/40
+              </p>
+              <Progress
+                value={calcPercentage(row.original.attendedClasses, 40)}
+              />
+            </div>
+          )}
+        </div>
+      );
     },
   },
   {

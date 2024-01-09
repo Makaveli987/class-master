@@ -6,16 +6,12 @@ import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/useEnrollDialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { formatDate } from "@/lib/utils";
+import { calcPercentage, formatDate } from "@/lib/utils";
 import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
 
 interface StudentCoursesProps {
   studentId: string;
   enrollments: any[];
-}
-
-function calcPercentage(x: number, y: number) {
-  return (x / y) * 100;
 }
 
 export default function StudentCourses({
