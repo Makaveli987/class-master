@@ -9,6 +9,12 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { AssignedCourse } from "@/lib/models/AssignedCourse";
@@ -32,7 +38,7 @@ export default function CourseTeachersCard({
   assignedTeachers,
 }: CourseTeachersCardProps) {
   const [selectedTeacher, setSelectedTeacher] = useState("");
-  const [courseOptions, setCourseOptions] = useState<any>([]);
+  const [teachersOptions, setTeachersOptions] = useState<any>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const router = useRouter();
 
@@ -49,7 +55,9 @@ export default function CourseTeachersCard({
       label: `${teacher.firstName} ${teacher.lastName}`,
     }));
 
-    setCourseOptions(options);
+    console.log("options", options);
+
+    setTeachersOptions(options);
   }, [assignedTeachers, teachers]);
 
   function handleConfirm(id: string) {
@@ -80,11 +88,40 @@ export default function CourseTeachersCard({
       <CardHeader className="mb-3 relative max-w-[348px]">
         <CardTitle>Teachers</CardTitle>
         <CardDescription>Teachers that can teach this course</CardDescription>
-        <Tooltip2 text="Assign teacher">
-          <Button className="absolute right-0 top-4" variant="ghost">
-            <PlusCircleIcon className="w-5 h-5" />
-          </Button>
-        </Tooltip2>
+        <Popover
+          open={isPopoverOpen}
+          onOpenChange={() => {
+            setIsPopoverOpen((current) => !current);
+            setSelectedTeacher("");
+          }}
+        >
+          <PopoverTrigger asChild>
+            <div className="absolute right-0 top-4">
+              <Tooltip2 text="Assign teacher">
+                <Button variant="ghost">
+                  <PlusCircleIcon className="w-5 h-5" />
+                </Button>
+              </Tooltip2>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <p className="pb-2 text-sm font-medium">Course</p>
+            <DropdownSelect
+              options={teachersOptions || []}
+              onChange={(value) => setSelectedTeacher(value)}
+              value={selectedTeacher}
+            />
+            <div className="flex justify-end mt-4">
+              <Button
+                disabled={!selectedTeacher}
+                className="ml-auto"
+                onClick={handleAssign}
+              >
+                Assign
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
       </CardHeader>
       <CardContent>
         {assignedTeachers?.length === 0 ? (
