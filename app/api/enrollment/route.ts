@@ -35,6 +35,7 @@ export async function POST(req: Request) {
           courseGoals,
           attendedClasses: 0,
           groupId: userId,
+          schoolId: currentUser.schoolId,
         },
       });
       revalidatePath(`/school/groups/${userId}`);
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
           courseGoals,
           attendedClasses: 0,
           studentId: userId,
+          schoolId: currentUser.schoolId,
         },
       });
       revalidatePath(`/school/students/${userId}`);

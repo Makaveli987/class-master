@@ -7,6 +7,7 @@ import { RoleType } from "@/lib/models/Roles";
 import { cn } from "@/lib/utils";
 import {
   BookAIcon,
+  BookMarkedIcon,
   CalendarIcon,
   GraduationCapIcon,
   SettingsIcon,
@@ -66,6 +67,12 @@ const navLinks: NavLink[] = [
     label: "Teachers",
     isRestricted: true,
   },
+  {
+    path: "/school/enrollments",
+    icon: <BookMarkedIcon className="w-4 h-4 mr-2" />,
+    label: "Enrollments",
+    isRestricted: true,
+  },
 ];
 
 export function Sidebar({ className, session }: SidebarProps) {
@@ -117,7 +124,7 @@ export function Sidebar({ className, session }: SidebarProps) {
 
 Sidebar.Skeleton = function SkeletonSidebar() {
   return (
-    <div className="pb-12 flex-1 max-w-64 border-r">
+    <div className="pb-12 flex-1 max-w-64 border-r bg-slate-900">
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
           <Logo />

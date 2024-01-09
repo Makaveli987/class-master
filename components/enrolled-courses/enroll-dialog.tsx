@@ -28,6 +28,7 @@ import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
+import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -252,7 +253,14 @@ export default function EnrollDialog({
                 </Button>
 
                 <Button disabled={isPending} type="submit">
-                  Enroll
+                  {isPending ? (
+                    <>
+                      <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                      Enrolling
+                    </>
+                  ) : (
+                    <>Enroll</>
+                  )}
                 </Button>
               </div>
             </form>

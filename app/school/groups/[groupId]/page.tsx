@@ -10,7 +10,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircleIcon } from "lucide-react";
 import { getCourses } from "@/actions/get-courses";
-import { getGroupEnrollments } from "@/actions/get-enrolments";
+import { getEnrollmentsByGroupId } from "@/actions/get-enrolments";
 import { getGroup } from "@/actions/get-groups";
 import { getStudents } from "@/actions/get-students";
 import EnrollDialog, {
@@ -29,7 +29,7 @@ export default async function GroupPage({
   const group = await getGroup(params.groupId);
   const students = await getStudents();
   const courses = (await getCourses()) as EnrollDialogCourse[];
-  const enrollments = await getGroupEnrollments(params.groupId);
+  const enrollments = await getEnrollmentsByGroupId(params.groupId);
 
   return (
     <div>

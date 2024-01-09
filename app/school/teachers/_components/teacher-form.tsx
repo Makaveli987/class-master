@@ -141,6 +141,7 @@ export default function TeacherForm({
             description: `${values.firstName} ${values.lastName}`,
           });
         }
+        setDialogOpen?.(false);
       })
       .catch((error) => {
         toast.error("Something went wrong. Teacher wasn't updated!", {

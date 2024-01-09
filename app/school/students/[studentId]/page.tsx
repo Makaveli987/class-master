@@ -11,7 +11,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StudentCourses from "../_components/student-courses";
 import StudentForm from "../_components/student-form";
-import { getStudentEnrollments } from "@/actions/get-enrolments";
+import { getEnrollmentsByStudentId } from "@/actions/get-enrolments";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import EnrollDialog, {
@@ -27,7 +27,7 @@ export default async function StudentPage({
 }) {
   const student = await getStudent(params.studentId);
   const courses = (await getCourses()) as EnrollDialogCourse[];
-  const enrollments = await getStudentEnrollments(params.studentId);
+  const enrollments = await getEnrollmentsByStudentId(params.studentId);
 
   return (
     <div>
