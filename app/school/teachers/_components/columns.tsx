@@ -10,7 +10,7 @@ import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { RoleType } from "@/lib/models/Roles";
+import { RoleType } from "@/lib/models/roles";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -130,7 +130,7 @@ export const columns: ColumnDef<User>[] = [
           className={cn(
             role === RoleType.ADMIN
               ? "bg-violet-500 hover:bg-violet-500"
-              : "bg-green-600 hover:bg-green-600"
+              : "bg-emerald-500 hover:bg-emerald-500"
           )}
         >
           {role === RoleType.ADMIN ? "Admin" : "Teacher"}

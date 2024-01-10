@@ -17,7 +17,7 @@ export function Tooltip2({ children, text, side = "top" }: Tooltip2Props) {
     <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent side={side} className="bg-slate-800">
+        <TooltipContent className="bg-slate-800 dark:bg-slate-100" side={side}>
           <p>{text}</p>
         </TooltipContent>
       </Tooltip>

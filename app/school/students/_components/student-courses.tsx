@@ -8,6 +8,7 @@ import useEnrollDialog, { EnrollUserType } from "@/hooks/useEnrollDialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { calcPercentage, formatDate } from "@/lib/utils";
 import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface StudentCoursesProps {
   studentId: string;
@@ -19,6 +20,8 @@ export default function StudentCourses({
   enrollments,
 }: StudentCoursesProps) {
   const enrollDialog = useEnrollDialog();
+  const router = useRouter();
+
   if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
   }
@@ -27,7 +30,10 @@ export default function StudentCourses({
       {enrollments.map((enrollment) => (
         <div key={enrollment.id}>
           <Separator />
-          <div className="grid grid-cols-7 gap-4 py-6 pl-2 hover:bg-muted cursor-pointer">
+          <div
+            onClick={() => router.push(`/school/enrollments/${enrollment.id}`)}
+            className="grid grid-cols-7 gap-4 py-6 pl-2 hover:bg-muted cursor-pointer"
+          >
             <div className="flex flex-col col-span-2 space-y-1 text-left">
               <p className="text-sm font-semibold leading-none">
                 {enrollment.course.name}
@@ -71,7 +77,8 @@ export default function StudentCourses({
                 <Button
                   variant="ghost"
                   className="h-8 w-8 p-0 group"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     console.log({
                       courseId: enrollment.course.id,
                       teacherId: enrollment.teacher.id,

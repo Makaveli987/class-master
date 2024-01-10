@@ -14,11 +14,10 @@ import StudentForm from "../_components/student-form";
 import { getEnrollmentsByStudentId } from "@/actions/get-enrolments";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
-import EnrollDialog, {
-  EnrollDialogCourse,
-} from "@/components/enrolled-courses/enroll-dialog";
+import EnrollDialog from "@/components/enrolled-courses/enroll-dialog";
 import { EnrollUserType } from "@/hooks/useEnrollDialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
+import { EnrollFormCourse } from "@/components/enrolled-courses/enroll-form";
 
 export default async function StudentPage({
   params,
@@ -26,7 +25,7 @@ export default async function StudentPage({
   params: { studentId: string };
 }) {
   const student = await getStudent(params.studentId);
-  const courses = (await getCourses()) as EnrollDialogCourse[];
+  const courses = (await getCourses()) as EnrollFormCourse[];
   const enrollments = await getEnrollmentsByStudentId(params.studentId);
 
   return (

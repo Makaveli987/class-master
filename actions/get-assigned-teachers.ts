@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { AssignedCourse } from "@/lib/models/AssignedCourse";
+import { AssignedCourse } from "@/lib/models/assigned-course";
 
 export const getAssignedTeachers = async (courseId: string) => {
   try {

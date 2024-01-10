@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { AssignedCourse } from "@/lib/models/AssignedCourse";
+import { AssignedCourse } from "@/lib/models/assigned-course";
 import { User } from "@prisma/client";
 import axios from "axios";
 import { PlusCircleIcon, XIcon } from "lucide-react";

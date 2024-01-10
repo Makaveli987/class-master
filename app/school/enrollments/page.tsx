@@ -4,9 +4,9 @@ import {
 } from "@/actions/get-enrolments";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { EnrollmentData } from "@/lib/models/enrollment-data";
 import EnrollmentTable from "./_components/enrollment-table";
-import { EnrollmentData } from "@/lib/models/EnrollmentData";
-// import TeachersTable from "./_components/teachers-table";
 
 export default async function EnrollmentsPage() {
   const studentsEnrollments =
@@ -18,7 +18,6 @@ export default async function EnrollmentsPage() {
       <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollments</h3>
       <Card className="pt-6">
         <CardContent>
-          {/* <TeachersTable teachers={teachers || []} /> */}
           <Tabs defaultValue="students">
             <TabsList className="mb-3">
               <TabsTrigger value="students">Students</TabsTrigger>
@@ -26,11 +25,17 @@ export default async function EnrollmentsPage() {
             </TabsList>
 
             <TabsContent value="students">
-              <EnrollmentTable enrollments={studentsEnrollments || []} />
+              <EnrollmentTable
+                userType={EnrollUserType.STUDENT}
+                enrollments={studentsEnrollments || []}
+              />
             </TabsContent>
 
             <TabsContent value="groups">
-              <EnrollmentTable enrollments={studentsEnrollments || []} />
+              <EnrollmentTable
+                userType={EnrollUserType.GROUP}
+                enrollments={groupsEnrollments || []}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>

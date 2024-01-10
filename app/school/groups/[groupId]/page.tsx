@@ -13,13 +13,12 @@ import { getCourses } from "@/actions/get-courses";
 import { getEnrollmentsByGroupId } from "@/actions/get-enrolments";
 import { getGroup } from "@/actions/get-groups";
 import { getStudents } from "@/actions/get-students";
-import EnrollDialog, {
-  EnrollDialogCourse,
-} from "@/components/enrolled-courses/enroll-dialog";
+import EnrollDialog from "@/components/enrolled-courses/enroll-dialog";
 import { EnrollUserType } from "@/hooks/useEnrollDialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import StudentCourses from "../../students/_components/student-courses";
 import GroupForm from "../_components/group-form";
+import { EnrollFormCourse } from "@/components/enrolled-courses/enroll-form";
 
 export default async function GroupPage({
   params,
@@ -28,7 +27,7 @@ export default async function GroupPage({
 }) {
   const group = await getGroup(params.groupId);
   const students = await getStudents();
-  const courses = (await getCourses()) as EnrollDialogCourse[];
+  const courses = (await getCourses()) as EnrollFormCourse[];
   const enrollments = await getEnrollmentsByGroupId(params.groupId);
 
   return (

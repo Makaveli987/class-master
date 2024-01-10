@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RoleType } from "@/lib/models/Roles";
+import { RoleType } from "@/lib/models/roles";
 import { cn } from "@/lib/utils";
 import {
   BookAIcon,

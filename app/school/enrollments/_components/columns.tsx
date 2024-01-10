@@ -1,22 +1,21 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
+import { Progress } from "@/components/ui/progress";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { calcPercentage, cn, formatDate } from "@/lib/utils";
-import { Enrollment, User } from "@prisma/client";
+import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { EnrollmentData } from "@/lib/models/enrollment-data";
+import { calcPercentage, formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import axios from "axios";
 import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { RoleType } from "@/lib/models/Roles";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
-import { EnrollmentData } from "@/lib/models/EnrollmentData";
-import { Progress } from "@/components/ui/progress";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -58,106 +57,122 @@ const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 DeleteButton.displayName = "DeleteButton";
 
-export const columns: ColumnDef<EnrollmentData>[] = [
-  {
-    accessorKey: "student.firstName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Student" />
-    ),
-    cell: ({ row }) => (
-      <span className="font-medium">
-        {row.original.student.firstName} {row.original.student.lastName}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "course.name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Course" />
-    ),
-    cell: ({ row }) => {
-      const enrollment = row.original;
+export function getEnrollmentColumns(
+  userType: EnrollUserType
+): ColumnDef<EnrollmentData>[] {
+  const userAccessorName =
+    userType === EnrollUserType.STUDENT ? "student.firstName" : "group.name";
 
-      return <span>{enrollment.course.name}</span>;
+  const columns: ColumnDef<EnrollmentData>[] = [
+    {
+      accessorKey: userAccessorName,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={userType === EnrollUserType.STUDENT ? "Student" : "Group"}
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="font-medium">
+          {userType === EnrollUserType.STUDENT
+            ? `${row.original.student?.firstName} ${row.original.student?.lastName}`
+            : row.original.group?.name}
+        </span>
+      ),
     },
-  },
-  {
-    accessorKey: "teacher.firstName",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        className="pl-2 text-xs"
-        column={column}
-        title="Teacher"
-      />
-    ),
-    cell: ({ row }) => (
-      <span className="">
-        {row.original.teacher.firstName} {row.original.teacher.lastName}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created" />
-    ),
-    cell: ({ row }) => {
-      const created = formatDate(row.original.createdAt);
+    {
+      accessorKey: "course.name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Course" />
+      ),
+      cell: ({ row }) => {
+        const enrollment = row.original;
 
-      return <span>{created}</span>;
+        return <span>{enrollment.course?.name}</span>;
+      },
     },
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated" />
-    ),
-    cell: ({ row }) => {
-      const updated = formatDate(row.original.updatedAt);
+    {
+      accessorKey: "teacher.firstName",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          className="pl-2 text-xs"
+          column={column}
+          title="Teacher"
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="">
+          {row.original.teacher?.firstName} {row.original.teacher?.lastName}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created" />
+      ),
+      cell: ({ row }) => {
+        const created = formatDate(row.original.createdAt);
 
-      return <span>{updated}</span>;
+        return <span>{created}</span>;
+      },
     },
-  },
-  {
-    accessorKey: "progress",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Attended Classes" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="max-w-[220px]">
-          {row.original.attendedClasses === 40 ? (
-            <Badge className="bg-green-600 hover:bg-green-600">Completed</Badge>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <p className="text-sm text-right font-semibold leading-none">
-                {row.original.attendedClasses}/40
-              </p>
-              <Progress
-                value={calcPercentage(row.original.attendedClasses, 40)}
-              />
-            </div>
-          )}
-        </div>
-      );
+    {
+      accessorKey: "updatedAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Updated" />
+      ),
+      cell: ({ row }) => {
+        const updated = formatDate(row.original.updatedAt);
+
+        return <span>{updated}</span>;
+      },
     },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const teacherId = row.original.id;
-      return (
-        <div className="flex justify-end gap-2">
-          <Tooltip2 text="Edit" side="top">
-            <Link href={`/school/teachers/${teacherId}`}>
-              <Button variant="ghost" className="h-8 w-8 p-0 group ">
-                <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
-              </Button>
-            </Link>
-          </Tooltip2>
-          <DeleteButton teacherId={teacherId} />
-        </div>
-      );
+    {
+      accessorKey: "progress",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Attended Classes" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className="max-w-[220px]">
+            {row.original.attendedClasses === 40 ? (
+              <Badge className="bg-green-600 hover:bg-green-600">
+                Completed
+              </Badge>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <p className="text-sm text-right font-semibold leading-none">
+                  {row.original.attendedClasses}/40
+                </p>
+                <Progress
+                  value={calcPercentage(row.original.attendedClasses, 40)}
+                />
+              </div>
+            )}
+          </div>
+        );
+      },
     },
-  },
-];
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const teacherId = row.original.id;
+        return (
+          <div className="flex justify-end gap-2">
+            <Tooltip2 text="Edit" side="top">
+              <Link href={`/school/teachers/${teacherId}`}>
+                <Button variant="ghost" className="h-8 w-8 p-0 group ">
+                  <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
+                </Button>
+              </Link>
+            </Tooltip2>
+            <DeleteButton teacherId={teacherId} />
+          </div>
+        );
+      },
+    },
+  ];
+
+  return columns;
+}

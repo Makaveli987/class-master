@@ -27,7 +27,7 @@ export const getGroupsEnrollments = async () => {
       include: {
         teacher: true,
         course: true,
-        student: true,
+        group: true,
       },
     });
     return enrollments;
@@ -60,6 +60,24 @@ export const getEnrollmentsByGroupId = async (groupId: string) => {
       include: {
         teacher: true,
         course: true,
+      },
+    });
+    return enrollments;
+  } catch (error) {
+    console.error("[ENROLLMENTS] Error fetching ADMIN role");
+    return null;
+  }
+};
+
+export const getEnrollment = async (enrollmentId: string) => {
+  try {
+    const enrollments = await db.enrollment.findUnique({
+      where: { id: enrollmentId },
+      include: {
+        teacher: true,
+        course: true,
+        student: true,
+        group: true,
       },
     });
     return enrollments;
