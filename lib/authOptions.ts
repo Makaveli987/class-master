@@ -63,7 +63,8 @@ export const authOptions: NextAuthOptions = {
   debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24h
+    // maxAge: 24 * 60 * 60, // 24h
+    maxAge: 60 * 60, // 24h
   },
   pages: {
     signIn: "/sign-in",

@@ -2,6 +2,7 @@ import { DialogAction } from "@/lib/models/dialog-actions";
 import { create } from "zustand";
 
 export interface EnrollData {
+  id?: string;
   courseId: string;
   teacherId: string;
   userId?: string;

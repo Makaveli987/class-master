@@ -3,6 +3,7 @@ import { getEnrollment } from "@/actions/get-enrolments";
 import EnrollForm, {
   EnrollFormCourse,
 } from "@/components/enrolled-courses/enroll-form";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,11 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
+import { PlusCircleIcon, XIcon } from "lucide-react";
 import React from "react";
+import Notes from "../_components/notes";
 
 export default async function EnrollmentId({
   params,
@@ -51,122 +57,12 @@ export default async function EnrollmentId({
               // @ts-ignore
               enrollData={enrollment}
               courses={courses || []}
+              action={DialogAction.EDIT}
             />
           </CardContent>
         </Card>
 
-        <Card className="col-span-3">
-          <CardHeader className="mb-3">
-            <CardTitle>Notes</CardTitle>
-            <CardDescription>
-              Teacher notes for this course enrollment
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* <p className="text-sm">There are no notes for this course.</p> */}
-
-            <ScrollArea type="always" className="h-[400px] max-w-[630px] pr-8">
-              <div className="space-y-2">
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer ">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    12.01.2024
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">Natasa Blagojevic</p>
-                    <p className="text-sm text-muted-foreground">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quo repudiandae cumque sunt eligendi adipisci, minus
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+        <Notes notes={data} />
       </div>
 
       <Card className="mt-6">
@@ -182,3 +78,36 @@ export default async function EnrollmentId({
     </div>
   );
 }
+
+const data = [
+  {
+    id: "test",
+    date: "12.01.2024",
+    teacher: "Natasa Blagojevic",
+    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
+  },
+  {
+    id: "test2",
+    date: "12.01.2024",
+    teacher: "Natasa Blagojevic",
+    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
+  },
+  {
+    id: "test3",
+    date: "12.01.2024",
+    teacher: "Natasa Blagojevic",
+    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
+  },
+  {
+    id: "test4",
+    date: "12.01.2024",
+    teacher: "Natasa Blagojevic",
+    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
+  },
+  {
+    id: "test5",
+    date: "12.01.2024",
+    teacher: "Natasa Blagojevic",
+    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
+  },
+];

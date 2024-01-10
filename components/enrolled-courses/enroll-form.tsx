@@ -6,7 +6,6 @@ import useEnrollDialog, {
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";
-import { DialogClose } from "@radix-ui/react-dialog";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -45,6 +44,7 @@ interface EnrollFormProps {
   userId: string | null;
   userType: EnrollUserType;
   enrollData: EnrollData;
+  action: DialogAction;
 }
 
 export default function EnrollForm({
@@ -52,12 +52,11 @@ export default function EnrollForm({
   userId,
   userType,
   enrollData,
+  action = DialogAction.CREATE,
 }: EnrollFormProps) {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
-
-  console.log("userType :>> ", userType);
 
   const router = useRouter();
   const enrollDialog = useEnrollDialog();
@@ -68,6 +67,8 @@ export default function EnrollForm({
   });
 
   useEffect(() => {
+    console.log("action :>> ", action);
+
     const cOptions = courses?.map((course: Course) => ({
       value: course.id,
       label: course.name,
@@ -120,7 +121,7 @@ export default function EnrollForm({
 
   function updateEnrollment(values: EnrollData): void {
     axios
-      .patch("/api/enrollment/" + enrollData.enrollmentId, {
+      .patch("/api/enrollment/" + enrollData.id, {
         ...values,
         userType,
         userId,
@@ -142,7 +143,7 @@ export default function EnrollForm({
 
   function onSubmit(values: z.infer<typeof formSchema>): void {
     setIsPending(true);
-    enrollDialog.action === DialogAction.CREATE
+    action === DialogAction.CREATE
       ? createEnrollment({ ...values })
       : updateEnrollment({ ...values });
   }

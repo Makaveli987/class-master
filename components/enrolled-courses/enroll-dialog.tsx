@@ -58,6 +58,7 @@ export default function EnrollDialog({
           userType={userType}
           courses={courses}
           enrollData={enrollDialog.data}
+          action={DialogAction.CREATE}
         />
       </DialogContent>
     </Dialog>
