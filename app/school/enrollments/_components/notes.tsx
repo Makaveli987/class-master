@@ -46,7 +46,7 @@ export default function Notes({ notes }: NotesPorps) {
               {notes.map((note) => (
                 <div
                   key={note.id}
-                  className="flex justify-start gap-6 hover:bg-muted px-2 py-4 rounded-md  group"
+                  className="flex justify-start gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer group"
                 >
                   <p className="text-sm text-muted-foreground font-medium">
                     {note.date}
