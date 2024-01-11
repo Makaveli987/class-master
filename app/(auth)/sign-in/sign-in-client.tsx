@@ -50,7 +50,7 @@ export default function SignInClient() {
   }
 
   return (
-    <div className="mx-auto bg-white w-[400px] p-10 shadow-sm border rounded-lg">
+    <div className="mx-auto bg-card text-card-foreground w-[400px] p-10 shadow-sm border rounded-lg">
       <div className="flex flex-col space-y-1 mb-8">
         <h3 className="font-semibold tracking-tight text-2xl">
           Log into your account

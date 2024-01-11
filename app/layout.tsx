@@ -4,6 +4,7 @@ import "./globals.css";
 import ClientSessionProvider from "./client-session-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { DialogProvider } from "@/components/dialog-provider";
 // import ReactQueryProvider from "@/lib/react-query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -43,6 +44,7 @@ export default function RootLayout({
               duration={2500}
             />
             {children}
+            <DialogProvider />
           </ClientSessionProvider>
           {/* </ReactQueryProvider> */}
         </ThemeProvider>

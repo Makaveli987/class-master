@@ -100,7 +100,7 @@ const SignUpClient = () => {
   }
 
   return (
-    <div className="bg-white w-[500px] p-10 shadow-sm border rounded-lg">
+    <div className="bg-card text-card-foreground w-[500px] p-10 shadow-sm border rounded-lg">
       <div className="flex flex-col space-y-1">
         <h3 className="font-semibold tracking-tight text-2xl">
           Create an account

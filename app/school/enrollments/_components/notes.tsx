@@ -10,6 +10,7 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
+import { useNoteDialog } from "@/hooks/useNoteDialog";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import React from "react";
 
@@ -18,6 +19,8 @@ interface NotesPorps {
 }
 
 export default function Notes({ notes }: NotesPorps) {
+  const noteDialog = useNoteDialog();
+
   function handleConfirm(noteId: string): void {
     console.log(noteId);
   }
@@ -31,7 +34,7 @@ export default function Notes({ notes }: NotesPorps) {
         </CardDescription>
         <div className="absolute right-0 top-4">
           <Tooltip2 text="Add Note">
-            <Button variant="ghost">
+            <Button variant="ghost" onClick={() => noteDialog.open()}>
               <PlusCircleIcon className="w-5 h-5" />
             </Button>
           </Tooltip2>
@@ -45,15 +48,22 @@ export default function Notes({ notes }: NotesPorps) {
             <div className="space-y-2">
               {notes.map((note) => (
                 <div
-                  key={note.id}
                   className="flex justify-start gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer group"
+                  key={note.id}
                 >
-                  <p className="text-sm text-muted-foreground font-medium">
-                    {note.date}
-                  </p>
-                  <div className="flex flex-col">
-                    <p className="text-sm font-medium">{note.teacher}</p>
-                    <p className="text-sm text-muted-foreground">{note.text}</p>
+                  <div
+                    className="flex justify-start gap-6"
+                    onClick={() => noteDialog.open()}
+                  >
+                    <p className="text-sm text-muted-foreground font-medium">
+                      {note.date}
+                    </p>
+                    <div className="flex flex-col">
+                      <p className="text-sm font-medium">{note.teacher}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {note.text}
+                      </p>
+                    </div>
                   </div>
                   <div>
                     <ConfirmDialog
