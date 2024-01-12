@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { useNoteDialog } from "@/hooks/useNoteDialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { calcPercentage, formatDate } from "@/lib/utils";
 import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
@@ -20,6 +21,7 @@ export default function StudentCourses({
   enrollments,
 }: StudentCoursesProps) {
   const enrollDialog = useEnrollDialog();
+  const noteDialog = useNoteDialog();
   const router = useRouter();
 
   if (!enrollments) {
@@ -69,7 +71,14 @@ export default function StudentCourses({
             </div>
             <div className="flex justify-end">
               <Tooltip2 text="Add note" side="top">
-                <Button variant="ghost" className="h-8 w-8 p-0 group ">
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    noteDialog.open({ enrollmentId: enrollment.id });
+                  }}
+                  variant="ghost"
+                  className="h-8 w-8 p-0 group "
+                >
                   <MessageCirclePlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-yellow-500" />
                 </Button>
               </Tooltip2>
@@ -79,11 +88,6 @@ export default function StudentCourses({
                   className="h-8 w-8 p-0 group"
                   onClick={(e) => {
                     e.stopPropagation();
-                    console.log({
-                      courseId: enrollment.course.id,
-                      teacherId: enrollment.teacher.id,
-                      courseGoals: enrollment.courseGoals,
-                    });
 
                     enrollDialog.open(
                       {

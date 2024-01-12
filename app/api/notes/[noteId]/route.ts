@@ -57,7 +57,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const note = await db.course.delete({
+    const note = await db.note.delete({
       where: {
         id: noteId,
       },

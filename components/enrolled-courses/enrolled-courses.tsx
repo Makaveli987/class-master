@@ -32,7 +32,7 @@ export default async function EnrolledCourses({
               </p>
               <p className="text-xs leading-none text-muted-foreground">
                 <span className="font-medium">started:</span>{" "}
-                {formatDate(enrollment.createdAt).slice(0, -6)}
+                {formatDate(enrollment.createdAt, true)}
               </p>
             </div>
             <div className="flex flex-col col-span-2 mr-4 space-y-1 text-right">

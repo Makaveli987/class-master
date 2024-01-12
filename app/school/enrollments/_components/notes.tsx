@@ -12,7 +12,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { NoteData, useNoteDialog } from "@/hooks/useNoteDialog";
 import { formatDate } from "@/lib/utils";
+import { Enrollment } from "@prisma/client";
+import axios, { AxiosResponse } from "axios";
 import { PlusCircleIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface NotesPorps {
   notes: NoteData[];
@@ -21,9 +25,23 @@ interface NotesPorps {
 
 export default function Notes({ notes, enrollmentId }: NotesPorps) {
   const noteDialog = useNoteDialog();
+  const router = useRouter();
 
-  function handleConfirm(noteId: string): void {
-    console.log(noteId);
+  function handleConfirm(noteId: string) {
+    axios
+      .delete("/api/notes/" + noteId)
+      .then((response: AxiosResponse<Enrollment[]>) => {
+        if (response.status === 200) {
+          router.refresh();
+          toast.success("Note successfully deleted.");
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Note wasn't deleted!");
+      })
+      .finally(() => {
+        noteDialog.close();
+      });
   }
 
   return (

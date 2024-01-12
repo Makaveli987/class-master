@@ -13,6 +13,9 @@ export const getNotes = async (enrollmentId: string) => {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return notes;
   } catch (error) {

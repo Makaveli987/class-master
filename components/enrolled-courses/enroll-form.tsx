@@ -229,7 +229,10 @@ export default function EnrollForm({
               </Button>
             )}
 
-            <Button disabled={isPending} type="submit">
+            <Button
+              disabled={isPending || !form.formState.isDirty}
+              type="submit"
+            >
               {isPending ? (
                 <>
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

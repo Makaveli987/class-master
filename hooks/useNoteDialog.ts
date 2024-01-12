@@ -26,11 +26,13 @@ export const useNoteDialog = create<NoteDialogStore>((set) => ({
   isOpen: false,
   data: null,
   enrollmentId: "",
-  open: (params: OpenParams) =>
+  open: (params: OpenParams) => {
+    console.log("params", params);
     set({
       isOpen: true,
       data: params?.note,
       enrollmentId: params.enrollmentId,
-    }),
+    });
+  },
   close: () => set({ isOpen: false, data: null }),
 }));

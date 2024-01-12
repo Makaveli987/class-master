@@ -9,7 +9,7 @@ import {
 import { useNoteDialog } from "@/hooks/useNoteDialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -49,13 +49,14 @@ export default function NotesDialog() {
 
     console.log("noteDialog.data", noteDialog.data);
     form.clearErrors();
-  }, [noteDialog.data]);
+  }, [form, noteDialog.data]);
 
   function createNote(values: z.infer<typeof formSchema>): void {
+    console.log("ID NORE", noteDialog?.enrollmentId);
     axios
       .post("/api/notes", {
         ...values,
-        enrollmentId: noteDialog.enrollmentId,
+        enrollmentId: noteDialog?.enrollmentId,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {
@@ -80,11 +81,11 @@ export default function NotesDialog() {
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 200) {
           router.refresh();
-          toast.success("Student enrollment successfully updated.");
+          toast.success("Note successfully updated.");
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Student enrollment wasn't updated!");
+        toast.error("Something went wrong. Note wasn't updated!");
       })
       .finally(() => {
         setIsPending(false);
