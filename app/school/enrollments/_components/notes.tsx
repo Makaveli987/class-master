@@ -2,23 +2,24 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@/components/ui/card";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { useNoteDialog } from "@/hooks/useNoteDialog";
+import { NoteData, useNoteDialog } from "@/hooks/useNoteDialog";
+import { formatDate } from "@/lib/utils";
 import { PlusCircleIcon, XIcon } from "lucide-react";
-import React from "react";
 
 interface NotesPorps {
-  notes: any[];
+  notes: NoteData[];
+  enrollmentId: string;
 }
 
-export default function Notes({ notes }: NotesPorps) {
+export default function Notes({ notes, enrollmentId }: NotesPorps) {
   const noteDialog = useNoteDialog();
 
   function handleConfirm(noteId: string): void {
@@ -34,7 +35,14 @@ export default function Notes({ notes }: NotesPorps) {
         </CardDescription>
         <div className="absolute right-0 top-4">
           <Tooltip2 text="Add Note">
-            <Button variant="ghost" onClick={() => noteDialog.open()}>
+            <Button
+              variant="ghost"
+              onClick={() =>
+                noteDialog.open({
+                  enrollmentId,
+                })
+              }
+            >
               <PlusCircleIcon className="w-5 h-5" />
             </Button>
           </Tooltip2>
@@ -45,27 +53,29 @@ export default function Notes({ notes }: NotesPorps) {
           <p className="text-sm">There are no notes for this course.</p>
         ) : (
           <ScrollArea type="always" className="h-[400px] max-w-[630px] pr-8">
-            <div className="space-y-2">
+            <div className="space-y-0">
               {notes.map((note) => (
                 <div
-                  className="flex justify-start gap-6 hover:bg-muted px-2 py-4 rounded-md cursor-pointer group"
+                  className="flex justify-start gap-6 hover:bg-muted rounded-md cursor-pointer group"
                   key={note.id}
                 >
                   <div
-                    className="flex justify-start gap-6"
-                    onClick={() => noteDialog.open()}
+                    className="flex flex-1 justify-start gap-6 pl-4 py-4"
+                    onClick={() => noteDialog.open({ note })}
                   >
                     <p className="text-sm text-muted-foreground font-medium">
-                      {note.date}
+                      {formatDate(note.createdAt, false)}
                     </p>
                     <div className="flex flex-col">
-                      <p className="text-sm font-medium">{note.teacher}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm font-medium">
+                        {`${note.teacher.firstName} ${note.teacher.lastName}`}
+                      </p>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                         {note.text}
                       </p>
                     </div>
                   </div>
-                  <div>
+                  <div className="px-2 py-3">
                     <ConfirmDialog
                       description={
                         "This action will remove this note from this enrollment. You will not be able to revert it."

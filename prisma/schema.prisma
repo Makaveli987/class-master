@@ -97,11 +97,12 @@ model User {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   role            Role            @relation(fields: [roleId], references: [id])
-  userPerCourses  UserPerCourse[]
   school          School          @relation(fields: [schoolId], references: [id])
   classOriginal   Class[]         @relation("originalTeacher")
   classSubstitute Class[]         @relation("substituteTeacher")
+  userPerCourses  UserPerCourse[]
   enrolments      Enrollment[]
+  note            Note[]
 
   @@index([roleId])
   @@index([schoolId])
@@ -113,6 +114,7 @@ model Role {
   users User[]
 }
 
+// implicit many to many ?!
 model UserPerCourse {
   id       String  @id @default(uuid())
   courseId String
@@ -131,6 +133,7 @@ model Class {
   substituteTeacherId String?
   canceled            Boolean
   paid                Boolean
+  // should have name
   attendeeId          String
   attendeeType        String
   startDate           DateTime
@@ -170,4 +173,16 @@ model School {
   users       User[]
   courses     Course[]
   enrollments Enrollment[]
+}
+
+model Note {
+  id           String   @id @default(uuid())
+  enrollmentId String
+  teacherId    String
+  text         String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  teacher      User     @relation(fields: [teacherId], references: [id])
+
+  @@index([teacherId])
 }

@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: Date): string {
+export function formatDate(date: Date, time = true): string {
   let month = "" + (date?.getMonth() + 1),
     day = "" + date?.getDate(),
     year = date?.getFullYear(),
@@ -19,7 +19,9 @@ export function formatDate(date: Date): string {
   // @ts-ignore
   if (minutes < 10) minutes = "0" + minutes;
 
-  return `${day}.${month}.${year}   ${hour}:${minutes}`;
+  return time
+    ? `${day}.${month}.${year}   ${hour}:${minutes}`
+    : `${day}.${month}.${year}`;
 }
 
 export function calcPercentage(x: number, y: number): number {

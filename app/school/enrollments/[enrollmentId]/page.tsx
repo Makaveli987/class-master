@@ -1,9 +1,9 @@
 import { getCourses } from "@/actions/get-courses";
 import { getEnrollment } from "@/actions/get-enrolments";
+import { getNotes } from "@/actions/get-notes";
 import EnrollForm, {
   EnrollFormCourse,
 } from "@/components/enrolled-courses/enroll-form";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,15 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { NoteData } from "@/hooks/useNoteDialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
-import { PlusCircleIcon, XIcon } from "lucide-react";
-import React from "react";
 import Notes from "../_components/notes";
 
 export default async function EnrollmentId({
@@ -32,6 +27,7 @@ export default async function EnrollmentId({
   )) as EnrollmentData;
 
   const courses = (await getCourses()) as EnrollFormCourse[];
+  const notes = (await getNotes(params.enrollmentId)) as NoteData[];
 
   return (
     <div>
@@ -62,7 +58,7 @@ export default async function EnrollmentId({
           </CardContent>
         </Card>
 
-        <Notes notes={data} />
+        <Notes notes={notes} enrollmentId={params.enrollmentId} />
       </div>
 
       <Card className="mt-6">
@@ -78,36 +74,3 @@ export default async function EnrollmentId({
     </div>
   );
 }
-
-const data = [
-  {
-    id: "test",
-    date: "12.01.2024",
-    teacher: "Natasa Blagojevic",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
-  },
-  {
-    id: "test2",
-    date: "12.01.2024",
-    teacher: "Natasa Blagojevic",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
-  },
-  {
-    id: "test3",
-    date: "12.01.2024",
-    teacher: "Natasa Blagojevic",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
-  },
-  {
-    id: "test4",
-    date: "12.01.2024",
-    teacher: "Natasa Blagojevic",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
-  },
-  {
-    id: "test5",
-    date: "12.01.2024",
-    teacher: "Natasa Blagojevic",
-    text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo repudiandae cumque sunt eligendi adipisci, minus",
-  },
-];
