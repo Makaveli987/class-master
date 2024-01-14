@@ -193,3 +193,13 @@ model Note {
   @@index([teacherId])
   @@index([userId])
 }
+
+model Exam {
+  id           String @id @default(uuid())
+  name         String? 
+  result       String? 
+  enrollmentId String
+  studentId    String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}

@@ -21,6 +21,8 @@ import { BarChart2Icon, PlusCircleIcon, UserIcon, Users } from "lucide-react";
 import CourseProgress from "@/components/course-progress";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { getExams } from "@/actions/get-exams";
+import StudentExams from "../_components/student-exams";
 
 export default async function EnrollmentId({
   params,
@@ -33,6 +35,7 @@ export default async function EnrollmentId({
 
   const courses = (await getCourses()) as EnrollFormCourse[];
   const notes = (await getNotes(params.enrollmentId)) as NoteData[];
+  const exams = await getExams(enrollment.id, enrollment.studentId || "");
 
   function getEnrollentUser() {
     return enrollment.studentId
@@ -122,19 +125,11 @@ export default async function EnrollmentId({
           <CardContent></CardContent>
         </Card>
 
-        <Card className="mt-6">
-          <CardHeader className="mb-3 relative ">
-            <CardTitle>Exams</CardTitle>
-            <CardDescription>Exams for this course enrollment</CardDescription>
-            <div className="absolute right-6 top-4">
-              <Button variant="ghost">
-                <PlusCircleIcon className="w-5 h-5 mr-2" />
-                Add Exam
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent></CardContent>
-        </Card>
+        <StudentExams
+          exams={exams}
+          enrollmentId={enrollment.id}
+          studentId={enrollment.studentId}
+        />
       </div>
     </div>
   );
