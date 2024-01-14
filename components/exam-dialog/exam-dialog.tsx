@@ -26,10 +26,12 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
   name: z.string().min(1, "Field is required"),
   result: z.string().min(1, "Field is required"),
+  comment: z.string(),
 });
 
 export default function ExamDialog() {
@@ -40,16 +42,18 @@ export default function ExamDialog() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: "", result: "" },
+    defaultValues: { name: "", result: "", comment: "" },
   });
 
   useEffect(() => {
     if (!!examDialog.data) {
       form.setValue("name", examDialog.data.name || "");
       form.setValue("result", examDialog.data.result || "");
+      form.setValue("comment", examDialog.data.comment || "");
     } else {
       form.setValue("name", "");
       form.setValue("result", "");
+      form.setValue("comment", "");
     }
 
     console.log("examDialog.data", examDialog.data);
@@ -137,11 +141,7 @@ export default function ExamDialog() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={isPending}
-                      placeholder="Name..."
-                      {...field}
-                    />
+                    <Input disabled={isPending} placeholder="Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -157,7 +157,7 @@ export default function ExamDialog() {
                   <FormControl>
                     <Input
                       disabled={isPending}
-                      placeholder="Result..."
+                      placeholder="Result"
                       {...field}
                     />
                   </FormControl>
@@ -165,6 +165,26 @@ export default function ExamDialog() {
                 </FormItem>
               )}
             />
+
+            {/* <FormField
+              control={form.control}
+              name="comment"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Comment</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      disabled={isPending}
+                      className="h-32"
+                      placeholder="Comment"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+
             <div className="flex gap-2 justify-end">
               <Button
                 type="button"

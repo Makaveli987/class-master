@@ -103,7 +103,7 @@ export default function Notes({
                       </p>
                     </div>
                   </div>
-                  <div className="px-2 py-3">
+                  <div className="px-2 py-2">
                     <ConfirmDialog
                       description={
                         "This action will remove this note from this enrollment. You will not be able to revert it."
@@ -113,7 +113,7 @@ export default function Notes({
                       <div>
                         <Tooltip2 text="Delete Note">
                           <Button
-                            className="pt-0 hidden group-hover:block"
+                            className="hidden group-hover:block"
                             variant="ghost"
                           >
                             <XIcon className="w-4 h-4" />
