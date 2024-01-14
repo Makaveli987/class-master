@@ -29,7 +29,7 @@ export default async function StudentPage({
   const enrollments = await getEnrollmentsByStudentId(params.studentId);
 
   return (
-    <div>
+    <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Students</h3>
       <Card>
         <CardContent className="mt-6">

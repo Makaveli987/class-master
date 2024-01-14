@@ -1,3 +1,3 @@
 export default function ProfilePage() {
-  return <div>Profile</div>;
+  return <div className="max-w-screen-2xl">Profile</div>;
 }

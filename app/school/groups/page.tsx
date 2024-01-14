@@ -8,13 +8,13 @@ export default async function GroupsPage() {
   const students = await getStudents();
 
   return (
-    <>
+    <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Groups</h3>
       <Card className="pt-6">
         <CardContent>
           <GroupsTable groups={groups || []} students={students || []} />
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 }

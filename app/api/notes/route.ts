@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { enrollmentId, text } = await req.json();
+    const { enrollmentId, userId, text } = await req.json();
 
     if (!enrollmentId || !text) {
       return new NextResponse(
@@ -30,6 +30,7 @@ export async function POST(req: Request) {
         enrollmentId,
         teacherId: currentUser.id,
         text,
+        userId,
       },
     });
 

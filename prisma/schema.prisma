@@ -23,6 +23,7 @@ model Student {
   attendance Attendance[]
   group      Group?       @relation(fields: [groupId], references: [id])
   school     School       @relation(fields: [schoolId], references: [id])
+  note       Note[]
 
   @@index([groupId])
   @@index([schoolId])
@@ -80,6 +81,7 @@ model Group {
   students   Student[]
   school     School       @relation(fields: [schoolId], references: [id])
   enrolments Enrollment[]
+  note       Note[]
 
   @@index([schoolId])
 }
@@ -179,10 +181,15 @@ model Note {
   id           String   @id @default(uuid())
   enrollmentId String
   teacherId    String
+  // Student or Group Id
+  userId       String
   text         String   @db.Text
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   teacher      User     @relation(fields: [teacherId], references: [id])
+  student      Student? @relation(fields: [userId], references: [id], map: "Note_Student_fkey")
+  group        Group?   @relation(fields: [userId], references: [id], map: "Note_Group_fkey")
 
   @@index([teacherId])
+  @@index([userId])
 }

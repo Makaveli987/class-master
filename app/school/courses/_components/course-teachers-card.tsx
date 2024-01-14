@@ -84,7 +84,7 @@ export default function CourseTeachersCard({
 
   return (
     <Card className="flex-1 h-[524px]">
-      <CardHeader className="mb-3 relative max-w-[348px]">
+      <CardHeader className="mb-3 relative max-w-[448px]">
         <CardTitle>Teachers</CardTitle>
         <CardDescription>Teachers that can teach this course</CardDescription>
         <Popover
@@ -96,11 +96,12 @@ export default function CourseTeachersCard({
         >
           <PopoverTrigger asChild>
             <div className="absolute right-0 top-4">
-              <Tooltip2 text="Assign teacher">
-                <Button variant="ghost">
-                  <PlusCircleIcon className="w-5 h-5" />
-                </Button>
-              </Tooltip2>
+              {/* <Tooltip2 text="Assign teacher"> */}
+              <Button variant="ghost">
+                <PlusCircleIcon className="w-5 h-5 mr-2" />
+                Assign Teacher
+              </Button>
+              {/* </Tooltip2> */}
             </div>
           </PopoverTrigger>
           <PopoverContent className="w-80">
@@ -133,7 +134,7 @@ export default function CourseTeachersCard({
               {assignedTeachers?.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="flex items-center justify-between hover:bg-muted rounded-lg p-2 max-w-[330px] group cursor-pointer"
+                  className="flex items-center justify-between hover:bg-muted rounded-lg p-2 max-w-[410px] group cursor-pointer"
                 >
                   <div
                     className="flex items-center "

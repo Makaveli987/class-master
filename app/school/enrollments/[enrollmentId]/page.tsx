@@ -16,6 +16,11 @@ import { NoteData } from "@/hooks/useNoteDialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import Notes from "../_components/notes";
+import StatsCard from "@/components/cards/stats-card";
+import { BarChart2Icon, PlusCircleIcon, UserIcon, Users } from "lucide-react";
+import CourseProgress from "@/components/course-progress";
+import { formatDate } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export default async function EnrollmentId({
   params,
@@ -29,11 +34,47 @@ export default async function EnrollmentId({
   const courses = (await getCourses()) as EnrollFormCourse[];
   const notes = (await getNotes(params.enrollmentId)) as NoteData[];
 
+  function getEnrollentUser() {
+    return enrollment.studentId
+      ? `${enrollment.student?.firstName} ${enrollment.student?.lastName}`
+      : `${enrollment.group?.name}`;
+  }
+
+  function getEnrollentUserType() {
+    return enrollment.studentId ? "Student" : "Group";
+  }
+
+  function getEnrollentUserIcon() {
+    return enrollment.studentId ? (
+      <UserIcon className="h-5 w-5 text-muted-foreground" />
+    ) : (
+      <Users className="h-5 w-5 text-muted-foreground" />
+    );
+  }
+
   return (
-    <div>
+    <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollment</h3>
-      <div className="grid grid-cols-5 gap-6">
-        <Card className="col-span-2">
+      <div className="mb-6 flex gap-6">
+        <StatsCard title={getEnrollentUserType()} icon={getEnrollentUserIcon()}>
+          <div className="text-xl font-bold">{getEnrollentUser()}</div>
+          <span className="text-sm text-muted-foreground">
+            Enrolled: {formatDate(enrollment.createdAt, false)}
+          </span>
+        </StatsCard>
+        <StatsCard
+          title="Progress"
+          icon={<BarChart2Icon className="h-5 w-5 text-muted-foreground" />}
+        >
+          <CourseProgress
+            attendedClasses={enrollment.attendedClasses}
+            totalClasses={40}
+            className="mt-4"
+          />
+        </StatsCard>
+      </div>
+      <div className="grid grid-cols-6 gap-6">
+        <Card className="col-span-3">
           <CardHeader className="mb-3">
             <CardTitle>Enrollment</CardTitle>
             <CardDescription>
@@ -58,19 +99,43 @@ export default async function EnrollmentId({
           </CardContent>
         </Card>
 
-        <Notes notes={notes} enrollmentId={params.enrollmentId} />
+        <Notes
+          userType={
+            enrollment.groupId ? EnrollUserType.GROUP : EnrollUserType.STUDENT
+          }
+          notes={notes}
+          enrollmentId={params.enrollmentId}
+          userId={
+            enrollment.studentId ? enrollment.studentId : enrollment.groupId
+          }
+        />
       </div>
 
-      <Card className="mt-6">
-        <CardContent>
+      <div className="grid grid-cols-2 gap-6">
+        <Card className="mt-6">
           <CardHeader className="mb-3">
             <CardTitle>Classes</CardTitle>
             <CardDescription>
               All classes for this course enrollment
             </CardDescription>
           </CardHeader>
-        </CardContent>
-      </Card>
+          <CardContent></CardContent>
+        </Card>
+
+        <Card className="mt-6">
+          <CardHeader className="mb-3 relative ">
+            <CardTitle>Exams</CardTitle>
+            <CardDescription>Exams for this course enrollment</CardDescription>
+            <div className="absolute right-6 top-4">
+              <Button variant="ghost">
+                <PlusCircleIcon className="w-5 h-5 mr-2" />
+                Add Exam
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent></CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

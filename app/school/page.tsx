@@ -8,7 +8,7 @@ export default async function SchoolPage() {
     return redirect("/sign-in");
   }
   return (
-    <div className="w-full">
+    <div className="max-w-screen-2xl">
       <p className="">School page</p>
     </div>
   );

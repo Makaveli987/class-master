@@ -10,20 +10,28 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
+import { EnrollUserType } from "@/hooks/useEnrollDialog";
 import { NoteData, useNoteDialog } from "@/hooks/useNoteDialog";
 import { formatDate } from "@/lib/utils";
 import { Enrollment } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
-import { PlusCircleIcon, XIcon } from "lucide-react";
+import { PlusCircleIcon, PlusIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface NotesPorps {
   notes: NoteData[];
   enrollmentId: string;
+  userType: EnrollUserType;
+  userId: string | null;
 }
 
-export default function Notes({ notes, enrollmentId }: NotesPorps) {
+export default function Notes({
+  notes,
+  enrollmentId,
+  userType,
+  userId,
+}: NotesPorps) {
   const noteDialog = useNoteDialog();
   const router = useRouter();
 
@@ -46,31 +54,33 @@ export default function Notes({ notes, enrollmentId }: NotesPorps) {
 
   return (
     <Card className="col-span-3">
-      <CardHeader className="mb-3 relative max-w-[630px]">
-        <CardTitle>Notes</CardTitle>
+      <CardHeader className="mb-3 relative ">
+        <CardTitle>
+          {userType === EnrollUserType.GROUP ? "Group" : "Student"} Notes
+        </CardTitle>
         <CardDescription>
           Teacher notes for this course enrollment
         </CardDescription>
-        <div className="absolute right-0 top-4">
-          <Tooltip2 text="Add Note">
-            <Button
-              variant="ghost"
-              onClick={() =>
-                noteDialog.open({
-                  enrollmentId,
-                })
-              }
-            >
-              <PlusCircleIcon className="w-5 h-5" />
-            </Button>
-          </Tooltip2>
+        <div className="absolute right-6 top-4">
+          <Button
+            variant="ghost"
+            onClick={() =>
+              noteDialog.open({
+                enrollmentId,
+                userId: userId || "",
+              })
+            }
+          >
+            <PlusCircleIcon className="w-5 h-5 mr-2" />
+            Add Note
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
         {!notes.length ? (
           <p className="text-sm">There are no notes for this course.</p>
         ) : (
-          <ScrollArea type="always" className="h-[400px] max-w-[630px] pr-8">
+          <ScrollArea type="always" className="h-[400px] ">
             <div className="space-y-0">
               {notes.map((note) => (
                 <div

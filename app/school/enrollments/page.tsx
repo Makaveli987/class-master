@@ -14,7 +14,7 @@ export default async function EnrollmentsPage() {
   const groupsEnrollments = (await getGroupsEnrollments()) as EnrollmentData[];
 
   return (
-    <div>
+    <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollments</h3>
       <Card className="pt-6">
         <CardContent>

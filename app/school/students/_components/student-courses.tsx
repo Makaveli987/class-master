@@ -41,7 +41,7 @@ export default function StudentCourses({
                 {enrollment.course.name}
               </p>
               <p className="text-xs leading-none text-muted-foreground">
-                <span className="font-medium">started:</span>{" "}
+                <span className="font-medium">Enrolled:</span>{" "}
                 {formatDate(enrollment.createdAt).slice(0, -6)}
               </p>
             </div>
@@ -74,7 +74,10 @@ export default function StudentCourses({
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
-                    noteDialog.open({ enrollmentId: enrollment.id });
+                    noteDialog.open({
+                      enrollmentId: enrollment.id,
+                      userId: studentId,
+                    });
                   }}
                   variant="ghost"
                   className="h-8 w-8 p-0 group "

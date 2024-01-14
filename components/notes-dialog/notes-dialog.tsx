@@ -57,6 +57,7 @@ export default function NotesDialog() {
       .post("/api/notes", {
         ...values,
         enrollmentId: noteDialog?.enrollmentId,
+        userId: noteDialog?.userId,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {

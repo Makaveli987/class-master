@@ -33,7 +33,7 @@ export default async function CoursePage({
   ]);
 
   return (
-    <div>
+    <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Courses</h3>
       <div className="mb-6 flex gap-6">
         <StatsCard

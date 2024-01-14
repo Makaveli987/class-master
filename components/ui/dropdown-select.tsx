@@ -39,6 +39,8 @@ export function DropdownSelect({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
+        {!options.length && <p className="pl-2 text-sm">No options.</p>}
+
         <SelectGroup>
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>

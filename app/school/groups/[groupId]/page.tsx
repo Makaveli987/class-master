@@ -31,7 +31,7 @@ export default async function GroupPage({
   const enrollments = await getEnrollmentsByGroupId(params.groupId);
 
   return (
-    <div>
+    <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Groups</h3>
       <Card>
         <CardContent className="mt-6">

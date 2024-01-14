@@ -219,7 +219,7 @@ export default function GroupForm({
           <p className="mb-2 text-sm font-medium">Assigned students</p>
           <Separator />
           {!selectedStudents.length ? (
-            <p className="text-sm py-4 px-2">0 assigned selected.</p>
+            <p className="text-sm py-4 px-2">No students selected.</p>
           ) : (
             <ScrollArea className="max-h-[400px] py-4 px-1 ">
               <div className="flex flex-col">

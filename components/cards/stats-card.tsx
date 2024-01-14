@@ -3,11 +3,17 @@ import React from "react";
 
 interface StatsCardProps {
   title: string;
-  amount?: number | null;
+  amount?: number | string | null;
   icon: React.ReactNode;
+  children?: React.ReactNode;
 }
 
-export default function StatsCard({ title, amount, icon }: StatsCardProps) {
+export default function StatsCard({
+  title,
+  amount,
+  icon,
+  children,
+}: StatsCardProps) {
   return (
     <Card className="w-72 max-w-[280px] border">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -15,7 +21,11 @@ export default function StatsCard({ title, amount, icon }: StatsCardProps) {
         {icon}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{amount}</div>
+        {children ? (
+          children
+        ) : (
+          <div className="text-2xl font-bold">{amount}</div>
+        )}
       </CardContent>
     </Card>
   );
