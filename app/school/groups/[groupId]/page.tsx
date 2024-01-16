@@ -61,7 +61,9 @@ export default async function GroupPage({
             <TabsContent value="courses">
               <CardHeader className="pl-2">
                 <CardTitle>Courses</CardTitle>
-                <CardDescription>Courses the group attended</CardDescription>
+                <CardDescription>
+                  Courses that group has attended
+                </CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-3xl">
                 <StudentCourses
@@ -87,7 +89,9 @@ export default async function GroupPage({
             <TabsContent value="classes">
               <CardHeader className="pl-2">
                 <CardTitle>Classes</CardTitle>
-                <CardDescription>Classes the group attended</CardDescription>
+                <CardDescription>
+                  Classes that group has attended
+                </CardDescription>
               </CardHeader>
               <CardContent className="p-2">
                 <DataTable

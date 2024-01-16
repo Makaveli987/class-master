@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Form,
   FormControl,
@@ -24,9 +24,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
 
 const formSchema = z.object({
   name: z.string().min(1, "Field is required"),
@@ -90,11 +89,11 @@ export default function ExamDialog() {
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 200) {
           router.refresh();
-          toast.success("Exa, successfully updated.");
+          toast.success("Exam, successfully updated.");
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Exa, wasn't updated!");
+        toast.error("Something went wrong. Exam, wasn't updated!");
       })
       .finally(() => {
         setIsPending(false);

@@ -8,6 +8,10 @@ async function main() {
       data: [{ type: "ADMIN" }, { type: "TEACHER" }],
     });
 
+    await database.classroom.create({
+      data: { name: "Online" },
+    });
+
     console.log("Success");
   } catch (error) {
     console.log("Error seeding the database categories", error);

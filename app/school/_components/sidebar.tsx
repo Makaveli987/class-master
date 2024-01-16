@@ -9,6 +9,7 @@ import {
   BookAIcon,
   BookMarkedIcon,
   CalendarIcon,
+  DoorOpenIcon,
   GraduationCapIcon,
   SettingsIcon,
   User2Icon,
@@ -71,6 +72,12 @@ const navLinks: NavLink[] = [
     path: "/school/enrollments",
     icon: <BookMarkedIcon className="w-4 h-4 mr-2" />,
     label: "Enrollments",
+    isRestricted: true,
+  },
+  {
+    path: "/school/classrooms",
+    icon: <DoorOpenIcon className="w-4 h-4 mr-2" />,
+    label: "Classrooms",
     isRestricted: true,
   },
 ];

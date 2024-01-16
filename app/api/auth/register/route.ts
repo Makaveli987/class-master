@@ -59,6 +59,13 @@ export async function POST(request: Request) {
       },
     });
 
+    await db.classroom.create({
+      data: {
+        name: "Online",
+        schoolId: school.id,
+      },
+    });
+
     // Return the created user
     return new NextResponse(JSON.stringify(user), {
       status: 201,

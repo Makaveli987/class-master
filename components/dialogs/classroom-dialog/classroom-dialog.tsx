@@ -6,14 +6,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useNoteDialog } from "@/hooks/useNoteDialog";
+import { useClassroomDialog } from "@/hooks/useClassroomDialog";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Enrollment } from "@prisma/client";
+import axios, { AxiosResponse } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Form,
   FormControl,
@@ -21,104 +24,95 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Textarea } from "../ui/textarea";
-import { Enrollment } from "@prisma/client";
-import axios, { AxiosResponse } from "axios";
-import { toast } from "sonner";
+} from "../../ui/form";
+import { Input } from "../../ui/input";
 
 const formSchema = z.object({
-  text: z.string().min(1, "Field is required"),
+  name: z.string().min(1, "Field is required"),
 });
 
-export default function NotesDialog() {
+export default function ClassroomDialog() {
   const [isPending, setIsPending] = useState<boolean>(false);
 
-  const noteDialog = useNoteDialog();
+  const classroomDialog = useClassroomDialog();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { text: "" },
+    defaultValues: { name: "" },
   });
 
   useEffect(() => {
-    noteDialog.data
-      ? form.setValue("text", noteDialog.data.text)
-      : form.setValue("text", "");
+    if (!!classroomDialog.data) {
+      form.setValue("name", classroomDialog.data.name || "");
+    } else {
+      form.setValue("name", "");
+    }
 
-    console.log("noteDialog.data", noteDialog.data);
     form.clearErrors();
-  }, [form, noteDialog.data]);
+  }, [form, classroomDialog.data]);
 
-  function createNote(values: z.infer<typeof formSchema>): void {
-    console.log("ID NORE", noteDialog?.enrollmentId);
+  function createClassroom(values: z.infer<typeof formSchema>): void {
     axios
-      .post("/api/notes", {
+      .post("/api/classrooms", {
         ...values,
-        enrollmentId: noteDialog?.enrollmentId,
-        userId: noteDialog?.userId,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {
           router.refresh();
-          toast.success("Note added successfully.");
+          toast.success("Classroom added successfully.");
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Note wasn't added!");
+        toast.error("Something went wrong. Classroom wasn't added!");
       })
       .finally(() => {
         setIsPending(false);
-        noteDialog.close();
+        classroomDialog.close();
       });
   }
 
-  function updateNote(values: z.infer<typeof formSchema>): void {
+  function updateClassroom(values: z.infer<typeof formSchema>): void {
     axios
-      .patch("/api/notes/" + noteDialog.data?.id, {
+      .patch("/api/classrooms/" + classroomDialog.data?.id, {
         ...values,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 200) {
           router.refresh();
-          toast.success("Note successfully updated.");
+          toast.success("Classroom, successfully updated.");
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Note wasn't updated!");
+        toast.error("Something went wrong. Classroom, wasn't updated!");
       })
       .finally(() => {
         setIsPending(false);
-        noteDialog.close();
+        classroomDialog.close();
       });
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    console.log("values", values);
-    console.log("notesDialog.data", noteDialog.data);
 
-    !!noteDialog.data ? updateNote(values) : createNote(values);
+    !!classroomDialog.data ? updateClassroom(values) : createClassroom(values);
   }
 
   return (
     <Dialog
-      open={noteDialog.isOpen}
+      open={classroomDialog.isOpen}
       onOpenChange={() => {
-        if (noteDialog.isOpen) {
-          noteDialog.close();
+        if (classroomDialog.isOpen) {
+          classroomDialog.close();
         }
       }}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {!!noteDialog.data ? "Edit Note" : "Add Note"}
+            {!!classroomDialog.data ? "Edit Classroom" : "Add Classroom"}
           </DialogTitle>
-          <DialogDescription>
-            Teacher note for this course enrollment
-          </DialogDescription>
+          <DialogDescription>Classroom at your school</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -128,28 +122,24 @@ export default function NotesDialog() {
           >
             <FormField
               control={form.control}
-              name="text"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Note</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Textarea
-                      disabled={isPending}
-                      className="h-32"
-                      placeholder="Type note..."
-                      {...field}
-                    />
+                    <Input disabled={isPending} placeholder="Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <div className="flex gap-2 justify-end">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  noteDialog.close();
+                  classroomDialog.close();
                 }}
               >
                 Cancel

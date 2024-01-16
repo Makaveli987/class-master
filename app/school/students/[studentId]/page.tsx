@@ -55,7 +55,9 @@ export default async function StudentPage({
             <TabsContent value="courses">
               <CardHeader className="pl-2">
                 <CardTitle>Courses</CardTitle>
-                <CardDescription>Courses the student attended</CardDescription>
+                <CardDescription>
+                  Courses that student has attended
+                </CardDescription>
               </CardHeader>
               <CardContent className="p-2 max-w-4xl">
                 <StudentCourses
@@ -81,7 +83,9 @@ export default async function StudentPage({
             <TabsContent value="classes">
               <CardHeader className="pl-2">
                 <CardTitle>Classes</CardTitle>
-                <CardDescription>Classes the student attended</CardDescription>
+                <CardDescription>
+                  Classes that student has attended
+                </CardDescription>
               </CardHeader>
               <CardContent className="p-2">
                 <DataTable

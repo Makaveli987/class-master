@@ -133,6 +133,7 @@ model Class {
   courseId            String
   originalTeacherId   String
   substituteTeacherId String?
+  classroomId         String
   canceled            Boolean
   paid                Boolean
   // should have name
@@ -144,6 +145,7 @@ model Class {
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
   course              Course       @relation(fields: [courseId], references: [id])
+  classroom           Classroom    @relation(fields: [classroomId], references: [id])
   originalTeacher     User         @relation(fields: [originalTeacherId], references: [id], name: "originalTeacher")
   substituteTeacher   User?        @relation(fields: [substituteTeacherId], references: [id], name: "substituteTeacher")
   attendance          Attendance[]
@@ -151,6 +153,7 @@ model Class {
   @@index([courseId])
   @@index([substituteTeacherId])
   @@index([originalTeacherId])
+  @@index([classroomId])
 }
 
 model Attendance {
@@ -175,6 +178,7 @@ model School {
   users       User[]
   courses     Course[]
   enrollments Enrollment[]
+  classrooms  Classroom[]
 }
 
 model Note {
@@ -203,4 +207,15 @@ model Exam {
   studentId    String
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+}
+
+model Classroom {
+  id        String @id @default(uuid())
+  name      String
+  schoolId  String 
+  archived  Boolean @default(false)
+  school    School     @relation(fields: [schoolId], references: [id])
+  class     Class[]
+
+  @@index([schoolId])
 }
