@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
 import Header from "./header";
 import { Sidebar } from "./sidebar";
+import { MobileSidebar } from "./sidebar-mobile";
 
 export default function SchoolClient({
   children,
@@ -13,7 +14,9 @@ export default function SchoolClient({
 
   return (
     <div className="flex h-screen">
-      {session ? <Sidebar session={session} /> : <Sidebar.Skeleton />}
+      <div className="hidden lg:block">
+        {session ? <Sidebar session={session} /> : <Sidebar.Skeleton />}
+      </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header session={session} />

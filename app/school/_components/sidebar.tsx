@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSidebar } from "@/hooks/useSidebar";
 import { RoleType } from "@/lib/models/Roles";
 import { cn } from "@/lib/utils";
 import {
@@ -20,7 +21,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HTMLAttributes, ReactElement } from "react";
 
-interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
+export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   session: Session | null;
 }
 
@@ -83,10 +84,15 @@ const navLinks: NavLink[] = [
 ];
 
 export function Sidebar({ className, session }: SidebarProps) {
+  const sidebar = useSidebar();
   const pathname = usePathname();
   return (
     <div
-      className={cn("pb-12 flex-1 max-w-64 border-r bg-[#020817]", className)}
+      className={cn(
+        "pb-12 border-r h-full bg-[#020817] overflow-hidden transition-all duration-300",
+        className,
+        sidebar.isOpen ? "w-64 opacity-100" : "w-0 opacity-0"
+      )}
     >
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
@@ -131,7 +137,7 @@ export function Sidebar({ className, session }: SidebarProps) {
 
 Sidebar.Skeleton = function SkeletonSidebar() {
   return (
-    <div className="pb-12 flex-1 max-w-64 border-r bg-slate-950">
+    <div className="pb-12 w-64 border-r bg-slate-950">
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
           <Logo />

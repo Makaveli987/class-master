@@ -24,9 +24,9 @@ export function DataTablePagination<TData>({
   totalRecords,
 }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex items-center justify-between px-2 mt-5">
+    <div className="flex flex-col md:flex-row gap-2 items-center justify-between px-2 mt-5">
       <div className="text-sm font-medium">Total: {totalRecords}</div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
+      <div className="flex flex-col md:flex-row gap-2 items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
@@ -58,7 +58,7 @@ export function DataTablePagination<TData>({
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
+            className="h-8 w-8 p-0 lg:flex"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
@@ -85,7 +85,7 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
             variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
+            className="h-8 w-8 p-0 lg:flex"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
