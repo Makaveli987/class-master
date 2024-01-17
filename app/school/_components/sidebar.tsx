@@ -89,9 +89,9 @@ export function Sidebar({ className, session }: SidebarProps) {
   return (
     <div
       className={cn(
-        "pb-12 border-r h-full bg-[#020817] overflow-hidden transition-all duration-300",
+        "pb-12 lg:border-r h-full bg-[#020817] overflow-hidden transition-all duration-200",
         className,
-        sidebar.isOpen ? "w-64 opacity-100" : "w-0 opacity-0"
+        sidebar.isOpen ? "w-64" : "w-0"
       )}
     >
       <div className="h-14 ml-5 flex items-center">
@@ -101,7 +101,7 @@ export function Sidebar({ className, session }: SidebarProps) {
       </div>
 
       <Separator className="bg-[#1E293B]" />
-      <div className="space-y-4 py-5 text-slate-300">
+      <div className={cn("space-y-4 py-5 text-slate-300 transition-all")}>
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
