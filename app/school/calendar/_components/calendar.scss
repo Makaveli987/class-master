@@ -1,0 +1,123 @@
+.fc .fc-toolbar-title {
+  font-size: 1.25em;
+  font-weight: 500;
+  margin: 0;
+  // @apply text-green-800;
+}
+
+.fc .fc-button-primary {
+  @apply h-[34px] leading-[14px] inline-flex justify-center rounded-md border px-4 py-2 bg-card text-sm font-medium text-green-800 transition-all;
+
+  &:hover {
+    @apply bg-slate-50 text-green-600 border;
+  }
+
+  // &:disabled {
+  //   @apply border bg-card text-green-400;
+  // }
+
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
+// .fc .fc-button-primary:not(:disabled).fc-button-active {
+//   @apply bg-green-800;
+//   @apply text-green-100;
+//   @apply h-[34px] leading-[14px] inline-flex justify-center border border-transparent bg-green-800 px-4 py-2 text-sm font-medium text-green-50 hover:bg-green-700;
+
+//   box-shadow: none !important;
+// }
+
+.fc .fc-toolbar {
+  @apply flex flex-col md:flex-row;
+}
+
+.fc-toolbar-chunk {
+  @apply mb-4 md:mb-0;
+}
+
+.fc .fc-button .fc-icon {
+  font-size: 1.25em;
+  vertical-align: middle;
+}
+
+.fc .fc-scrollgrid-section > * {
+  border: 0;
+}
+
+.fc .fc-button:focus {
+  box-shadow: none !important;
+}
+
+// .fc-daygrid-day-number {
+//   @apply text-green-800;
+// }
+
+// .fc .fc-button-primary:not(:disabled):active {
+//   @apply bg-green-800 text-green-50 border border-green-800;
+// }
+
+.fc-scrollgrid-sync-inner {
+  padding: 10px 0 !important;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  @apply border rounded-sm;
+  border: 1px solid !important;
+  border-color: hsl(214.3 31.8% 91.4%) !important;
+}
+
+.dark .fc-theme-standard .fc-scrollgrid {
+  @apply border rounded-sm;
+  border: 1px solid !important;
+  border-color: hsl(217.2 32.6% 17.5%) !important;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  @apply border;
+  border-color: hsl(214.3 31.8% 91.4%) !important;
+}
+
+.dark .fc-theme-standard td {
+  @apply border;
+  border-color: hsl(217.2 32.6% 17.5%) !important;
+}
+
+.dark .fc-theme-standard th {
+  @apply border bg-card;
+  border-color: hsl(217.2 32.6% 17.5%) !important;
+}
+
+.fc-col-header-cell-cushion {
+  @apply text-muted-foreground font-medium text-base py-3;
+}
+
+.fc .fc-col-header-cell-cushion {
+  @apply py-3;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  @apply text-muted-foreground  text-base;
+}
+
+.fc-col-header-cell-cushion {
+  @apply text-muted-foreground;
+}
+
+.fc-daygrid-event-harness {
+  @apply bg-green-800 text-slate-50 mb-1 rounded;
+}
+
+.fc-daygrid-day-top {
+  @apply text-muted-foreground;
+}
+
+// .fc-day-today {
+//   background: #fef9c3 !important;
+// }
+
+// .dark .fc-day-today {
+//   background: #083344 !important;
+// }
