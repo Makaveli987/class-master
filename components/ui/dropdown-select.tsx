@@ -17,7 +17,7 @@ export interface DropdownSelectOptions {
 interface DropdownSelectProps {
   options: DropdownSelectOptions[];
   placeholder?: string;
-  value: string;
+  value?: string;
   onChange: (...event: any[]) => void;
   disabled?: boolean;
 }

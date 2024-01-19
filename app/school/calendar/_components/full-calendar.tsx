@@ -15,11 +15,20 @@ import "./calendar.scss";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import CalendarHeadbar from "./calendar-headbar";
-import { DropdownSelect } from "@/components/ui/dropdown-select";
+import {
+  DropdownSelect,
+  DropdownSelectOptions,
+} from "@/components/ui/dropdown-select";
 import { Label } from "@/components/ui/label";
+import { useClassDialog } from "@/hooks/useClassDialog";
 
-const Calendar = () => {
-  let [modalOpen, setModalOpen] = useState<boolean>(false);
+interface CalendarProps {
+  classrooms: DropdownSelectOptions[];
+  teachers: DropdownSelectOptions[];
+}
+
+const Calendar = ({ classrooms, teachers }: CalendarProps) => {
+  const classDialog = useClassDialog();
 
   /** Selected event data */
   let [eventData, setEventData] = useState({});
@@ -62,7 +71,7 @@ const Calendar = () => {
    */
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
     setEventData(selectInfo);
-    setModalOpen(true);
+    classDialog.open();
   };
 
   /**
@@ -81,7 +90,7 @@ const Calendar = () => {
     }))(clickInfo.event);
 
     setEventData(eventInfo);
-    setModalOpen(true);
+    classDialog.open();
   };
 
   /** Get classes */
@@ -122,25 +131,6 @@ const Calendar = () => {
     setCurrentDate(date);
   }, []);
 
-  const options = [
-    {
-      value: "online",
-      label: "Online",
-    },
-    {
-      value: "online 2",
-      label: "Yellow Classroom",
-    },
-    {
-      value: "online 3",
-      label: "Green Classroom",
-    },
-    {
-      value: "online 4",
-      label: "Red Classroom",
-    },
-  ];
-
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between">
@@ -157,22 +147,24 @@ const Calendar = () => {
                 <div className="w-full md:w-60 flex flex-col gap-2">
                   <Label>Classroom</Label>
                   <DropdownSelect
-                    options={options}
-                    value={options[0].value}
+                    placeholder="Select classroom"
+                    options={classrooms}
+                    // value={classrooms[0].value}
                     onChange={() => {}}
                   />
                 </div>
                 <div className="w-full md:w-60  flex flex-col gap-2">
                   <Label>Teacher</Label>
                   <DropdownSelect
-                    options={options}
-                    value={options[0].value}
+                    placeholder="Select teacher"
+                    options={teachers}
+                    // value={teachers[0].value}
                     onChange={() => {}}
                   />
                 </div>
               </div>
 
-              <Button onClick={() => {}}>
+              <Button onClick={() => classDialog.open()}>
                 <div className="flex items-center gap-1.5">
                   <PlusCircleIcon className="w-4 h-4 mr-2" />
                   <span>Add Class</span>

@@ -1,4 +1,4 @@
-import { Exam } from "@prisma/client";
+import { Class, Exam } from "@prisma/client";
 import { create } from "zustand";
 
 // export interface ExamData extends Exam {
@@ -19,33 +19,25 @@ import { create } from "zustand";
 // }
 
 interface OpenParams {
-  exam?: Exam;
-  enrollmentId?: string;
-  studentId?: string | null;
+  class?: Class;
 }
 
-type ExamDialogStore = {
+type ClassDialogStore = {
   isOpen: boolean;
-  open: (params: OpenParams) => void;
+  open: (params?: OpenParams) => void;
   close: () => void;
-  data: Exam | null;
-  enrollmentId?: string;
-  studentId?: string;
+  data: Class | null;
 };
 
-export const useExamDialog = create<ExamDialogStore>((set) => ({
+export const useClassDialog = create<ClassDialogStore>((set) => ({
   isOpen: false,
   data: null,
-  enrollmentId: "",
-  open: (params: OpenParams) => {
+  open: (params?: OpenParams) => {
     console.log("params", params);
     set({
       isOpen: true,
-      data: params?.exam,
-      enrollmentId: params.enrollmentId,
-      studentId: params.studentId || "",
+      data: params?.class,
     });
   },
-  close: () =>
-    set({ isOpen: false, data: null, enrollmentId: "", studentId: "" }),
+  close: () => set({ isOpen: false, data: null }),
 }));
