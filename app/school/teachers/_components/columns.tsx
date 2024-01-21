@@ -10,7 +10,7 @@ import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { RoleType } from "@/lib/models/roles";
+import { RoleType } from "@/lib/models/Roles";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
