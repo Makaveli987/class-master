@@ -1,7 +1,7 @@
 import { getClassroomsOptions } from "@/actions/get-classrooms";
-import Calendar from "./_components/full-calendar";
-import { DropdownSelectOptions } from "@/components/ui/dropdown-select";
 import { getTeachersOptions } from "@/actions/get-teachers";
+import { DropdownSelectOptions } from "@/components/ui/dropdown-select";
+import ClassCalendar from "./_components/class-calendar";
 
 export default async function CalendarPage() {
   const classrooms = (await getClassroomsOptions()) as DropdownSelectOptions[];
@@ -9,7 +9,7 @@ export default async function CalendarPage() {
 
   return (
     <div className="max-w-screen-2xl">
-      <Calendar classrooms={classrooms} teachers={teachers} />
+      <ClassCalendar classrooms={classrooms} teachers={teachers} />
     </div>
   );
 }

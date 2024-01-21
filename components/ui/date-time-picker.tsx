@@ -12,13 +12,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { TimePickerInput } from "./time-picker-input";
 import { TimePicker } from "./time-picker";
-// import { TimePickerDemo } from "@/package/time-picker-demo";
+import { SelectSingleEventHandler } from "react-day-picker";
 
-export function DateTimePickerDemo() {
-  const [date, setDate] = React.useState<Date>();
+interface DateTimePickerProps {
+  value: Date;
+  onChange: SelectSingleEventHandler | ((date: Date | undefined) => void);
+}
 
+export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -26,22 +28,25 @@ export function DateTimePickerDemo() {
           variant={"outline"}
           className={cn(
             "justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !value && "text-muted-foreground"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP HH:mm:ss") : <span>Pick a date</span>}
+          {value ? format(value, "PPP HH:mm:ss") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={setDate}
+          selected={value}
+          onSelect={onChange}
           initialFocus
         />
         <div className="p-3 border-t border-border">
-          <TimePicker setDate={setDate} date={date} />
+          <TimePicker
+            setDate={onChange as (date: Date | undefined) => void}
+            date={value}
+          />
         </div>
       </PopoverContent>
     </Popover>

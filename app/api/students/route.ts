@@ -1,7 +1,7 @@
 import getCurrentUser from "@/actions/get-current-user";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
@@ -38,6 +38,53 @@ export async function POST(req: Request) {
 
     return new NextResponse(JSON.stringify(s), {
       status: 201,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    return new NextResponse(
+      JSON.stringify({ error: "Internal Server Error" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}
+
+export async function GET(req: NextRequest) {
+  const substituteTeacher = req.nextUrl.searchParams.get("substituteTeacher");
+  try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const enrollments = await db.enrollment.findMany({
+      where: {
+        schoolId: currentUser?.schoolId,
+        teacherId: substituteTeacher ? substituteTeacher : currentUser?.id,
+        studentId: { not: null },
+        groupId: null,
+      },
+      include: {
+        student: {
+          select: { id: true, firstName: true, lastName: true },
+        },
+      },
+    });
+
+    const mappedStudents = enrollments.map((enrollment) => ({
+      value: enrollment.student?.id,
+      label: `${enrollment.student?.firstName} ${enrollment.student?.lastName}`,
+    }));
+
+    return new NextResponse(JSON.stringify(mappedStudents), {
+      status: 200,
       headers: {
         "Content-Type": "application/json",
       },

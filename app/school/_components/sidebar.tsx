@@ -137,7 +137,7 @@ export function Sidebar({ className, session }: SidebarProps) {
 
 Sidebar.Skeleton = function SkeletonSidebar() {
   return (
-    <div className="pb-12 w-64 border-r bg-slate-950">
+    <div className="pb-12 w-64 border-r h-full bg-slate-950">
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
           <Logo />

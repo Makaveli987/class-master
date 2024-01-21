@@ -42,8 +42,8 @@ export function DropdownSelect({
         {!options.length && <p className="pl-2 text-sm">No options.</p>}
 
         <SelectGroup>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+          {options.map((option, i) => (
+            <SelectItem key={option.value + i} value={option.value}>
               {option.label}
             </SelectItem>
           ))}

@@ -134,16 +134,15 @@ model Class {
   originalTeacherId   String
   substituteTeacherId String?
   classroomId         String
-  canceled            Boolean
-  paid                Boolean
-  // should have name
+  classStatus         String
+  classType           String
   attendeeId          String
-  attendeeType        String
   startDate           DateTime
   endDate             DateTime
-  duration            Int
+  duration            String
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
+  
   course              Course       @relation(fields: [courseId], references: [id])
   classroom           Classroom    @relation(fields: [classroomId], references: [id])
   originalTeacher     User         @relation(fields: [originalTeacherId], references: [id], name: "originalTeacher")

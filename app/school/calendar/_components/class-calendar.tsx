@@ -21,13 +21,14 @@ import {
 } from "@/components/ui/dropdown-select";
 import { Label } from "@/components/ui/label";
 import { useClassDialog } from "@/hooks/useClassDialog";
+import ClassDialog from "@/components/dialogs/class-dialog/class-dialog";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
   teachers: DropdownSelectOptions[];
 }
 
-const Calendar = ({ classrooms, teachers }: CalendarProps) => {
+const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const classDialog = useClassDialog();
 
   /** Selected event data */
@@ -70,6 +71,7 @@ const Calendar = ({ classrooms, teachers }: CalendarProps) => {
    * @param {DateSelectArg} selectInfo selected time and date
    */
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
+    console.log("selectedInfo", selectInfo);
     setEventData(selectInfo);
     classDialog.open();
   };
@@ -125,7 +127,7 @@ const Calendar = ({ classrooms, teachers }: CalendarProps) => {
 
   useEffect((): void => {
     getClasses();
-    // @ts-ignore
+    // @ts-ignore0
     const calendarApi = calendarRef?.current.getApi();
     const date = calendarApi.currentData.viewTitle;
     setCurrentDate(date);
@@ -140,6 +142,11 @@ const Calendar = ({ classrooms, teachers }: CalendarProps) => {
       </div>
 
       <div className="flex flex-col gap-5 mt-5 xl:flex-row">
+        <ClassDialog
+          teachers={teachers.slice(1)}
+          classrooms={classrooms.slice(1)}
+        />
+
         <Card className="mt-1">
           <CardHeader className="mb-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
@@ -234,4 +241,4 @@ const Calendar = ({ classrooms, teachers }: CalendarProps) => {
   );
 };
 
-export default Calendar;
+export default ClassCalendar;

@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import NoteDialog from "./dialogs/notes-dialog/notes-dialog";
-import ExamDialog from "./dialogs/exam-dialog/exam-dialog";
 import ClassroomDialog from "./dialogs/classroom-dialog/classroom-dialog";
-import ClassDialog from "./dialogs/class-dialog/class-dialog";
+import ExamDialog from "./dialogs/exam-dialog/exam-dialog";
+import NoteDialog from "./dialogs/notes-dialog/notes-dialog";
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -22,7 +21,6 @@ export const DialogProvider = () => {
       <NoteDialog />
       <ExamDialog />
       <ClassroomDialog />
-      <ClassDialog />
     </>
   );
 };
