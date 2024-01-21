@@ -61,7 +61,7 @@ export const Combobox = ({
       </PopoverTrigger>
       <PopoverContent className={`p-0 PopoverContent`}>
         <Command className="w-full">
-          <CommandInput disabled={disabled} placeholder="Search option..." />
+          <CommandInput disabled={disabled} placeholder="Search..." />
           <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup>
             {options.length === 0 ? (

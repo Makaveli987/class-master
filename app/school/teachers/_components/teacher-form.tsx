@@ -288,6 +288,7 @@ export default function TeacherForm({
                 <FormLabel>Role</FormLabel>
                 <FormControl>
                   <DropdownSelect
+                    placeholder="Select role..."
                     disabled={pending}
                     options={roleOptions}
                     onChange={field.onChange}

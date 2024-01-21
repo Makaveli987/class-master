@@ -31,12 +31,16 @@ import {
 import { toast } from "sonner";
 import axios from "axios";
 import LinearLoader from "@/components/ui/linear-loader";
+import { cn } from "@/lib/utils";
+import { RepeatScheduleType } from "@/lib/models/repeat-schedule";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { TimePicker } from "@/components/ui/time-picker";
 
 const formSchema = z
   .object({
     type: z.string().min(1, "Field is required"),
     startDate: z.date({
-      required_error: "A date of birth is required.",
+      required_error: "Field is required.",
     }),
     duration: z.string().min(1, "Field is required"),
     courseId: z.string().min(1, "Field is required"),
@@ -44,11 +48,32 @@ const formSchema = z
     classroomId: z.string().min(1, "Field is required"),
     originalTeacherId: z.string(),
     substitute: z.boolean(),
+    repeat: z.boolean(),
+    repeatConfig: z.object({
+      repeatSchedule: z.string().min(1, "Field is required"),
+      fromTo: z.date({
+        required_error: "Field is required.",
+      }),
+      // to: z.date({
+      //   required_error: "Field is required.",
+      // }),
+      firstWeekTime: z.string(),
+      secondWeekTime: z.string(),
+    }),
   })
   .refine((data) => !data.substitute || data.originalTeacherId, {
     path: ["originalTeacherId"],
     message: "Fields is required",
+  })
+  .refine((data) => !data.repeat || (data.repeat && data.repeatConfig), {
+    path: ["repeatConfig"],
+    message: "Repeat configuration is required when 'repeat' is true",
   });
+
+const repeatOptions = [
+  { value: RepeatScheduleType.SAME_TIME, label: "Same Time" },
+  { value: RepeatScheduleType.SHIFTS, label: "Shifts" },
+];
 
 interface ClassDialogProps {
   classrooms: ComboboxOptions[];
@@ -76,6 +101,10 @@ export default function ClassDialog({
     classroomId: "",
     originalTeacherId: "",
     substitute: false,
+    repeat: false,
+    repeatConfig: {
+      repeatSchedule: RepeatScheduleType.SAME_TIME,
+    },
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -307,7 +336,7 @@ export default function ClassDialog({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 mt-2"
+            className="space-y-6 mt-1"
           >
             <FormField
               control={form.control}
@@ -329,7 +358,6 @@ export default function ClassDialog({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="startDate"
@@ -348,7 +376,6 @@ export default function ClassDialog({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="duration"
@@ -394,45 +421,54 @@ export default function ClassDialog({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="substitute"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center gap-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(value) => {
-                          // if substitute is false fetch students for current (logged in) teacher
-                          if (!value) {
-                            form.setValue("originalTeacherId", "");
-                            getAttendeesAndCourses();
-                            // getStudents();
-                            // getStudentEnrollments();
-                            // filterCourseOptions();
-                          }
-                          field.onChange(value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormLabel className="cursor-pointer">Substitute</FormLabel>
-                  </div>
-                  <FormDescription>
-                    Select if you are a substitute teacher
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {form.getValues("substitute") && (
+            <div>
               <FormField
                 control={form.control}
-                name="originalTeacherId"
+                name="substitute"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex flex-col space-y-2">
+                    <div className="flex items-center gap-2">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={(value) => {
+                            // if substitute is false fetch students for current (logged in) teacher
+                            if (!value) {
+                              form.setValue("originalTeacherId", "");
+                              getAttendeesAndCourses();
+                              // getStudents();
+                              // getStudentEnrollments();
+                              // filterCourseOptions();
+                            }
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
+                      <FormLabel className="cursor-pointer">
+                        Substitute
+                      </FormLabel>
+                    </div>
+                    <FormDescription>
+                      Select if you are a substitute teacher
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div
+                className={cn(
+                  "transition-all duration-300",
+                  form.getValues("substitute")
+                    ? "h-[70px] opacity-100 mt-4"
+                    : "h-0 opacity-0 overflow-hidden"
+                )}
+              >
+                <FormField
+                  control={form.control}
+                  name="originalTeacherId"
+                  render={({ field }) => (
+                    <FormItem>
                       <FormLabel>Original Teacher</FormLabel>
                       <FormControl>
                         <DropdownSelect
@@ -440,19 +476,17 @@ export default function ClassDialog({
                           value={field.value}
                           onChange={(value) => {
                             field.onChange(value);
-
-                            const classType = form.getValues("type");
                             getAttendeesAndCourses();
                           }}
                         />
                       </FormControl>
                       <FormMessage />
                       <FormDescription></FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            )}
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
 
             <FormField
               control={form.control}
@@ -486,7 +520,6 @@ export default function ClassDialog({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="courseId"
@@ -496,6 +529,7 @@ export default function ClassDialog({
                     <FormLabel>Course</FormLabel>
                     <FormControl>
                       <DropdownSelect
+                        placeholder="Select course..."
                         options={coursesOptions}
                         value={field.value}
                         onChange={field.onChange}
@@ -516,6 +550,7 @@ export default function ClassDialog({
                     <FormLabel>Classroom</FormLabel>
                     <FormControl>
                       <DropdownSelect
+                        placeholder="Select classroom..."
                         options={classrooms}
                         value={field.value}
                         onChange={field.onChange}
@@ -526,6 +561,114 @@ export default function ClassDialog({
                 </FormItem>
               )}
             />
+
+            <div>
+              <FormField
+                control={form.control}
+                name="repeat"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="cursor-pointer">Repeat</FormLabel>
+                    </div>
+                    <FormDescription>Repeat class weekly</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div
+                className={cn(
+                  "border px-6 transition-all duration-300 ",
+                  form.getValues("repeat")
+                    ? "max-h-[400px] opacity-100 mt-4 py-6"
+                    : "h-0 opacity-0 overflow-hidden"
+                )}
+              >
+                <div>
+                  <div className="flex gap-10">
+                    <FormField
+                      control={form.control}
+                      name="repeatConfig.repeatSchedule"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <FormLabel>Repeat Schedule</FormLabel>
+                          <FormControl>
+                            <DropdownSelect
+                              options={repeatOptions}
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                          <FormDescription></FormDescription>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="repeatConfig.fromTo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>From - To</FormLabel>
+                          <FormControl>
+                            <DateRangePicker />
+                          </FormControl>
+                          <FormMessage />
+                          <FormDescription></FormDescription>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div
+                    className={cn(
+                      "transition-all duration-300 flex flex-col gap-4",
+                      form.getValues("repeatConfig.repeatSchedule") ===
+                        RepeatScheduleType.SHIFTS
+                        ? "max-h-[200px] opacity-100 mt-4"
+                        : "h-0 opacity-0 overflow-hidden"
+                    )}
+                  >
+                    <FormField
+                      control={form.control}
+                      name="repeatConfig.firstWeekTime"
+                      render={({ field }) => (
+                        <FormItem className="flex gap-2 items-center">
+                          <FormLabel className="w-32">1st Week Time:</FormLabel>
+                          <FormControl>
+                            <TimePicker date={undefined} setDate={() => {}} />
+                          </FormControl>
+                          <FormMessage />
+                          <FormDescription></FormDescription>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="repeatConfig.secondWeekTime"
+                      render={({ field }) => (
+                        <FormItem className="flex gap-2 items-center">
+                          <FormLabel className="w-32">2nd Week Time:</FormLabel>
+                          <FormControl>
+                            <TimePicker date={undefined} setDate={() => {}} />
+                          </FormControl>
+                          <FormMessage />
+                          <FormDescription></FormDescription>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="flex gap-2 justify-end">
               <Button
