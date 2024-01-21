@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { getCourse } from "./get-courses";
+import { ClassStatus } from "@/lib/models/class-status";
 
 export const getTeachersStats = async (teacherId: string) => {
   try {
@@ -23,11 +24,11 @@ export const getTeachersStats = async (teacherId: string) => {
     });
 
     const orgClasses = await db.class.count({
-      where: { originalTeacherId: teacherId, canceled: false },
+      where: { originalTeacherId: teacherId, classStatus: ClassStatus.HELD },
     });
 
     const subClasses = await db.class.count({
-      where: { substituteTeacherId: teacherId, canceled: false },
+      where: { substituteTeacherId: teacherId, classStatus: ClassStatus.HELD },
     });
 
     return {
