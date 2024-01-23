@@ -78,9 +78,14 @@ export const columns: ColumnDef<Student>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <span className="font-medium">
-        {row.original.firstName} {row.original.lastName}
-      </span>
+      <div className="flex items-center gap-4">
+        <div className="w-9 h-9 rounded-full bg-sky-200 text-sky-600 flex items-center justify-center">
+          DV
+        </div>
+        <span className="font-medium">
+          {row.original.firstName} {row.original.lastName}
+        </span>
+      </div>
     ),
   },
   {
@@ -89,9 +94,9 @@ export const columns: ColumnDef<Student>[] = [
       <DataTableColumnHeader column={column} title="Email" />
     ),
     cell: ({ row }) => {
-      const payment = row.original;
+      const student = row.original;
 
-      return <span>{payment.email}</span>;
+      return <span>{student.email}</span>;
     },
   },
   {
@@ -103,30 +108,35 @@ export const columns: ColumnDef<Student>[] = [
         title="Phone"
       />
     ),
+    cell: ({ row }) => {
+      const student = row.original;
+
+      return <span>{student.phone}</span>;
+    },
     enableSorting: false,
   },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created" />
-    ),
-    cell: ({ row }) => {
-      const created = formatDate(row.original.createdAt);
+  // {
+  //   accessorKey: "createdAt",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Created" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const created = formatDate(row.original.createdAt);
 
-      return <span>{created}</span>;
-    },
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated" />
-    ),
-    cell: ({ row }) => {
-      const updated = formatDate(row.original.updatedAt);
+  //     return <span>{created}</span>;
+  //   },
+  // },
+  // {
+  //   accessorKey: "updatedAt",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Updated" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     const updated = formatDate(row.original.updatedAt);
 
-      return <span>{updated}</span>;
-    },
-  },
+  //     return <span>{updated}</span>;
+  //   },
+  // },
   {
     id: "actions",
     cell: ({ row }) => {

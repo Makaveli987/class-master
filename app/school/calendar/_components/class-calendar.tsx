@@ -31,6 +31,9 @@ interface CalendarProps {
 const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const classDialog = useClassDialog();
 
+  const [selectedClassroom, setSelectedClassroom] = useState<string>("");
+  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+
   /** Selected event data */
   let [eventData, setEventData] = useState({});
 
@@ -156,8 +159,10 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                   <DropdownSelect
                     placeholder="Select classroom"
                     options={classrooms}
-                    // value={classrooms[0].value}
-                    onChange={() => {}}
+                    value={selectedClassroom}
+                    onChange={(value) => {
+                      setSelectedClassroom(value);
+                    }}
                   />
                 </div>
                 <div className="w-full md:w-60  flex flex-col gap-2">
@@ -165,13 +170,25 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                   <DropdownSelect
                     placeholder="Select teacher"
                     options={teachers}
-                    // value={teachers[0].value}
-                    onChange={() => {}}
+                    value={selectedTeacher}
+                    onChange={(value) => {
+                      setSelectedTeacher(value);
+                    }}
                   />
                 </div>
               </div>
 
-              <Button onClick={() => classDialog.open()}>
+              <Button
+                onClick={() => {
+                  const params = {
+                    classroom:
+                      selectedClassroom && selectedClassroom !== "all"
+                        ? selectedClassroom
+                        : "",
+                  };
+                  classDialog.open(params);
+                }}
+              >
                 <div className="flex items-center gap-1.5">
                   <PlusCircleIcon className="w-4 h-4 mr-2" />
                   <span>Add Class</span>
