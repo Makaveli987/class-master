@@ -12,22 +12,10 @@
     @apply bg-slate-50 text-green-600 border;
   }
 
-  // &:disabled {
-  //   @apply border bg-card text-green-400;
-  // }
-
   &:focus {
     box-shadow: none !important;
   }
 }
-
-// .fc .fc-button-primary:not(:disabled).fc-button-active {
-//   @apply bg-green-800;
-//   @apply text-green-100;
-//   @apply h-[34px] leading-[14px] inline-flex justify-center border border-transparent bg-green-800 px-4 py-2 text-sm font-medium text-green-50 hover:bg-green-700;
-
-//   box-shadow: none !important;
-// }
 
 .fc .fc-toolbar {
   @apply flex flex-col md:flex-row;
@@ -49,14 +37,6 @@
 .fc .fc-button:focus {
   box-shadow: none !important;
 }
-
-// .fc-daygrid-day-number {
-//   @apply text-green-800;
-// }
-
-// .fc .fc-button-primary:not(:disabled):active {
-//   @apply bg-green-800 text-green-50 border border-green-800;
-// }
 
 .fc-scrollgrid-sync-inner {
   padding: 10px 0 !important;
@@ -114,10 +94,13 @@
   @apply text-muted-foreground;
 }
 
-// .fc-day-today {
-//   background: #fef9c3 !important;
-// }
+.fc .fc-timegrid-slot-label-cushion {
+  @apply text-sm;
+}
 
-// .dark .fc-day-today {
-//   background: #083344 !important;
-// }
+.fc-agendaWeek-view tr {
+  height: 40px !important;
+}
+.fc-agendaDay-view tr {
+  height: 40px !important;
+}

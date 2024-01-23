@@ -44,25 +44,60 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   /** Added events (classes) */
   const [currentEvents, setCurrentEvents] = useState<EventInput[]>([
     {
-      start: "2024-01-18",
-      end: "2024-01-19",
+      start: "2024-01-22T11:00:00+01:00",
+      end: "2024-01-22T12:15:00+01:00",
       overlap: true,
       rendering: "background",
       color: "#257e4a",
     },
     {
-      start: "2024-01-19",
-      end: "2024-01-21",
-      overlap: true,
-      rendering: "background",
-      color: "#38bdf8",
-    },
-    {
-      start: "2024-01-18",
-      end: "2024-01-19",
+      start: "2024-01-22T11:00:00+01:00",
+      end: "2024-01-22T12:15:00+01:00",
       overlap: true,
       rendering: "background",
       color: "#257e4a",
+    },
+    {
+      start: "2024-01-22T11:00:00+01:00",
+      end: "2024-01-22T12:15:00+01:00",
+      overlap: true,
+      rendering: "background",
+      color: "#257e4a",
+    },
+    {
+      start: "2024-01-22T12:15:00+01:00",
+      end: "2024-01-22T13:00:00+01:00",
+      overlap: true,
+      rendering: "background",
+      color: "#257e4a",
+    },
+    {
+      start: "2024-01-22T12:15:00+01:00",
+      end: "2024-01-22T13:00:00+01:00",
+      overlap: true,
+      rendering: "background",
+      color: "#257e4a",
+    },
+    {
+      start: "2024-01-22T11:30:00+01:00",
+      end: "2024-01-22T12:30:00+01:00",
+      overlap: true,
+      rendering: "background",
+      color: "#0d9488",
+    },
+    {
+      start: "2024-01-22T11:30:00+01:00",
+      end: "2024-01-22T12:30:00+01:00",
+      overlap: true,
+      rendering: "background",
+      color: "#0d9488",
+    },
+    {
+      start: "2024-01-22T11:30:00+01:00",
+      end: "2024-01-22T12:30:00+01:00",
+      overlap: true,
+      rendering: "background",
+      color: "#0d9488",
     },
   ]);
 
@@ -76,7 +111,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
     console.log("selectedInfo", selectInfo);
     setEventData(selectInfo);
-    classDialog.open();
+    classDialog.open({ startDate: selectInfo.start });
   };
 
   /**
@@ -216,6 +251,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                     day: "Day",
                   }}
                   allDaySlot={false}
+                  contentHeight={20}
                   initialView={"timeGridWeek"}
                   eventColor={"#0d9488"}
                   firstDay={1}
@@ -233,7 +269,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                   }}
                   slotMinTime={"08:00:00"}
                   slotMaxTime={"22:00:00"}
-                  slotDuration={"00:15:00"}
+                  slotDuration={"00:30:00"}
                   selectable={true}
                   selectMirror={true}
                   dayMaxEvents={true}

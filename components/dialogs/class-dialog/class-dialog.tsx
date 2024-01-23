@@ -40,6 +40,16 @@ import { TimePicker } from "@/components/ui/time-picker";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { addDays } from "date-fns";
 
+const repeatConfigSchema = z.object({
+  repeatSchedule: z.string().min(1, "Field is required"),
+  range: z.object({
+    from: z.date(),
+    to: z.date(),
+  }),
+  firstWeekTime: z.date(),
+  secondWeekTime: z.date(),
+});
+
 const formSchema = z
   .object({
     type: z.string().min(1, "Field is required"),
@@ -55,28 +65,46 @@ const formSchema = z
     repeat: z.boolean(),
     repeatConfig: z.object({
       repeatSchedule: z.string().min(1, "Field is required"),
-      // fromTo: z.date({
-      //   required_error: "Field is required.",
-      // }),
       range: z.object({
         from: z.date(),
         to: z.date(),
       }),
-      // to: z.date({
-      //   required_error: "Field is required.",
-      // }),
-      // firstWeekTime: z.string(),
-      // secondWeekTime: z.string(),
+      firstWeekTime: z.date(),
+      secondWeekTime: z.date(),
     }),
   })
   .refine((data) => !data.substitute || data.originalTeacherId, {
     path: ["originalTeacherId"],
     message: "Fields is required",
-  });
-// .refine((data) => !data.repeat || (data.repeat && data.repeatConfig), {
-//   path: ["repeatConfig"],
-//   message: "Repeat configuration is required when 'repeat' is true",
-// });
+  })
+  .refine(
+    (data) => {
+      // Validate repeatConfig only if repeat is true
+      if (data.repeat) {
+        return repeatConfigSchema.safeParse(data.repeatConfig).success;
+      }
+      return true;
+    },
+    {
+      message: "RepeatConfig is required when repeat is selected",
+    }
+  )
+  .refine(
+    (data) => {
+      // Validate firstWeekTime and secondWeekTime based on repeatSchedule value
+      if (data.repeatConfig.repeatSchedule === RepeatScheduleType.SHIFTS) {
+        return (
+          data.repeatConfig.firstWeekTime !== undefined &&
+          data.repeatConfig.secondWeekTime !== undefined
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        "FirstWeekTime and SecondWeekTime are required for specific repeatSchedule",
+    }
+  );
 
 const repeatOptions = [
   { value: RepeatScheduleType.SAME_TIME, label: "Same Time" },
@@ -105,7 +133,8 @@ export default function ClassDialog({
     duration: "60",
     courseId: "",
     attendeeId: "",
-    classroomId: classDialog.classroom,
+    // classroomId: classDialog.classroom,
+    // startDate: new Date(),
     originalTeacherId: "",
     substitute: false,
     repeat: false,
@@ -115,8 +144,8 @@ export default function ClassDialog({
         from: new Date(),
         to: addDays(new Date(), 30),
       },
-      // firstWeekTime: "12:00",
-      // secondWeekTime: "18:00",
+      // firstWeekTime: new Date(new Date().setHours(12, 0, 0, 0)),
+      // secondWeekTime: undefined,
     },
   };
 
@@ -136,6 +165,10 @@ export default function ClassDialog({
   ];
 
   useEffect(() => {
+    form.setValue("classroomId", classDialog.classroom);
+    form.setValue("startDate", classDialog.startDate as Date);
+    // form.setValue("repeatConfig.firstWeekTime", classDialog.startDate as Date);
+
     setTimeout(() => {
       form.reset();
     }, 200);
@@ -456,9 +489,6 @@ export default function ClassDialog({
                               if (!value) {
                                 form.setValue("originalTeacherId", "");
                                 getAttendeesAndCourses();
-                                // getStudents();
-                                // getStudentEnrollments();
-                                // filterCourseOptions();
                               }
                               field.onChange(value);
                             }}
@@ -592,7 +622,15 @@ export default function ClassDialog({
                         <FormControl>
                           <Checkbox
                             checked={field.value}
-                            onCheckedChange={field.onChange}
+                            onCheckedChange={(value) => {
+                              if (value) {
+                                form.setValue(
+                                  "repeatConfig.firstWeekTime",
+                                  classDialog.startDate as Date
+                                );
+                              }
+                              field.onChange(value);
+                            }}
                           />
                         </FormControl>
                         <FormLabel className="cursor-pointer">Repeat</FormLabel>
@@ -659,7 +697,7 @@ export default function ClassDialog({
                           : "h-0 opacity-0 overflow-hidden"
                       )}
                     >
-                      {/* <FormField
+                      <FormField
                         control={form.control}
                         name="repeatConfig.firstWeekTime"
                         render={({ field }) => (
@@ -690,14 +728,17 @@ export default function ClassDialog({
                             <FormControl>
                               <TimePicker
                                 date={field.value}
-                                setDate={field.onChange}
+                                setDate={(value) => {
+                                  console.log("value 22222", value);
+                                  field.onChange(value);
+                                }}
                               />
                             </FormControl>
                             <FormMessage />
                             <FormDescription></FormDescription>
                           </FormItem>
                         )}
-                      /> */}
+                      />
                     </div>
                   </div>
                 </div>
