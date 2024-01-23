@@ -40,16 +40,6 @@ import { TimePicker } from "@/components/ui/time-picker";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { addDays } from "date-fns";
 
-const repeatConfigSchema = z.object({
-  repeatSchedule: z.string().min(1, "Field is required"),
-  range: z.object({
-    from: z.date(),
-    to: z.date(),
-  }),
-  firstWeekTime: z.date(),
-  secondWeekTime: z.date(),
-});
-
 const formSchema = z
   .object({
     type: z.string().min(1, "Field is required"),
@@ -76,35 +66,7 @@ const formSchema = z
   .refine((data) => !data.substitute || data.originalTeacherId, {
     path: ["originalTeacherId"],
     message: "Fields is required",
-  })
-  .refine(
-    (data) => {
-      // Validate repeatConfig only if repeat is true
-      if (data.repeat) {
-        return repeatConfigSchema.safeParse(data.repeatConfig).success;
-      }
-      return true;
-    },
-    {
-      message: "RepeatConfig is required when repeat is selected",
-    }
-  )
-  .refine(
-    (data) => {
-      // Validate firstWeekTime and secondWeekTime based on repeatSchedule value
-      if (data.repeatConfig.repeatSchedule === RepeatScheduleType.SHIFTS) {
-        return (
-          data.repeatConfig.firstWeekTime !== undefined &&
-          data.repeatConfig.secondWeekTime !== undefined
-        );
-      }
-      return true;
-    },
-    {
-      message:
-        "FirstWeekTime and SecondWeekTime are required for specific repeatSchedule",
-    }
-  );
+  });
 
 const repeatOptions = [
   { value: RepeatScheduleType.SAME_TIME, label: "Same Time" },
@@ -133,8 +95,6 @@ export default function ClassDialog({
     duration: "60",
     courseId: "",
     attendeeId: "",
-    // classroomId: classDialog.classroom,
-    // startDate: new Date(),
     originalTeacherId: "",
     substitute: false,
     repeat: false,
@@ -144,12 +104,8 @@ export default function ClassDialog({
         from: new Date(),
         to: addDays(new Date(), 30),
       },
-      // firstWeekTime: new Date(new Date().setHours(12, 0, 0, 0)),
-      // secondWeekTime: undefined,
     },
   };
-
-  console.log("defaultValues :>> ", defaultValues);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -167,7 +123,6 @@ export default function ClassDialog({
   useEffect(() => {
     form.setValue("classroomId", classDialog.classroom);
     form.setValue("startDate", classDialog.startDate as Date);
-    // form.setValue("repeatConfig.firstWeekTime", classDialog.startDate as Date);
 
     setTimeout(() => {
       form.reset();
@@ -597,7 +552,7 @@ export default function ClassDialog({
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex flex-col space-y-2">
-                      <FormLabel>Classroom {field.value}</FormLabel>
+                      <FormLabel>Classroom</FormLabel>
                       <FormControl>
                         <DropdownSelect
                           placeholder="Select classroom..."
@@ -626,6 +581,10 @@ export default function ClassDialog({
                               if (value) {
                                 form.setValue(
                                   "repeatConfig.firstWeekTime",
+                                  classDialog.startDate as Date
+                                );
+                                form.setValue(
+                                  "repeatConfig.secondWeekTime",
                                   classDialog.startDate as Date
                                 );
                               }

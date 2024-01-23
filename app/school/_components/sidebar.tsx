@@ -101,7 +101,7 @@ export function Sidebar({ className, session }: SidebarProps) {
       </div>
 
       <Separator className="bg-[#1E293B]" />
-      <div className={cn("space-y-4 py-5 text-slate-300 transition-all")}>
+      <div className={cn("space-y-4 py-5 text-slate-400 transition-all")}>
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {

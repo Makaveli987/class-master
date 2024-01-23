@@ -74,7 +74,7 @@ const CalendarHeadbar = ({
       <div className="flex">
         <Button
           size="sm"
-          className="rounded-r-none text-sm"
+          className="rounded-r-none border-r-0 text-sm"
           variant={activeViewIndex === 0 ? "default" : "outline"}
           onClick={() => {
             // @ts-ignore
@@ -91,7 +91,7 @@ const CalendarHeadbar = ({
 
         <Button
           size="sm"
-          className="rounded-none text-sm"
+          className="rounded-none border-r-0 text-sm"
           variant={activeViewIndex === 1 ? "default" : "outline"}
           onClick={() => {
             // @ts-ignore
@@ -108,7 +108,7 @@ const CalendarHeadbar = ({
 
         <Button
           size="sm"
-          className="rounded-l-none text-sm"
+          className="rounded-none border-r-0 text-sm"
           variant={activeViewIndex === 2 ? "default" : "outline"}
           onClick={() => {
             // @ts-ignore
@@ -121,6 +121,23 @@ const CalendarHeadbar = ({
           }}
         >
           Day
+        </Button>
+
+        <Button
+          size="sm"
+          className="rounded-l-none text-sm"
+          variant={activeViewIndex === 3 ? "default" : "outline"}
+          onClick={() => {
+            // @ts-ignore
+            const calendarApi = calendarRef?.current.getApi();
+            calendarApi.changeView("listWeek");
+            const date = calendarApi?.currentData?.viewTitle;
+            setCurrentDate(date);
+            getClasses();
+            setActiveViewIndex(3);
+          }}
+        >
+          List
         </Button>
       </div>
     </div>

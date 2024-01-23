@@ -104,3 +104,11 @@
 .fc-agendaDay-view tr {
   height: 40px !important;
 }
+
+.fc-scrollgrid-sync-inner {
+  padding: 0 !important;
+}
+
+.fc .fc-col-header-cell-cushion {
+  @apply py-1.5 text-sm;
+}

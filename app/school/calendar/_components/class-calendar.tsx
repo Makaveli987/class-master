@@ -10,6 +10,7 @@ import {
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./calendar.scss";
 import { Button } from "@/components/ui/button";
@@ -111,7 +112,13 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
     console.log("selectedInfo", selectInfo);
     setEventData(selectInfo);
-    classDialog.open({ startDate: selectInfo.start });
+    classDialog.open({
+      startDate: selectInfo.start,
+      classroom:
+        selectedClassroom && selectedClassroom !== "all"
+          ? selectedClassroom
+          : "",
+    });
   };
 
   /**
@@ -173,20 +180,14 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-        <h1 className="font-semibold mb-4 sm:mb-0 text-xl text-bluewood-700">
-          Classes
-        </h1>
-      </div>
-
-      <div className="flex flex-col gap-5 mt-5 xl:flex-row">
+      <div className="flex flex-col gap-5 xl:flex-row">
         <ClassDialog
           teachers={teachers.slice(1)}
           classrooms={classrooms.slice(1)}
         />
 
-        <Card className="mt-1">
-          <CardHeader className="mb-6">
+        <Card className="mt-1 flex-1">
+          <CardHeader className="mb-2">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="w-full md:w-60 flex flex-col gap-2">
@@ -242,7 +243,12 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
               <div className="min-w-[500px]">
                 <FullCalendar
                   ref={calendarRef}
-                  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                  plugins={[
+                    dayGridPlugin,
+                    timeGridPlugin,
+                    interactionPlugin,
+                    listPlugin,
+                  ]}
                   headerToolbar={false}
                   buttonText={{
                     today: "Today",
@@ -251,7 +257,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                     day: "Day",
                   }}
                   allDaySlot={false}
-                  contentHeight={20}
+                  contentHeight={10}
                   initialView={"timeGridWeek"}
                   eventColor={"#0d9488"}
                   firstDay={1}
