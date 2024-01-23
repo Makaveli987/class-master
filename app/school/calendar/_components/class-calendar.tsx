@@ -23,6 +23,11 @@ import {
 import { Label } from "@/components/ui/label";
 import { useClassDialog } from "@/hooks/useClassDialog";
 import ClassDialog from "@/components/dialogs/class-dialog/class-dialog";
+import { useSession } from "next-auth/react";
+import { RoleType } from "@/lib/models/Roles";
+import { Badge } from "@/components/ui/badge";
+import ClassDetailsDialog from "@/components/dialogs/class-details-dialog/class-details-dialog";
+import { useClassDetailsDialog } from "@/hooks/useClassDetailsDialog";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
@@ -31,9 +36,17 @@ interface CalendarProps {
 
 const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const classDialog = useClassDialog();
+  const classDetailsDialog = useClassDetailsDialog();
+
+  const session = useSession();
 
   const [selectedClassroom, setSelectedClassroom] = useState<string>("");
-  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+
+  const [selectedTeacher, setSelectedTeacher] = useState<string>(
+    session.data?.user.role.type === RoleType.TEACHER
+      ? session.data?.user.id
+      : ""
+  );
 
   /** Selected event data */
   let [eventData, setEventData] = useState({});
@@ -46,21 +59,21 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const [currentEvents, setCurrentEvents] = useState<EventInput[]>([
     {
       start: "2024-01-22T11:00:00+01:00",
-      end: "2024-01-22T12:15:00+01:00",
+      end: "2024-01-22T12:00:00+01:00",
       overlap: true,
       rendering: "background",
       color: "#257e4a",
     },
     {
       start: "2024-01-22T11:00:00+01:00",
-      end: "2024-01-22T12:15:00+01:00",
+      end: "2024-01-22T12:00:00+01:00",
       overlap: true,
       rendering: "background",
       color: "#257e4a",
     },
     {
       start: "2024-01-22T11:00:00+01:00",
-      end: "2024-01-22T12:15:00+01:00",
+      end: "2024-01-22T12:00:00+01:00",
       overlap: true,
       rendering: "background",
       color: "#257e4a",
@@ -77,7 +90,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
       end: "2024-01-22T13:00:00+01:00",
       overlap: true,
       rendering: "background",
-      color: "#257e4a",
+      // color: "#257e4a",
     },
     {
       start: "2024-01-22T11:30:00+01:00",
@@ -98,7 +111,14 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
       end: "2024-01-22T12:30:00+01:00",
       overlap: true,
       rendering: "background",
-      color: "#0d9488",
+      // color: "#0d9488",
+    },
+    {
+      start: "2024-01-22T15:30:00+01:00",
+      end: "2024-01-22T16:30:00+01:00",
+      overlap: true,
+      rendering: "background",
+      // color: "#0d9488",
     },
   ]);
 
@@ -112,6 +132,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
     console.log("selectedInfo", selectInfo);
     setEventData(selectInfo);
+
     classDialog.open({
       startDate: selectInfo.start,
       classroom:
@@ -136,8 +157,11 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
       extendedProps,
     }))(clickInfo.event);
 
+    console.log("eventInfo :>> ", eventInfo);
     setEventData(eventInfo);
-    classDialog.open();
+    // open class details dialog
+    classDetailsDialog.open();
+    // classDialog.open();
   };
 
   /** Get classes */
@@ -157,15 +181,18 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
    */
   const renderEventContent = (eventContent: EventContentArg): JSX.Element => {
     return (
-      <div className="flex flex-col p-1">
-        <b className="mr-2 text-xs">{eventContent.timeText}</b>
-        <i>{eventContent.event.title}</i>
+      <div className="flex flex-col gap-0 p-1 truncate overflow-hidden">
+        <div className="flex text-xs">
+          <b>Konstantin Vidic</b>
+          <span className="mx-1"> |</span>
+          <b>{eventContent.timeText}</b>
+        </div>
 
-        {eventContent.event.extendedProps.canceled ? (
-          <span className="mt-2 w-16 text-center bg-red-700 rounded-lg">
-            canceled
+        <div>
+          <span className="bg-rose-600 rounded-sm text-xs px-1 font-medium">
+            Canceled
           </span>
-        ) : null}
+        </div>
       </div>
     );
   };
@@ -185,6 +212,8 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
           teachers={teachers.slice(1)}
           classrooms={classrooms.slice(1)}
         />
+
+        <ClassDetailsDialog />
 
         <Card className="mt-1 flex-1">
           <CardHeader className="mb-2">
@@ -259,7 +288,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                   allDaySlot={false}
                   contentHeight={10}
                   initialView={"timeGridWeek"}
-                  eventColor={"#0d9488"}
+                  // eventColor={"#0d9488"}
                   firstDay={1}
                   height={"auto"}
                   eventTimeFormat={{

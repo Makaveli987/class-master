@@ -108,7 +108,7 @@ const CalendarHeadbar = ({
 
         <Button
           size="sm"
-          className="rounded-none border-r-0 text-sm"
+          className="rounded-l-none text-sm"
           variant={activeViewIndex === 2 ? "default" : "outline"}
           onClick={() => {
             // @ts-ignore
@@ -123,7 +123,7 @@ const CalendarHeadbar = ({
           Day
         </Button>
 
-        <Button
+        {/* <Button
           size="sm"
           className="rounded-l-none text-sm"
           variant={activeViewIndex === 3 ? "default" : "outline"}
@@ -138,7 +138,7 @@ const CalendarHeadbar = ({
           }}
         >
           List
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

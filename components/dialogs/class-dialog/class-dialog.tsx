@@ -334,7 +334,7 @@ export default function ClassDialog({
         }
       }}
     >
-      <DialogContent className="max-h-screen overflow-y-auto overflow-x-hidden">
+      <DialogContent className="max-h-screen overflow-y-auto overflow-x-auto">
         <DialogHeader>
           <DialogTitle>Add Class</DialogTitle>
         </DialogHeader>
@@ -372,7 +372,7 @@ export default function ClassDialog({
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex flex-col space-y-2">
-                      <FormLabel>Start Date</FormLabel>
+                      <FormLabel>Date</FormLabel>
                       <FormControl>
                         <DateTimePicker
                           value={field.value}

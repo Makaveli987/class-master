@@ -96,13 +96,7 @@
 
 .fc .fc-timegrid-slot-label-cushion {
   @apply text-sm;
-}
-
-.fc-agendaWeek-view tr {
-  height: 40px !important;
-}
-.fc-agendaDay-view tr {
-  height: 40px !important;
+  padding: 5px 0;
 }
 
 .fc-scrollgrid-sync-inner {

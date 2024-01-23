@@ -44,9 +44,11 @@ export default function SignInClient() {
       email: values.email,
       password: values.password,
       callbackUrl: "/school",
-    })
-      .catch((err) => console.log(err))
-      .finally(() => setPending(false));
+    }).catch((err) => {
+      console.error(error);
+      setPending(false);
+    });
+    // .finally(() => setPending(false));
   }
 
   return (

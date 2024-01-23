@@ -41,7 +41,10 @@ export function AccountMenu({ initials, email, fullName }: AccountMenuProps) {
             Profile
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+          className="cursor-pointer"
+        >
           <LogOutIcon className="w-4 h-4 mr-2 text-muted-foreground" />
           Log out
         </DropdownMenuItem>

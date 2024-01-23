@@ -105,6 +105,7 @@ model User {
   userPerCourses  UserPerCourse[]
   enrolments      Enrollment[]
   note            Note[]
+  color           UserColor?
 
   @@index([roleId])
   @@index([schoolId])
@@ -137,12 +138,11 @@ model Class {
   classStatus         String
   classType           String
   attendeeId          String
-  startDate           DateTime
-  endDate             DateTime
+  start               DateTime
+  end                 DateTime
   duration            String
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
-  
   course              Course       @relation(fields: [courseId], references: [id])
   classroom           Classroom    @relation(fields: [classroomId], references: [id])
   originalTeacher     User         @relation(fields: [originalTeacherId], references: [id], name: "originalTeacher")
@@ -178,6 +178,7 @@ model School {
   courses     Course[]
   enrollments Enrollment[]
   classrooms  Classroom[]
+  colors      UserColor[]
 }
 
 model Note {
@@ -217,4 +218,16 @@ model Classroom {
   class     Class[]
 
   @@index([schoolId])
+}
+
+model UserColor {
+    id        String @id @default(uuid())
+    value     String
+    schoolId  String
+    userId    String @unique
+    user      User   @relation(fields: [userId], references: [id])
+    school    School     @relation(fields: [schoolId], references: [id])
+
+
+    @@index([schoolId])
 }
