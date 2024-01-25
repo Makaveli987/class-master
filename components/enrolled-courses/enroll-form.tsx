@@ -2,7 +2,7 @@
 import useEnrollDialog, {
   EnrollData,
   EnrollUserType,
-} from "@/hooks/useEnrollDialog";
+} from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";

@@ -3,7 +3,7 @@ import { Session } from "next-auth";
 import { HTMLAttributes } from "react";
 import { AccountMenu } from "./account-menu";
 import { ThemeSelector } from "@/components/theme-selector";
-import { useSidebar } from "@/hooks/useSidebar";
+import { useSidebar } from "@/hooks/use-sidebar";
 import { Button } from "@/components/ui/button";
 import { MobileSidebar } from "./sidebar-mobile";
 
@@ -13,10 +13,8 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export default function Header({ session }: HeaderProps) {
   const sidebar = useSidebar();
-  const initials = `DV`;
-  const fullName = `DV`;
-  // const initials = `${session?.user.firstName[0]}${session?.user.lastName[0]}`;
-  // const fullName = `${session?.user.firstName} ${session?.user.lastName}`;
+  const initials = `${session?.user.firstName[0]}${session?.user.lastName[0]}`;
+  const fullName = `${session?.user.firstName} ${session?.user.lastName}`;
   const role = session?.user?.role?.type === "ADMIN" ? "Admin" : "Teacher";
 
   return (

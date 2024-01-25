@@ -10,8 +10,8 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { EnrollUserType } from "@/hooks/useEnrollDialog";
-import { NoteData, useNoteDialog } from "@/hooks/useNoteDialog";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
+import { NoteData, useNoteDialog } from "@/hooks/use-note-dialog";
 import { formatDate } from "@/lib/utils";
 import { Enrollment } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";

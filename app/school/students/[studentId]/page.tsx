@@ -15,7 +15,7 @@ import { getEnrollmentsByStudentId } from "@/actions/get-enrolments";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import EnrollDialog from "@/components/enrolled-courses/enroll-dialog";
-import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { EnrollFormCourse } from "@/components/enrolled-courses/enroll-form";
 

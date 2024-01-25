@@ -10,7 +10,7 @@ import {
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { useExamDialog } from "@/hooks/useExamDialog";
+import { useExamDialog } from "@/hooks/use-exam-dialog";
 import { formatDate } from "@/lib/utils";
 import { Exam } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";

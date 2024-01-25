@@ -21,13 +21,13 @@ import {
   DropdownSelectOptions,
 } from "@/components/ui/dropdown-select";
 import { Label } from "@/components/ui/label";
-import { useClassDialog } from "@/hooks/useClassDialog";
+import { useClassDialog } from "@/hooks/use-class-dialog";
 import ClassDialog from "@/components/dialogs/class-dialog/class-dialog";
 import { useSession } from "next-auth/react";
 import { RoleType } from "@/lib/models/Roles";
 import { Badge } from "@/components/ui/badge";
 import ClassDetailsDialog from "@/components/dialogs/class-details-dialog/class-details-dialog";
-import { useClassDetailsDialog } from "@/hooks/useClassDetailsDialog";
+import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];

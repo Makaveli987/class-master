@@ -4,7 +4,7 @@ import {
 } from "@/actions/get-enrolments";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import EnrollmentTable from "./_components/enrollment-table";
 

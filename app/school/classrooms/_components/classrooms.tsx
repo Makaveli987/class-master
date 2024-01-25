@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { useClassroomDialog } from "@/hooks/useClassroomDialog";
+import { useClassroomDialog } from "@/hooks/use-classroom-dialog";
 import { Classroom } from "@prisma/client";
 import axios from "axios";
 import { EditIcon, PlusCircleIcon, Trash2Icon } from "lucide-react";

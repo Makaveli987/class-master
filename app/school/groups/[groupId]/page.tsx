@@ -14,7 +14,7 @@ import { getEnrollmentsByGroupId } from "@/actions/get-enrolments";
 import { getGroup } from "@/actions/get-groups";
 import { getStudents } from "@/actions/get-students";
 import EnrollDialog from "@/components/enrolled-courses/enroll-dialog";
-import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import StudentCourses from "../../students/_components/student-courses";
 import GroupForm from "../_components/group-form";

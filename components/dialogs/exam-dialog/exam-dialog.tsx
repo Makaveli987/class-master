@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useExamDialog } from "@/hooks/useExamDialog";
+import { useExamDialog } from "@/hooks/use-exam-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Enrollment } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";

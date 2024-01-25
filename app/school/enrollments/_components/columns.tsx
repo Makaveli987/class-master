@@ -6,7 +6,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { EnrollUserType } from "@/hooks/useEnrollDialog";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import { calcPercentage, formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";

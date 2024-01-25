@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useClassDialog } from "@/hooks/useClassDialog";
+import { useClassDialog } from "@/hooks/use-class-dialog";
 import { ClassType } from "@/lib/models/class-type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";

@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import useEnrollDialog, { EnrollUserType } from "@/hooks/useEnrollDialog";
+import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import EnrollForm, { EnrollFormCourse } from "./enroll-form";
 

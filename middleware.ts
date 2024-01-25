@@ -42,6 +42,10 @@ export default auth((req) => {
     );
   }
 
+  if (nextUrl.pathname === "/school") {
+    return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+  }
+
   return null;
 });
 

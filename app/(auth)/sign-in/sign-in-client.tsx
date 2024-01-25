@@ -1,4 +1,5 @@
 "use client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,13 +14,16 @@ import { Separator } from "@/components/ui/separator";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { LoginSchema } from "@/schemas/login-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2Icon } from "lucide-react";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+const INVALID_CREDENTIALS = "CredentialsSignin";
 
 export default function SignInClient() {
   const [pending, setPending] = useState(false);
@@ -41,9 +45,7 @@ export default function SignInClient() {
       email: values.email,
       password: values.password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
-    })
-      .catch((err) => console.log(err))
-      .finally(() => setPending(false));
+    }).catch((err) => console.log(err));
   }
 
   return (
@@ -104,7 +106,14 @@ export default function SignInClient() {
             )}
           />
           {error && (
-            <div className="text-rose-600 text-sm font-medium">*{error}</div>
+            <Alert variant="destructive">
+              <AlertDescription className="flex items-center gap-2">
+                <ExclamationTriangleIcon className="h-4 w-4" />
+                {error === INVALID_CREDENTIALS
+                  ? "Invalid credentials"
+                  : "Something went wrong"}
+              </AlertDescription>
+            </Alert>
           )}
           <Button disabled={pending} className="w-full !mt-10" type="submit">
             {pending ? (

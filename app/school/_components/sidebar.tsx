@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSidebar } from "@/hooks/useSidebar";
+import { useSidebar } from "@/hooks/use-sidebar";
 import { RoleType } from "@/lib/models/Roles";
 import { cn } from "@/lib/utils";
 import {
@@ -73,7 +73,7 @@ const navLinks: NavLink[] = [
     path: "/school/enrollments",
     icon: <BookMarkedIcon className="w-4 h-4 mr-2" />,
     label: "Enrollments",
-    isRestricted: true,
+    isRestricted: false,
   },
   {
     path: "/school/classrooms",

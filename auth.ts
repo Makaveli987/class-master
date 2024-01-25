@@ -54,12 +54,11 @@ export const {
       const existingUser = await getUserById(token.sub);
 
       if (!existingUser) return token;
-      // token.userId = existingUser.id;
       token.firstName = existingUser.firstName;
       token.lastName = existingUser.lastName;
       token.email = existingUser.email;
       token.school = existingUser.school;
-      token.role = existingUser.role.type;
+      token.role = existingUser.role;
 
       return token;
     },

@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 import { Sidebar, SidebarProps } from "./sidebar";
-import { useMobileSidebar } from "@/hooks/useMobileSidebar";
-import { useSidebar } from "@/hooks/useSidebar";
+import { useMobileSidebar } from "@/hooks/use-mobile-sidebar";
+import { useSidebar } from "@/hooks/use-sidebar";
 
 export const MobileSidebar = ({ session }: SidebarProps) => {
   const pathname = usePathname();

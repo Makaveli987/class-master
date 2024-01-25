@@ -11,8 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { EnrollUserType } from "@/hooks/useEnrollDialog";
-import { NoteData } from "@/hooks/useNoteDialog";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
+import { NoteData } from "@/hooks/use-note-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import Notes from "../_components/notes";
