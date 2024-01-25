@@ -139,7 +139,7 @@ export default function ClassDetailsDialog() {
             </div>
             <div className="flex flex-col text-sm">
               <span className="text-muted-foreground text-xs">Teacher</span>
-              <span>Natasa Blagojevic</span>
+              <span className="font-medium">Natasa Blagojevic</span>
             </div>
           </div>
           <div className="flex items-center gap-3 text-sm">
@@ -149,8 +149,8 @@ export default function ClassDetailsDialog() {
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">Date</span>
               <div className="flex gap-4 font-medium text-sm">
-                <span>12.01.2024.</span>
-                <span>10:30 -11: 30</span>
+                <span className="font-medium">12.01.2024.</span>
+                <span className="font-medium">10:30 -11: 30</span>
               </div>
             </div>
           </div>
@@ -161,7 +161,9 @@ export default function ClassDetailsDialog() {
             </div>
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">Course</span>
-              <span>Engleski jezik - konverzacija A2.2</span>
+              <span className="font-medium">
+                Engleski jezik - konverzacija A2.2
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-3 text-sm">
@@ -170,7 +172,7 @@ export default function ClassDetailsDialog() {
             </div>
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">Classroom</span>
-              <span>Yellow Classroom</span>
+              <span className="font-medium">Yellow Classroom</span>
             </div>
           </div>
         </div>
