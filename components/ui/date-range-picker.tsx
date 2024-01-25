@@ -21,12 +21,14 @@ import {
 interface DateTimePickerProps {
   date: { from: Date; to: Date };
   setDate: SelectRangeEventHandler;
+  disabled?: boolean;
 }
 
 export function DateRangePicker({
   className,
   date,
   setDate,
+  disabled = false,
 }: React.HTMLAttributes<HTMLDivElement> & DateTimePickerProps) {
   // const [date, setDate] = React.useState<DateRange | undefined>({
   //   from: new Date(2022, 0, 20),
@@ -38,6 +40,7 @@ export function DateRangePicker({
       <Popover>
         <PopoverTrigger asChild>
           <Button
+            disabled={disabled}
             id="date"
             variant={"outline"}
             className={cn(

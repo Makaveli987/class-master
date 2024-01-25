@@ -91,7 +91,7 @@ export function Sidebar({ className, session }: SidebarProps) {
       className={cn(
         "pb-12 lg:border-r h-full bg-[#020817] overflow-hidden transition-all duration-200",
         className,
-        sidebar.isOpen ? "w-64" : "w-0"
+        sidebar.isOpen ? "w-56" : "w-0"
       )}
     >
       <div className="h-14 ml-5 flex items-center">

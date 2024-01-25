@@ -84,7 +84,7 @@ export default function ClassroomDialog() {
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Classroom, wasn't updated!");
+        toast.error("Something went wrong. Classroom wasn't updated!");
       })
       .finally(() => {
         setIsPending(false);

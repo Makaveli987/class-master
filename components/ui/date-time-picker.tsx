@@ -18,13 +18,19 @@ import { SelectSingleEventHandler } from "react-day-picker";
 interface DateTimePickerProps {
   value: Date;
   onChange: SelectSingleEventHandler | ((date: Date | undefined) => void);
+  disabled?: boolean;
 }
 
-export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
+export function DateTimePicker({
+  value,
+  onChange,
+  disabled = false,
+}: DateTimePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
+          disabled={disabled}
           variant={"outline"}
           className={cn(
             "justify-start text-left font-normal",

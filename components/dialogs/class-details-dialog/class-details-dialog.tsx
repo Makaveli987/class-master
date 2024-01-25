@@ -58,12 +58,6 @@ export default function ClassDetailsDialog() {
   });
 
   useEffect(() => {
-    // if (!!classDetailsDialog.data) {
-    //   form.setValue("name", "");
-    // } else {
-    //   form.setValue("name", "");
-    // }
-
     form.clearErrors();
   }, [form, classDetailsDialog.data]);
 
@@ -124,7 +118,7 @@ export default function ClassDetailsDialog() {
         }
       }}
     >
-      <DialogContent className="max-w-[800px] max-h-screen overflow-auto">
+      <DialogContent className="max-w-[700px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Class Details</DialogTitle>
         </DialogHeader>
@@ -256,6 +250,9 @@ export default function ClassDetailsDialog() {
 
             {/* <div className="flex gap-2 justify-end"> */}
             <DialogFooter>
+              <Button variant="destructive" className="sm:mr-auto">
+                Delete
+              </Button>
               <Button
                 type="button"
                 variant="outline"

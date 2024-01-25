@@ -123,16 +123,16 @@ export default function ClassDialog({
   useEffect(() => {
     form.setValue("classroomId", classDialog.classroom);
     form.setValue("startDate", classDialog.startDate as Date);
+    form.setValue("originalTeacherId", "");
+    filterCourseOptions();
 
     setTimeout(() => {
-      form.reset();
+      form.reset(defaultValues);
     }, 200);
   }, [classDialog, form]);
 
   const getStudents = useCallback(
     (teacherId?: string): void => {
-      form.setValue("courseId", "");
-      form.setValue("attendeeId", "");
       setIsFetching(true);
 
       axios
@@ -148,7 +148,7 @@ export default function ClassDialog({
         })
         .finally(() => setIsFetching(false));
     },
-    [form, setAttendeeOptions]
+    [setAttendeeOptions]
   );
 
   const getStudentEnrollments = useCallback(
@@ -174,8 +174,6 @@ export default function ClassDialog({
 
   const getGroups = useCallback(
     (teacherId?: string): void => {
-      form.setValue("courseId", "");
-      form.setValue("attendeeId", "");
       setIsFetching(true);
 
       axios
@@ -191,7 +189,7 @@ export default function ClassDialog({
         })
         .finally(() => setIsFetching(false));
     },
-    [form, setAttendeeOptions]
+    [setAttendeeOptions]
   );
 
   const getGroupEnrollments = useCallback(
@@ -227,11 +225,11 @@ export default function ClassDialog({
     const classType = form.getValues("type");
     const isSubstitute = form.getValues("substitute");
     const originalTeacherId = form.getValues("originalTeacherId");
+    form.setValue("attendeeId", "");
+    form.setValue("courseId", "");
 
-    console.log("classType :>> ", classType);
     console.log("isSubstitute :>> ", isSubstitute);
     console.log("originalTeacherId :>> ", originalTeacherId);
-
     if (classType === ClassType.STUDENT) {
       getStudents(originalTeacherId);
       getStudentEnrollments(originalTeacherId);
@@ -251,24 +249,7 @@ export default function ClassDialog({
 
   useEffect(() => {
     getAttendeesAndCourses();
-  }, []);
-
-  // function getStudentEnrollments(teacherId?: string): void {
-  //   if (teacherId) {
-  //     setAttendeeOptions([]);
-  //   }
-  //   axios
-  //     .get("/api/students/enrollments", {
-  //       params: teacherId ? { substituteTeacher: teacherId } : null,
-  //     })
-  //     .then((response: any) => {
-  //       setCourses(response.data);
-  //       console.log("courses", response.data);
-  //     })
-  //     .catch((error: any) => {
-  //       toast.error("Something went wrong. Note wasn't added!");
-  //     });
-  // }
+  }, [classDialog]);
 
   // function createNote(values: z.infer<typeof formSchema>): void {
   //   console.log("ID NORE", classDialog?.enrollmentId);
@@ -332,6 +313,7 @@ export default function ClassDialog({
         if (classDialog.isOpen) {
           classDialog.close();
         }
+        form.reset();
       }}
     >
       <DialogContent className="max-h-screen overflow-y-auto overflow-x-auto">
@@ -354,6 +336,7 @@ export default function ClassDialog({
                     <FormLabel>Class Type</FormLabel>
                     <FormControl>
                       <DropdownSelect
+                        disabled={isPending}
                         options={typeOptions}
                         value={field.value}
                         onChange={(value) => {
@@ -375,6 +358,7 @@ export default function ClassDialog({
                       <FormLabel>Date</FormLabel>
                       <FormControl>
                         <DateTimePicker
+                          disabled={isPending}
                           value={field.value}
                           onChange={field.onChange}
                         />
@@ -392,6 +376,7 @@ export default function ClassDialog({
                     <FormLabel>Duration</FormLabel>
                     <FormControl>
                       <RadioGroup
+                        disabled={isPending}
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         className="flex flex-col "
@@ -438,6 +423,7 @@ export default function ClassDialog({
                       <div className="flex items-center gap-2">
                         <FormControl>
                           <Checkbox
+                            disabled={isPending}
                             checked={field.value}
                             onCheckedChange={(value) => {
                               // if substitute is false fetch students for current (logged in) teacher
@@ -477,6 +463,7 @@ export default function ClassDialog({
                         <FormLabel>Original Teacher</FormLabel>
                         <FormControl>
                           <DropdownSelect
+                            disabled={isPending}
                             options={teachers}
                             value={field.value}
                             onChange={(value) => {
@@ -506,6 +493,7 @@ export default function ClassDialog({
                       </FormLabel>
                       <FormControl>
                         <Combobox
+                          disabled={isPending}
                           placeholder={
                             form.getValues("type") === ClassType.STUDENT
                               ? "Select student..."
@@ -534,6 +522,7 @@ export default function ClassDialog({
                       <FormLabel>Course</FormLabel>
                       <FormControl>
                         <DropdownSelect
+                          disabled={isPending}
                           placeholder="Select course..."
                           options={coursesOptions}
                           value={field.value}
@@ -555,6 +544,7 @@ export default function ClassDialog({
                       <FormLabel>Classroom</FormLabel>
                       <FormControl>
                         <DropdownSelect
+                          disabled={isPending}
                           placeholder="Select classroom..."
                           options={classrooms}
                           value={field.value}
@@ -576,6 +566,7 @@ export default function ClassDialog({
                       <div className="flex items-center gap-2">
                         <FormControl>
                           <Checkbox
+                            disabled={isPending}
                             checked={field.value}
                             onCheckedChange={(value) => {
                               if (value) {
@@ -618,6 +609,7 @@ export default function ClassDialog({
                             <FormLabel>Repeat Schedule</FormLabel>
                             <FormControl>
                               <DropdownSelect
+                                disabled={isPending}
                                 options={repeatOptions}
                                 value={field.value}
                                 onChange={field.onChange}
@@ -637,6 +629,7 @@ export default function ClassDialog({
                             <FormLabel>From - To</FormLabel>
                             <FormControl>
                               <DateRangePicker
+                                disabled={isPending}
                                 date={field.value}
                                 setDate={field.onChange}
                               />
@@ -666,6 +659,7 @@ export default function ClassDialog({
                             </FormLabel>
                             <FormControl>
                               <TimePicker
+                                disabled={isPending}
                                 date={field.value}
                                 setDate={field.onChange}
                               />
@@ -686,6 +680,7 @@ export default function ClassDialog({
                             </FormLabel>
                             <FormControl>
                               <TimePicker
+                                disabled={isPending}
                                 date={field.value}
                                 setDate={(value) => {
                                   console.log("value 22222", value);
@@ -706,6 +701,7 @@ export default function ClassDialog({
 
             <DialogFooter className="mt-4 gap-4 sm:gap-0">
               <Button
+                disabled={isPending}
                 type="button"
                 variant="outline"
                 onClick={() => {
