@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { LoginSchema } from "@/schemas/login-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { signIn } from "next-auth/react";
@@ -19,36 +21,29 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const loginSchema = z.object({
-  email: z.string().min(1, "Field is required").email("Enter a valid email"),
-  password: z.string().min(1, "Field is required"),
-});
-
 export default function SignInClient() {
   const [pending, setPending] = useState(false);
   const params = useSearchParams();
 
   const error = params.get("error");
 
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
+  async function onSubmit(values: z.infer<typeof LoginSchema>) {
     setPending(true);
     await signIn("credentials", {
       email: values.email,
       password: values.password,
-      callbackUrl: "/school",
-    }).catch((err) => {
-      console.error(error);
-      setPending(false);
-    });
-    // .finally(() => setPending(false));
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
+    })
+      .catch((err) => console.log(err))
+      .finally(() => setPending(false));
   }
 
   return (

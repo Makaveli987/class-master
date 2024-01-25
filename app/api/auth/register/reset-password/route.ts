@@ -1,6 +1,6 @@
 import getCurrentUser from "@/actions/get-current-user";
 import { db } from "@/lib/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req: Request) {

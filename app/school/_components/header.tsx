@@ -13,8 +13,10 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
 
 export default function Header({ session }: HeaderProps) {
   const sidebar = useSidebar();
-  const initials = `${session?.user.firstName[0]}${session?.user.lastName[0]}`;
-  const fullName = `${session?.user.firstName} ${session?.user.lastName}`;
+  const initials = `DV`;
+  const fullName = `DV`;
+  // const initials = `${session?.user.firstName[0]}${session?.user.lastName[0]}`;
+  // const fullName = `${session?.user.firstName} ${session?.user.lastName}`;
   const role = session?.user?.role?.type === "ADMIN" ? "Admin" : "Teacher";
 
   return (
