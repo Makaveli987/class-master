@@ -1,8 +1,10 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
+import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { formatDate } from "@/lib/utils";
 import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
 
@@ -14,9 +16,9 @@ function calcPercentage(x: number, y: number) {
   return (x / y) * 100;
 }
 
-export default async function EnrolledCourses({
-  enrollments,
-}: EnrolledCoursesProps) {
+export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
+  const enrollDialog = useEnrollDialog();
+
   if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
   }
@@ -66,7 +68,18 @@ export default async function EnrolledCourses({
                 </Button>
               </Tooltip2>
               <Tooltip2 text="Edit" side="top">
-                <Button variant="ghost" className="h-8 w-8 p-0 group ">
+                <Button
+                  // onClick={() =>
+                  //   enrollDialog.open({
+                  //     data: enrollment,
+                  //     userType: EnrollUserType.STUDENT,
+                  //     userId: enrollment.user.id,
+                  //     action:
+                  //   })
+                  // }
+                  variant="ghost"
+                  className="h-8 w-8 p-0 group "
+                >
                   <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
                 </Button>
               </Tooltip2>

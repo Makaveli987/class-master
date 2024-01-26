@@ -15,20 +15,27 @@ export const EnrollUserType = {
   GROUP: "GROUP",
 } as const;
 
+interface OpenParams {
+  data?: EnrollData;
+  userType: EnrollUserType;
+  userId: string;
+  courses: any[];
+  action: DialogAction;
+}
+
 // eslint-disable-next-line no-redeclare
 export type EnrollUserType =
   (typeof EnrollUserType)[keyof typeof EnrollUserType];
 
 interface EnrollDialogStore {
   isOpen: boolean;
-  open: (
-    data: EnrollData,
-    userType: EnrollUserType,
-    action: DialogAction
-  ) => void;
+  open: (params: OpenParams) => void;
   close: () => void;
   data: EnrollData;
   userType: EnrollUserType;
+  // Student or Group ID
+  userId: string;
+  courses: any[];
   action: DialogAction;
 }
 
@@ -41,23 +48,34 @@ const emptyData = {
 
 const useEnrollDialog = create<EnrollDialogStore>((set) => ({
   isOpen: false,
-  action: DialogAction.CREATE,
   data: {
     courseId: "",
     teacherId: "",
     courseGoals: "",
     enrollmentId: "",
   },
+  courses: [],
   userType: EnrollUserType.STUDENT,
-  open: (data: EnrollData, userType: EnrollUserType, action: DialogAction) => {
-    const enrollData = data ? data : emptyData;
-    set({ isOpen: true, data: enrollData, userType, action });
+  userId: "",
+  action: DialogAction.CREATE,
+  open: (params: OpenParams) => {
+    const enrollData = params.data ? params.data : emptyData;
+    set({
+      isOpen: true,
+      data: enrollData,
+      userType: params.userType,
+      userId: params.userId,
+      courses: params.courses,
+      action: params.action,
+    });
   },
   close: () =>
     set({
       isOpen: false,
       data: emptyData,
       userType: EnrollUserType.STUDENT,
+      userId: "",
+      courses: [],
       action: DialogAction.CREATE,
     }),
 }));

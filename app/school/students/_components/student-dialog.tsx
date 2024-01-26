@@ -24,8 +24,8 @@ export default function StudentDialog() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="mb-6">Add Student</DialogTitle>
-          <StudentForm setDialogOpen={setOpen} />
         </DialogHeader>
+        <StudentForm setDialogOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );

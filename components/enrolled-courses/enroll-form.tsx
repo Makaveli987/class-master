@@ -1,15 +1,12 @@
 "use client";
-import useEnrollDialog, {
-  EnrollData,
-  EnrollUserType,
-} from "@/hooks/use-enroll-dialog";
+import useEnrollDialog, { EnrollData } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -18,12 +15,13 @@ import { ComboboxOptions } from "../ui/combobox";
 import { DropdownSelect } from "../ui/dropdown-select";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "../ui/form";
+import LinearLoader from "../ui/linear-loader";
 import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
@@ -39,21 +37,7 @@ interface EnrollDialogUserPerCourse extends UserPerCourse {
   user: User;
 }
 
-interface EnrollFormProps {
-  courses?: EnrollFormCourse[] | null;
-  userId: string | null;
-  userType: EnrollUserType;
-  enrollData: EnrollData;
-  action: DialogAction;
-}
-
-export default function EnrollForm({
-  courses,
-  userId,
-  userType,
-  enrollData,
-  action = DialogAction.CREATE,
-}: EnrollFormProps) {
+export default function EnrollForm() {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
@@ -63,32 +47,25 @@ export default function EnrollForm({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: enrollData,
+    defaultValues: enrollDialog.data,
   });
 
   useEffect(() => {
-    console.log("action :>> ", action);
-
-    const cOptions = courses?.map((course: Course) => ({
+    const cOptions = enrollDialog.courses?.map((course: Course) => ({
       value: course.id,
       label: course.name,
     }));
     setCoursesOptions(cOptions || []);
-    console.log("courses :>> ", courses);
-    console.log("cOptions :>> ", cOptions);
-  }, [courses]);
+  }, [enrollDialog.courses]);
 
   useEffect(() => {
-    console.log("enrollData :>> ", enrollData);
-    form.setValue("courseId", enrollData?.courseId);
-    form.setValue("teacherId", enrollData?.teacherId);
-    form.setValue("courseGoals", enrollData?.courseGoals);
-
-    filterTeachersOptions(enrollData?.courseId);
-  }, [enrollData, form]);
+    filterTeachersOptions(enrollDialog.data?.courseId);
+  }, [enrollDialog]);
 
   function filterTeachersOptions(courseId: string) {
-    const selectedCourse = courses?.find((course) => course.id === courseId);
+    const selectedCourse = enrollDialog.courses?.find(
+      (course) => course.id === courseId
+    );
 
     const tOptions = selectedCourse?.userPerCourses?.map((item: any) => ({
       value: item.user?.id,
@@ -101,8 +78,8 @@ export default function EnrollForm({
     axios
       .post("/api/enrollment", {
         ...values,
-        userType,
-        userId,
+        userType: enrollDialog.userType,
+        userId: enrollDialog.userId,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {
@@ -121,10 +98,10 @@ export default function EnrollForm({
 
   function updateEnrollment(values: EnrollData): void {
     axios
-      .patch("/api/enrollment/" + enrollData.id, {
+      .patch("/api/enrollment/" + enrollDialog.data.enrollmentId, {
         ...values,
-        userType,
-        userId,
+        userType: enrollDialog.userType,
+        userId: enrollDialog.userId,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 200) {
@@ -143,21 +120,21 @@ export default function EnrollForm({
 
   function onSubmit(values: z.infer<typeof formSchema>): void {
     setIsPending(true);
-    action === DialogAction.CREATE
+    enrollDialog.action === DialogAction.CREATE
       ? createEnrollment({ ...values })
       : updateEnrollment({ ...values });
   }
 
   function getButtonText(status: "loading" | "text"): string {
-    const text = enrollData ? "Save" : "Enroll";
+    const text = !!enrollDialog.data ? "Save" : "Enroll";
 
-    const loadingText = enrollData ? "Saving" : "Enrolling";
+    const loadingText = !!enrollDialog.data ? "Saving" : "Enrolling";
 
     return status === "loading" ? loadingText : text;
   }
 
   return (
-    <div className="flex flex-col gap-5 mt-3">
+    <div className="flex flex-col gap-3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -212,7 +189,7 @@ export default function EnrollForm({
                 <FormLabel>Goals</FormLabel>
                 <FormControl>
                   <Textarea
-                    disabled={isPending}
+                    readOnly={isPending}
                     className="h-32"
                     placeholder="Type the goals here..."
                     {...field}
@@ -223,11 +200,16 @@ export default function EnrollForm({
             )}
           />
           <div className="flex justify-end gap-2 mt-2">
-            {!enrollData && (
-              <Button variant="outline" onClick={() => enrollDialog.close()}>
-                Close
-              </Button>
-            )}
+            <Button
+              variant="outline"
+              disabled={isPending}
+              onClick={(e) => {
+                e.preventDefault();
+                enrollDialog.close();
+              }}
+            >
+              Close
+            </Button>
 
             <Button
               disabled={isPending || !form.formState.isDirty}

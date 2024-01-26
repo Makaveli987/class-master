@@ -8,22 +8,29 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model Student {
-  id         String       @id @default(uuid())
-  firstName  String
-  lastName   String
-  email      String
-  phone      String
-  groupId    String?
-  schoolId   String
-  archived   Boolean      @default(false)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  enrolments Enrollment[]
-  attendance Attendance[]
-  group      Group?       @relation(fields: [groupId], references: [id])
-  school     School       @relation(fields: [schoolId], references: [id])
-  note       Note[]
+  id          String       @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  gender      Gender
+  dateOfBirth DateTime
+  groupId     String?
+  schoolId    String
+  archived    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  enrolments  Enrollment[]
+  attendance  Attendance[]
+  group       Group?       @relation(fields: [groupId], references: [id])
+  school      School       @relation(fields: [schoolId], references: [id])
+  note        Note[]
 
   @@index([groupId])
   @@index([schoolId])
@@ -93,6 +100,8 @@ model User {
   email           String          @unique
   hashedPassword  String
   phone           String
+  gender          Gender
+  dateOfBirth     DateTime
   roleId          String
   schoolId        String
   archived        Boolean         @default(false)
@@ -199,35 +208,34 @@ model Note {
 }
 
 model Exam {
-  id           String @id @default(uuid())
-  name         String? 
-  result       String? 
-  comment      String? 
+  id           String   @id @default(uuid())
+  name         String?
+  result       String?
+  comment      String?
   enrollmentId String
   studentId    String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Classroom {
-  id        String @id @default(uuid())
-  name      String
-  schoolId  String 
-  archived  Boolean @default(false)
-  school    School     @relation(fields: [schoolId], references: [id])
-  class     Class[]
+  id       String  @id @default(uuid())
+  name     String
+  schoolId String
+  archived Boolean @default(false)
+  school   School  @relation(fields: [schoolId], references: [id])
+  class    Class[]
 
   @@index([schoolId])
 }
 
 model UserColor {
-    id        String @id @default(uuid())
-    value     String
-    schoolId  String
-    userId    String @unique
-    user      User   @relation(fields: [userId], references: [id])
-    school    School     @relation(fields: [schoolId], references: [id])
+  id       String @id @default(uuid())
+  value    String
+  schoolId String
+  userId   String @unique
+  user     User   @relation(fields: [userId], references: [id])
+  school   School @relation(fields: [schoolId], references: [id])
 
-
-    @@index([schoolId])
+  @@index([schoolId])
 }

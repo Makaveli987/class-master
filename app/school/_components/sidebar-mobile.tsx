@@ -46,7 +46,7 @@ export const MobileSidebar = ({ session }: SidebarProps) => {
         <MenuIcon />
       </Button>
       <Sheet open={isOpen} onOpenChange={onClose}>
-        <SheetContent side="left" className="p-0 w-64">
+        <SheetContent side="left" className="p-0 w-56">
           <Sidebar session={session} />
         </SheetContent>
       </Sheet>

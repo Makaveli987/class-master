@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ClassroomDialog from "./dialogs/classroom-dialog/classroom-dialog";
 import ExamDialog from "./dialogs/exam-dialog/exam-dialog";
 import NoteDialog from "./dialogs/notes-dialog/notes-dialog";
+import EnrollDialog from "./enrolled-courses/enroll-dialog";
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -21,6 +22,7 @@ export const DialogProvider = () => {
       <NoteDialog />
       <ExamDialog />
       <ClassroomDialog />
+      <EnrollDialog />
     </>
   );
 };

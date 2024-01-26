@@ -2,6 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
+import { DatePicker } from "@/components/ui/date-picker";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
   FormControl,
@@ -10,8 +12,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
 import { DialogAction } from "@/lib/models/dialog-actions";
+import { genderOptions } from "@/lib/models/gender";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Student } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
@@ -29,6 +33,8 @@ const formSchema = z.object({
   lastName: z.string().min(1, "Field is required").min(3, {
     message: "Last name is too short",
   }),
+  dateOfBirth: z.date({ required_error: "Field is required" }),
+  gender: z.string().min(1, "Field is required"),
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
   phone: z.string().min(5, "Field is required"),
 });
@@ -110,122 +116,150 @@ export default function StudentForm({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
-
-    action === DialogAction.CREATE
-      ? createStudent(values)
-      : updateStudent(values);
+    console.log("values", values);
+    // action === DialogAction.CREATE
+    //   ? createStudent(values)
+    //   : updateStudent(values);
   }
 
   return (
-    <div className="grid gap-4">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First name</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={pending}
-                    placeholder="First name"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    // <div className="grid gap-4">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="firstName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>First name</FormLabel>
+              <FormControl>
+                <Input disabled={pending} placeholder="First name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last name</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={pending}
-                    placeholder="Last name"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last name</FormLabel>
+              <FormControl>
+                <Input disabled={pending} placeholder="Last name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={pending}
-                    type="email"
-                    placeholder="Email"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <FormField
+          control={form.control}
+          name="dateOfBirth"
+          render={({ field }) => (
+            <FormItem className="">
+              <FormLabel>Date of Birth</FormLabel>
+              <FormControl>
+                <DatePicker
+                  date={field.value}
+                  disabled={pending}
+                  setDate={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <CustomPhoneInput
-                    disabled={pending}
-                    placeholder="Phone number"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gender</FormLabel>
+              <FormControl>
+                <DropdownSelect
+                  disabled={pending}
+                  options={genderOptions}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <div className="flex items-center justify-end gap-2">
-            {action === DialogAction.CREATE && (
-              <Button
-                disabled={pending}
-                type="reset"
-                onClick={() => {
-                  form.reset();
-                  setDialogOpen?.(false);
-                }}
-                className="!mt-6 "
-                variant="outline"
-              >
-                Close
-              </Button>
-            )}
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  disabled={pending}
+                  type="email"
+                  placeholder="Email"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone</FormLabel>
+              <FormControl>
+                <CustomPhoneInput
+                  disabled={pending}
+                  placeholder="Phone number"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex items-center justify-end gap-2">
+          {action === DialogAction.CREATE && (
             <Button
-              disabled={pending || !form.formState.isDirty}
-              className="!mt-6"
-              type="submit"
+              disabled={pending}
+              type="reset"
+              onClick={() => {
+                form.reset();
+                setDialogOpen?.(false);
+              }}
+              className="!mt-6 "
+              variant="outline"
             >
-              {pending ? (
-                <>
-                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                  Saving
-                </>
-              ) : (
-                <>Save</>
-              )}
+              Close
             </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+          )}
+
+          <Button
+            disabled={pending || !form.formState.isDirty}
+            className="!mt-6"
+            type="submit"
+          >
+            {pending ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                Saving
+              </>
+            ) : (
+              <>Save</>
+            )}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }
