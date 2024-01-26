@@ -85,20 +85,7 @@ export default async function EnrollmentId({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <EnrollForm
-              userId={
-                enrollment.groupId ? enrollment.groupId : enrollment.studentId
-              }
-              userType={
-                enrollment.groupId
-                  ? EnrollUserType.GROUP
-                  : EnrollUserType.STUDENT
-              }
-              // @ts-ignore
-              enrollData={enrollment}
-              courses={courses || []}
-              action={DialogAction.EDIT}
-            />
+            <EnrollForm />
           </CardContent>
         </Card>
 

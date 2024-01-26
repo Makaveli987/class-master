@@ -10,22 +10,26 @@ import {
 import { PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 import StudentForm from "./student-form";
+import useStudentDialog from "@/hooks/use-student-dialog";
 
 export default function StudentDialog() {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
+  const studentDialog = useStudentDialog();
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircleIcon className="h-4 w-4 mr-2" /> Add Student
-        </Button>
-      </DialogTrigger>
+    <Dialog
+      open={studentDialog.isOpen}
+      onOpenChange={() => {
+        if (studentDialog.isOpen) {
+          studentDialog.close();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="mb-6">Add Student</DialogTitle>
         </DialogHeader>
-        <StudentForm setDialogOpen={setOpen} />
+        <StudentForm />
       </DialogContent>
     </Dialog>
   );

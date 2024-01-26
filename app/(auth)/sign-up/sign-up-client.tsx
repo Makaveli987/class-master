@@ -1,12 +1,14 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
+import { DatePicker } from "@/components/ui/date-picker";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
   FormControl,
@@ -17,11 +19,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Role } from "@prisma/client";
+import { genderOptions } from "@/lib/models/gender";
+import { RoleType } from "@/lib/models/role";
+import { User } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -33,17 +36,15 @@ const formSchema = z.object({
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
   password: z.string().min(1, "Field is required"),
   phone: z.string().min(5, "Field is required"),
+  dateOfBirth: z.date({ required_error: "Field is required" }),
+  gender: z.string().min(1, "Field is required"),
   schoolName: z.string().min(1, "Field is required").min(3, {
     message: "School name must be at least 3 characters long.",
   }),
 });
 
 const SignUpClient = () => {
-  const [adminRoleId, setAdminRoleId] = useState<string | undefined>();
   const [pending, setPending] = useState(false);
-  const router = useRouter();
-
-  const { data: session } = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,48 +54,27 @@ const SignUpClient = () => {
       email: "",
       password: "",
       phone: "",
+      gender: "",
       schoolName: "",
     },
   });
 
-  useEffect(() => {
-    axios
-      .get("/api/roles")
-      .then((response: AxiosResponse<Role[]>) => {
-        const adminRole = response.data.find((role) => role.type === "ADMIN");
-        setAdminRoleId(adminRole?.id);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    // Redirect to home if already signed in
-    if (session) {
-      router.replace("/school");
-    }
-  }, [session, router]);
-
-  if (session) {
-    // Optionally render null or a loading indicator while redirecting
-    return null;
-  }
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
     axios
-      .post("/api/auth/register", { ...values, roleId: adminRoleId })
-      .then((response: AxiosResponse<Role[]>) => {
+      .post("/api/auth/register", { ...values, role: RoleType.ADMIN })
+      .then((response: AxiosResponse<User>) => {
         if (response.status === 201) {
           signIn("credentials", {
             email: values.email,
             password: values.password,
-            callbackUrl: "/school",
+            callbackUrl: "/school/calendar",
           }).finally(() => setPending(false));
         }
       })
       .catch((error) => {
+        setPending(false);
+
         console.error(error);
       });
   }
@@ -185,6 +165,43 @@ const SignUpClient = () => {
                     type="password"
                     placeholder="Password"
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="dateOfBirth"
+            render={({ field }) => (
+              <FormItem className="">
+                <FormLabel>Date of Birth</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    date={field.value}
+                    disabled={pending}
+                    setDate={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gender</FormLabel>
+                <FormControl>
+                  <DropdownSelect
+                    disabled={pending}
+                    options={genderOptions}
+                    value={field.value}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

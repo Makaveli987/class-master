@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ComboboxOptions } from "@/components/ui/combobox";
 import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
@@ -18,14 +17,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RoleType } from "@/lib/models/Roles";
+
 import { DialogAction } from "@/lib/models/dialog-actions";
+import { roleOptions } from "@/lib/models/role";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Role, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -44,7 +44,6 @@ export default function TeacherForm({
   const [newPassword, setNewPassword] = useState("");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [pending, setPending] = useState(false);
-  const [roleOptions, setRoleOptions] = useState<ComboboxOptions[]>([]);
   const router = useRouter();
 
   let formSchema = z.object({
@@ -57,7 +56,7 @@ export default function TeacherForm({
     email: z.string().min(1, "Field is required").email("Enter a valid email"),
     password: z.string(),
     phone: z.string().min(5, "Field is required"),
-    roleId: z.string().min(1, "Field is required"),
+    role: z.string().min(1, "Field is required"),
   });
 
   const defValues = data
@@ -66,7 +65,7 @@ export default function TeacherForm({
         lastName: data.lastName,
         email: data.email,
         phone: data.phone,
-        roleId: data.roleId,
+        role: data.role,
       }
     : {
         firstName: "",
@@ -74,7 +73,7 @@ export default function TeacherForm({
         email: "",
         password: "",
         phone: "",
-        roleId: "",
+        role: "",
       };
 
   const makeFieldOptional = (schema: any, fieldName: string) => {
@@ -90,21 +89,6 @@ export default function TeacherForm({
     resolver: zodResolver(formSchema),
     defaultValues: defValues,
   });
-
-  useEffect(() => {
-    axios
-      .get("/api/roles")
-      .then((response: AxiosResponse<Role[]>) => {
-        const options = response.data.map((role) => ({
-          label: role.type === RoleType.ADMIN ? "Admin" : "Teacher",
-          value: role.id,
-        }));
-        setRoleOptions(options);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
 
   function handleResetPassword() {
     axios
@@ -282,7 +266,7 @@ export default function TeacherForm({
 
           <FormField
             control={form.control}
-            name="roleId"
+            name="role"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Role</FormLabel>

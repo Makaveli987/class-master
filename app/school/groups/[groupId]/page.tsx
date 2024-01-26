@@ -69,10 +69,11 @@ export default async function GroupPage({
                 <StudentCourses
                   studentId={params.groupId}
                   enrollments={enrollments || []}
+                  courses={courses || []}
                 />
 
                 <div className="flex justify-end">
-                  <EnrollDialog
+                  {/* <EnrollDialog
                     courses={courses || []}
                     userId={params.groupId}
                     userType={EnrollUserType.GROUP}
@@ -81,7 +82,7 @@ export default async function GroupPage({
                       <PlusCircleIcon className="w-4 h-4 mr-2" />
                       Add Course
                     </Button>
-                  </EnrollDialog>
+                  </EnrollDialog> */}
                 </div>
               </CardContent>
             </TabsContent>

@@ -15,7 +15,8 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { firstName, lastName, email, phone } = await req.json();
+    const { firstName, lastName, email, phone, dateOfBirth, gender } =
+      await req.json();
     const s = await db.student.update({
       where: {
         id: studentId,
@@ -25,6 +26,8 @@ export async function PATCH(
         lastName,
         email,
         phone,
+        dateOfBirth,
+        gender,
       },
     });
 

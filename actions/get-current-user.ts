@@ -18,9 +18,6 @@ export default async function getCurrentUser() {
       where: {
         email: session.user.email as string,
       },
-      include: {
-        role: true,
-      },
     });
 
     if (!currentUser) {

@@ -21,7 +21,6 @@ export default {
               email: credentials.email as string,
             },
             include: {
-              role: true,
               school: true,
             },
           });

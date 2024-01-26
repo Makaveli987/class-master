@@ -4,10 +4,6 @@ const database = new PrismaClient();
 
 async function main() {
   try {
-    await database.role.createMany({
-      data: [{ type: "ADMIN" }, { type: "TEACHER" }],
-    });
-
     await database.classroom.create({
       data: { name: "Online" },
     });

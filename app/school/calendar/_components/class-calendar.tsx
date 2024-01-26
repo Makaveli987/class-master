@@ -24,10 +24,11 @@ import { Label } from "@/components/ui/label";
 import { useClassDialog } from "@/hooks/use-class-dialog";
 import ClassDialog from "@/components/dialogs/class-dialog/class-dialog";
 import { useSession } from "next-auth/react";
-import { RoleType } from "@/lib/models/Roles";
+
 import { Badge } from "@/components/ui/badge";
 import ClassDetailsDialog from "@/components/dialogs/class-details-dialog/class-details-dialog";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
+import { RoleType } from "@/lib/models/role";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
@@ -43,9 +44,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const [selectedClassroom, setSelectedClassroom] = useState<string>("");
 
   const [selectedTeacher, setSelectedTeacher] = useState<string>(
-    session.data?.user.role.type === RoleType.TEACHER
-      ? session.data?.user.id
-      : ""
+    session.data?.user.role === RoleType.TEACHER ? session.data?.user.id : ""
   );
 
   /** Selected event data */

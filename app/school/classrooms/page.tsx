@@ -7,8 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { RoleType } from "@/lib/models/Roles";
+
 import Classrooms from "./_components/classrooms";
+import { RoleType } from "@/lib/models/role";
 
 export default async function ClassroomsPage() {
   const classrooms = await getClassrooms();

@@ -13,6 +13,11 @@ enum Gender {
   FEMALE
 }
 
+enum Role {
+  ADMIN
+  TEACHER
+}
+
 model Student {
   id          String       @id @default(uuid())
   firstName   String
@@ -102,12 +107,11 @@ model User {
   phone           String
   gender          Gender
   dateOfBirth     DateTime
-  roleId          String
   schoolId        String
   archived        Boolean         @default(false)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-  role            Role            @relation(fields: [roleId], references: [id])
+  role            Role
   school          School          @relation(fields: [schoolId], references: [id])
   classOriginal   Class[]         @relation("originalTeacher")
   classSubstitute Class[]         @relation("substituteTeacher")
@@ -116,14 +120,7 @@ model User {
   note            Note[]
   color           UserColor?
 
-  @@index([roleId])
   @@index([schoolId])
-}
-
-model Role {
-  id    String @id @default(uuid())
-  type  String
-  users User[]
 }
 
 // implicit many to many ?!

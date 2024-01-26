@@ -2,7 +2,7 @@ import { getTeachers } from "@/actions/get-teachers";
 import { Card, CardContent } from "@/components/ui/card";
 import TeachersTable from "./_components/teachers-table";
 import { RoleGate } from "@/components/role-gate";
-import { RoleType } from "@/lib/models/Roles";
+import { RoleType } from "@/lib/models/role";
 
 export default async function TeacherPage() {
   const teachers = await getTeachers();

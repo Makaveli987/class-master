@@ -10,9 +10,6 @@ export const getTeachers = async () => {
         schoolId: currentUser?.schoolId,
         archived: false,
       },
-      include: {
-        role: true,
-      },
     });
 
     return teachers;

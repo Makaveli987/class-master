@@ -4,8 +4,17 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, email, password, phone, roleId, schoolName } =
-      await request.json();
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      phone,
+      role,
+      schoolName,
+      gender,
+      dateOfBirth,
+    } = await request.json();
 
     if (
       !firstName ||
@@ -13,7 +22,9 @@ export async function POST(request: Request) {
       !email ||
       !password ||
       !phone ||
-      !roleId ||
+      !role ||
+      !gender ||
+      !dateOfBirth ||
       !schoolName
     ) {
       return new NextResponse(
@@ -54,7 +65,9 @@ export async function POST(request: Request) {
         email,
         hashedPassword,
         phone,
-        roleId,
+        role,
+        dateOfBirth,
+        gender,
         schoolId: school.id,
       },
     });

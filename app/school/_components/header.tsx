@@ -6,6 +6,7 @@ import { ThemeSelector } from "@/components/theme-selector";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { Button } from "@/components/ui/button";
 import { MobileSidebar } from "./sidebar-mobile";
+import { RoleType } from "@/lib/models/role";
 
 interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
   session: Session | null;
@@ -15,7 +16,7 @@ export default function Header({ session }: HeaderProps) {
   const sidebar = useSidebar();
   const initials = `${session?.user.firstName[0]}${session?.user.lastName[0]}`;
   const fullName = `${session?.user.firstName} ${session?.user.lastName}`;
-  const role = session?.user?.role?.type === "ADMIN" ? "Admin" : "Teacher";
+  const role = session?.user?.role === RoleType.ADMIN ? "Admin" : "Teacher";
 
   return (
     <div className="h-14 w-full flex items-center justify-between pl-2 pr-6">

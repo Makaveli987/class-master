@@ -1,5 +1,8 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader } from "@/components/ui/card";
+import useStudentDialog from "@/hooks/use-student-dialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
+import { formatDate } from "@/lib/utils";
 import { Student } from "@prisma/client";
 import {
   EditIcon,
@@ -15,12 +18,20 @@ interface StudenDetailsProps {
 }
 
 export default function StudenDetails({ student }: StudenDetailsProps) {
+  const studentDialog = useStudentDialog();
   return (
     <div className="max-w-4xl py-4 px-6">
       <div className="flex justify-between">
         <h3 className="text-lg font-medium">Basic Details</h3>
         {/* <CardTitle>Basic Details</CardTitle> */}
-        <Button variant="outline">
+        <Button
+          onClick={() => {
+            console.log("clicked");
+
+            studentDialog.open({ data: student, action: DialogAction.EDIT });
+          }}
+          variant="outline"
+        >
           <EditIcon className="w-4 h-4 mr-2" /> Edit
         </Button>
       </div>
@@ -32,7 +43,9 @@ export default function StudenDetails({ student }: StudenDetailsProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-muted-foreground text-xs">Date of Birth</span>
-            <span className="font-medium">12.01.2024.</span>
+            <span className="font-medium">
+              {formatDate(student?.dateOfBirth!, false)}
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -41,7 +54,7 @@ export default function StudenDetails({ student }: StudenDetailsProps) {
           </div>
           <div className="flex flex-col text-sm">
             <span className="text-muted-foreground text-xs">Gender</span>
-            <span className="font-medium">Male</span>
+            <span className="font-medium">{student?.gender}</span>
           </div>
         </div>
         <div className="flex items-center gap-3">

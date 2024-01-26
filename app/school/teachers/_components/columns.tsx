@@ -10,11 +10,12 @@ import { EditIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { RoleType } from "@/lib/models/Roles";
+
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
+import { RoleType } from "@/lib/models/role";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -123,7 +124,7 @@ export const columns: ColumnDef<User>[] = [
     ),
     cell: ({ row }) => {
       // @ts-ignore
-      const role = row.original.role?.type;
+      const role = row.original.role;
       return (
         <Badge
           variant="default"

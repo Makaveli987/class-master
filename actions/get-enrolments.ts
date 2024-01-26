@@ -14,7 +14,7 @@ export const getStudentsEnrollments = async () => {
     });
     return enrollments;
   } catch (error) {
-    console.error("[ENROLLMENTS] Error fetching ADMIN role");
+    console.error("[ENROLLMENTS] Error fetching student enrollments");
     return null;
   }
 };
@@ -32,7 +32,7 @@ export const getGroupsEnrollments = async () => {
     });
     return enrollments;
   } catch (error) {
-    console.error("[ENROLLMENTS] Error fetching ADMIN role");
+    console.error("[ENROLLMENTS] Error fetching group enrollments");
     return null;
   }
 };
@@ -48,7 +48,7 @@ export const getEnrollmentsByStudentId = async (studentId: string) => {
     });
     return enrollments;
   } catch (error) {
-    console.error("[ENROLLMENTS] Error fetching ADMIN role");
+    console.error("[ENROLLMENTS] Error fetching enrollments by student id");
     return null;
   }
 };
@@ -64,7 +64,7 @@ export const getEnrollmentsByGroupId = async (groupId: string) => {
     });
     return enrollments;
   } catch (error) {
-    console.error("[ENROLLMENTS] Error fetching ADMIN role");
+    console.error("[ENROLLMENTS] Error fetching enrollments by group id");
     return null;
   }
 };
@@ -82,7 +82,7 @@ export const getEnrollment = async (enrollmentId: string) => {
     });
     return enrollments;
   } catch (error) {
-    console.error("[ENROLLMENTS] Error fetching ADMIN role");
+    console.error("[ENROLLMENTS] Error fetching enrollments");
     return null;
   }
 };

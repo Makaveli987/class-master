@@ -11,9 +11,17 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { firstName, lastName, email, phone } = await req.json();
+    const { firstName, lastName, email, phone, dateOfBirth, gender } =
+      await req.json();
 
-    if (!firstName || !lastName || !email || !phone) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phone ||
+      !dateOfBirth ||
+      !gender
+    ) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -31,6 +39,8 @@ export async function POST(req: Request) {
         lastName,
         email,
         phone,
+        dateOfBirth,
+        gender,
         schoolId: currentUser.schoolId,
       },
     });

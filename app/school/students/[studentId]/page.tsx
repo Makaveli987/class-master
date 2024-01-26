@@ -5,10 +5,9 @@ import { EnrollFormCourse } from "@/components/enrolled-courses/enroll-form";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils";
-import { User2Icon } from "lucide-react";
+import Image from "next/image";
 import StudentCourses from "../_components/student-courses";
 import StudenDetails from "../_components/student-details-card";
-import Image from "next/image";
 
 export default async function StudentPage({
   params,

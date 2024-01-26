@@ -6,8 +6,16 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, email, password, phone, roleId } =
-      await request.json();
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      phone,
+      role,
+      dateOfBirth,
+      gender,
+    } = await request.json();
 
     const currentUser = await getCurrentUser();
 
@@ -15,7 +23,16 @@ export async function POST(request: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!firstName || !lastName || !email || !password || !phone || !roleId) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !phone ||
+      !role ||
+      !gender ||
+      !dateOfBirth
+    ) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -48,7 +65,9 @@ export async function POST(request: Request) {
         email,
         hashedPassword,
         phone,
-        roleId,
+        role,
+        dateOfBirth,
+        gender,
         schoolId: currentUser.schoolId,
       },
     });

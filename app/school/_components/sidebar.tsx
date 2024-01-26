@@ -4,7 +4,8 @@ import Logo from "@/components/ui/logo";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSidebar } from "@/hooks/use-sidebar";
-import { RoleType } from "@/lib/models/Roles";
+import { RoleType } from "@/lib/models/role";
+
 import { cn } from "@/lib/utils";
 import {
   BookAIcon,
@@ -105,7 +106,7 @@ export function Sidebar({ className, session }: SidebarProps) {
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
-              const isAdmin = session?.user?.role?.type === RoleType.ADMIN;
+              const isAdmin = session?.user?.role === RoleType.ADMIN;
               const shouldRenderLink = !link.isRestricted || isAdmin;
 
               return (

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
+import useStudentDialog from "@/hooks/use-student-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { genderOptions } from "@/lib/models/gender";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,32 +40,26 @@ const formSchema = z.object({
   phone: z.string().min(5, "Field is required"),
 });
 
-interface StudentFormProps {
-  data?: Student | null;
-  setDialogOpen?: Dispatch<SetStateAction<boolean>>;
-  action?: DialogAction;
-}
-
-export default function StudentForm({
-  data = undefined,
-  setDialogOpen,
-  action = DialogAction.CREATE,
-}: StudentFormProps) {
+export default function StudentForm() {
   const [pending, setPending] = useState(false);
   const router = useRouter();
+  const studentDialog = useStudentDialog();
 
-  const defValues = data
+  const defValues = studentDialog.data
     ? {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
+        firstName: studentDialog.data.firstName,
+        lastName: studentDialog.data.lastName,
+        email: studentDialog.data.email,
+        phone: studentDialog.data.phone,
+        // dateOfBirth: studentDialog.data.dateOfBirth,
+        // gender: studentDialog.data.gender,
       }
     : {
         firstName: "",
         lastName: "",
         email: "",
         phone: "",
+        // gender: ''
       };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -82,7 +77,8 @@ export default function StudentForm({
           });
           form.reset();
           router.refresh();
-          setDialogOpen?.(false);
+          studentDialog.close();
+          // setDialogOpen?.(false);
         }
       })
       .catch((error) => {
@@ -96,7 +92,7 @@ export default function StudentForm({
 
   function updateStudent(values: z.infer<typeof formSchema>) {
     axios
-      .patch("/api/students/" + data?.id, { ...values })
+      .patch("/api/students/" + studentDialog.data?.id, { ...values })
       .then((response: AxiosResponse<Student[]>) => {
         if (response.status === 200) {
           toast.success("Student has been updated", {
@@ -116,10 +112,10 @@ export default function StudentForm({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
-    console.log("values", values);
-    // action === DialogAction.CREATE
-    //   ? createStudent(values)
-    //   : updateStudent(values);
+    // console.log("values", values);
+    studentDialog.action === DialogAction.CREATE
+      ? createStudent(values)
+      : updateStudent(values);
   }
 
   return (
@@ -228,27 +224,22 @@ export default function StudentForm({
           )}
         />
 
-        <div className="flex items-center justify-end gap-2">
-          {action === DialogAction.CREATE && (
-            <Button
-              disabled={pending}
-              type="reset"
-              onClick={() => {
-                form.reset();
-                setDialogOpen?.(false);
-              }}
-              className="!mt-6 "
-              variant="outline"
-            >
-              Close
-            </Button>
-          )}
-
+        <div className="flex pt-4 flex-col-reverse sm:flex-row sm:items-center sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
           <Button
-            disabled={pending || !form.formState.isDirty}
-            className="!mt-6"
-            type="submit"
+            disabled={pending}
+            type="reset"
+            onClick={(e) => {
+              e.preventDefault();
+              form.reset();
+
+              studentDialog.close();
+            }}
+            variant="outline"
           >
+            Close
+          </Button>
+
+          <Button disabled={pending || !form.formState.isDirty} type="submit">
             {pending ? (
               <>
                 <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

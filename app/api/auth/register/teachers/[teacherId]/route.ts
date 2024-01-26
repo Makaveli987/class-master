@@ -59,7 +59,8 @@ export async function PATCH(
     const currentUser = await getCurrentUser();
     const { teacherId } = params;
 
-    const { email, firstName, lastName, phone, roleId } = await req.json();
+    const { email, firstName, lastName, phone, role, dateOfBirth, gender } =
+      await req.json();
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -74,7 +75,9 @@ export async function PATCH(
         firstName,
         lastName,
         phone,
-        roleId,
+        role,
+        dateOfBirth,
+        gender,
       },
     });
 

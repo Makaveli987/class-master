@@ -1,5 +1,5 @@
 import { RoleGate } from "@/components/role-gate";
-import { RoleType } from "@/lib/models/Roles";
+import { RoleType } from "@/lib/models/role";
 
 export default function ProfilePage() {
   return (

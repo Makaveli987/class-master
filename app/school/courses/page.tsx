@@ -3,7 +3,7 @@ import { getCourses } from "@/actions/get-courses";
 import { Card, CardContent } from "@/components/ui/card";
 import CoursesTable from "./_components/courses-table";
 import { RoleGate } from "@/components/role-gate";
-import { RoleType } from "@/lib/models/Roles";
+import { RoleType } from "@/lib/models/role";
 
 export default async function CoursesPage() {
   const courses = await getCourses();
