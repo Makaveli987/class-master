@@ -13,23 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import useGroupDialog from "@/hooks/use-group-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Group, Student } from "@prisma/client";
+import { Group } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-
-interface GroupFormProps {
-  students?: Student[] | null;
-  group?: Group | null;
-  setDialogOpen?: Dispatch<SetStateAction<boolean>>;
-  action?: DialogAction;
-}
 
 interface GroupPayload {
   id?: string;
@@ -43,41 +37,37 @@ const formSchema = z.object({
   }),
 });
 
-export default function GroupForm({
-  students,
-  group,
-  setDialogOpen,
-  action = DialogAction.CREATE,
-}: GroupFormProps) {
+export default function GroupForm() {
   const [pending, setPending] = useState(false);
   const [studentOptions, setStudentOptions] = useState<ComboboxOptions[]>([]);
   const [selectedStudents, setSelectedStudents] = useState<ComboboxOptions[]>(
     []
   );
 
+  const groupDialog = useGroupDialog();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: group
+    defaultValues: groupDialog?.data
       ? {
-          name: group.name,
+          name: groupDialog?.data?.name,
         }
       : { name: "" },
   });
 
   function setOptions() {
-    const stdOptions = students?.map((student) => ({
+    const stdOptions = groupDialog.students?.map((student) => ({
       value: student.id,
       label: `${student.firstName} ${student.lastName}`,
     }));
 
-    console.log("group", group);
-    // @ts-ignore
-    const assignedStudentsOptions = group?.students?.map((student) => ({
-      value: student.id,
-      label: `${student.firstName} ${student.lastName}`,
-    }));
+    const assignedStudentsOptions = groupDialog?.data?.students?.map(
+      (student) => ({
+        value: student.id,
+        label: `${student.firstName} ${student.lastName}`,
+      })
+    );
 
     console.log("assignedStudentsOptions", assignedStudentsOptions);
 
@@ -149,13 +139,13 @@ export default function GroupForm({
       })
       .finally(() => {
         setPending(false);
-        setDialogOpen?.(false);
+        groupDialog.close();
       });
   }
 
   function updateGroup(data: GroupPayload) {
     axios
-      .patch("/api/groups/" + group?.id, { ...data })
+      .patch("/api/groups/" + groupDialog?.data?.id, { ...data })
       .then((response: AxiosResponse<Group>) => {
         if (response.status === 200) {
           toast.success("Group has been updated", {
@@ -170,7 +160,10 @@ export default function GroupForm({
         });
         console.error(error);
       })
-      .finally(() => setPending(false));
+      .finally(() => {
+        setPending(false);
+        groupDialog.close();
+      });
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -181,7 +174,7 @@ export default function GroupForm({
       studentIds,
     };
 
-    action === DialogAction.CREATE
+    groupDialog.action === DialogAction.CREATE
       ? createGroup(payload)
       : updateGroup(payload);
   }
@@ -252,13 +245,13 @@ export default function GroupForm({
           )}
         </div>
         <div className="flex items-center justify-end gap-2">
-          {action === DialogAction.CREATE && (
+          {groupDialog.action === DialogAction.CREATE && (
             <Button
               disabled={pending}
               type="reset"
               onClick={() => {
                 form.reset();
-                setDialogOpen?.(false);
+                groupDialog.close();
               }}
               variant="outline"
             >

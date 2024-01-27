@@ -16,13 +16,12 @@ import {
 import { Input } from "@/components/ui/input";
 import useStudentDialog from "@/hooks/use-student-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { genderOptions } from "@/lib/models/gender";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Student } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -35,7 +34,7 @@ const formSchema = z.object({
     message: "Last name is too short",
   }),
   dateOfBirth: z.date({ required_error: "Field is required" }),
-  gender: z.string().min(1, "Field is required"),
+
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
   phone: z.string().min(5, "Field is required"),
 });
@@ -51,15 +50,13 @@ export default function StudentForm() {
         lastName: studentDialog.data.lastName,
         email: studentDialog.data.email,
         phone: studentDialog.data.phone,
-        // dateOfBirth: studentDialog.data.dateOfBirth,
-        // gender: studentDialog.data.gender,
+        dateOfBirth: studentDialog.data.dateOfBirth,
       }
     : {
         firstName: "",
         lastName: "",
         email: "",
         phone: "",
-        // gender: ''
       };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -76,8 +73,8 @@ export default function StudentForm() {
             description: `${values.firstName} ${values.lastName}`,
           });
           form.reset();
-          router.refresh();
           studentDialog.close();
+          router.refresh();
           // setDialogOpen?.(false);
         }
       })
@@ -98,6 +95,7 @@ export default function StudentForm() {
           toast.success("Student has been updated", {
             description: `${values.firstName} ${values.lastName}`,
           });
+          studentDialog.close();
           router.refresh();
         }
       })
@@ -161,25 +159,6 @@ export default function StudentForm() {
                   date={field.value}
                   disabled={pending}
                   setDate={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="gender"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Gender</FormLabel>
-              <FormControl>
-                <DropdownSelect
-                  disabled={pending}
-                  options={genderOptions}
-                  value={field.value}
-                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />

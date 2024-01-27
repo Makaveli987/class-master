@@ -1,5 +1,14 @@
 import { db } from "@/lib/db";
 import getCurrentUser from "./get-current-user";
+import { Group } from "@prisma/client";
+
+export interface GroupResponse extends Group {
+  students: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  }[];
+}
 
 export const getGroups = async () => {
   try {
@@ -15,7 +24,7 @@ export const getGroups = async () => {
         },
       },
     });
-    return groups;
+    return groups as GroupResponse[];
   } catch (error) {
     console.error("[GROUPS] Error fetching groups ", error);
     return null;
@@ -36,7 +45,7 @@ export const getGroup = async (groupId: string) => {
         },
       },
     });
-    return group;
+    return group as GroupResponse;
   } catch (error) {
     console.error("[GROUPS] Error fetching groups ", error);
     return null;

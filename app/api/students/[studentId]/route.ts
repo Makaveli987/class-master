@@ -15,8 +15,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { firstName, lastName, email, phone, dateOfBirth, gender } =
-      await req.json();
+    const { firstName, lastName, email, phone, dateOfBirth } = await req.json();
     const s = await db.student.update({
       where: {
         id: studentId,
@@ -27,12 +26,11 @@ export async function PATCH(
         email,
         phone,
         dateOfBirth,
-        gender,
       },
     });
 
-    revalidatePath("/school/courses");
-    revalidatePath(`/school/courses/${studentId}`);
+    revalidatePath("/school/students");
+    revalidatePath(`/school/students/${studentId}`);
     return new NextResponse(JSON.stringify(s), {
       status: 200,
       headers: {
@@ -73,8 +71,8 @@ export async function DELETE(
       },
     });
 
-    revalidatePath("/school/courses");
-    revalidatePath(`/school/courses/${studentId}`);
+    revalidatePath("/school/students");
+    revalidatePath(`/school/students/${studentId}`);
     return new NextResponse(JSON.stringify(s), {
       status: 200,
       headers: {

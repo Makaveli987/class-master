@@ -1,42 +1,35 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Student } from "@prisma/client";
-import { PlusCircleIcon } from "lucide-react";
-import { useState } from "react";
 import GroupForm from "./group-form";
+import useGroupDialog from "@/hooks/use-group-dialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 
-interface GroupDialogProps {
-  students: Student[] | null;
-}
-
-export default function GroupDialog({ students }: GroupDialogProps) {
-  const [open, setOpen] = useState(false);
+export default function GroupDialog() {
+  const groupDialog = useGroupDialog();
 
   return (
     <Dialog
-      open={open}
+      open={groupDialog.isOpen}
       onOpenChange={() => {
-        setOpen((current) => !current);
+        if (groupDialog.isOpen) {
+          groupDialog.close();
+        }
       }}
     >
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircleIcon className="h-4 w-4 mr-2" /> Add Group
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="mb-6">Add Group</DialogTitle>
+          <DialogTitle className="mb-6">
+            {groupDialog.action === DialogAction.CREATE
+              ? "Add Group"
+              : "Edit Group"}
+          </DialogTitle>
         </DialogHeader>
-
-        <GroupForm students={students} setDialogOpen={setOpen} />
+        <GroupForm />
       </DialogContent>
     </Dialog>
   );

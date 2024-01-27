@@ -6,16 +6,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      phone,
-      role,
-      dateOfBirth,
-      gender,
-    } = await request.json();
+    const { firstName, lastName, email, password, phone, role, dateOfBirth } =
+      await request.json();
 
     const currentUser = await getCurrentUser();
 
@@ -30,7 +22,6 @@ export async function POST(request: Request) {
       !password ||
       !phone ||
       !role ||
-      !gender ||
       !dateOfBirth
     ) {
       return new NextResponse(
@@ -67,7 +58,6 @@ export async function POST(request: Request) {
         phone,
         role,
         dateOfBirth,
-        gender,
         schoolId: currentUser.schoolId,
       },
     });

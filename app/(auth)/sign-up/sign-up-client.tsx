@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { genderOptions } from "@/lib/models/gender";
 import { RoleType } from "@/lib/models/role";
 import { User } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
@@ -37,7 +36,6 @@ const formSchema = z.object({
   password: z.string().min(1, "Field is required"),
   phone: z.string().min(5, "Field is required"),
   dateOfBirth: z.date({ required_error: "Field is required" }),
-  gender: z.string().min(1, "Field is required"),
   schoolName: z.string().min(1, "Field is required").min(3, {
     message: "School name must be at least 3 characters long.",
   }),
@@ -54,7 +52,6 @@ const SignUpClient = () => {
       email: "",
       password: "",
       phone: "",
-      gender: "",
       schoolName: "",
     },
   });
@@ -183,25 +180,6 @@ const SignUpClient = () => {
                     date={field.value}
                     disabled={pending}
                     setDate={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender</FormLabel>
-                <FormControl>
-                  <DropdownSelect
-                    disabled={pending}
-                    options={genderOptions}
-                    value={field.value}
-                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

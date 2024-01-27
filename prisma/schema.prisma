@@ -8,11 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Gender {
-  MALE
-  FEMALE
-}
-
 enum Role {
   ADMIN
   TEACHER
@@ -24,7 +19,6 @@ model Student {
   lastName    String
   email       String
   phone       String
-  gender      Gender
   dateOfBirth DateTime
   groupId     String?
   schoolId    String
@@ -105,7 +99,6 @@ model User {
   email           String          @unique
   hashedPassword  String
   phone           String
-  gender          Gender
   dateOfBirth     DateTime
   schoolId        String
   archived        Boolean         @default(false)

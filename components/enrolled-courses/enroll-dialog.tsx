@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import useEnrollDialog from "@/hooks/use-enroll-dialog";
+import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import EnrollForm from "./enroll-form";
 
 export default function EnrollDialog() {
@@ -23,9 +23,17 @@ export default function EnrollDialog() {
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Enroll Student</DialogTitle>
+          <DialogTitle>
+            Enroll{" "}
+            {enrollDialog.userType === EnrollUserType.STUDENT
+              ? "Student"
+              : "Group"}
+          </DialogTitle>
           <DialogDescription>
-            Select the course and teacher for the student
+            Select the course and teacher for the{" "}
+            {enrollDialog.userType === EnrollUserType.STUDENT
+              ? "student"
+              : "group"}
           </DialogDescription>
         </DialogHeader>
         <EnrollForm />

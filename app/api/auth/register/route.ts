@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       phone,
       role,
       schoolName,
-      gender,
+
       dateOfBirth,
     } = await request.json();
 
@@ -23,7 +23,6 @@ export async function POST(request: Request) {
       !password ||
       !phone ||
       !role ||
-      !gender ||
       !dateOfBirth ||
       !schoolName
     ) {
@@ -67,7 +66,6 @@ export async function POST(request: Request) {
         phone,
         role,
         dateOfBirth,
-        gender,
         schoolId: school.id,
       },
     });

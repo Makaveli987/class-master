@@ -1,30 +1,37 @@
+import { GroupResponse } from "@/actions/get-groups";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { Student } from "@prisma/client";
 import { create } from "zustand";
 
 interface OpenParams {
-  data?: Student;
+  data?: GroupResponse;
+  students: Student[];
   action: DialogAction;
 }
 
-interface StudentDialogStore {
+interface GroupDialogStore {
   isOpen: boolean;
   open: (params: OpenParams) => void;
   close: () => void;
-  data: Student | null;
+  data: GroupResponse | null;
+  students: Student[];
   action: DialogAction;
 }
 
-const useStudentDialog = create<StudentDialogStore>((set) => ({
+const useGroupDialog = create<GroupDialogStore>((set) => ({
   isOpen: false,
   data: null,
   action: DialogAction.CREATE,
+  students: [],
   open: (params: OpenParams) => {
-    const student = params.data ? params.data : null;
+    console.log("modal action", params.action);
+
+    const group = params.data ? params.data : null;
     set({
       isOpen: true,
-      data: student,
+      data: group,
       action: params.action,
+      students: params.students,
     });
   },
   close: () =>
@@ -32,7 +39,8 @@ const useStudentDialog = create<StudentDialogStore>((set) => ({
       isOpen: false,
       data: null,
       action: DialogAction.CREATE,
+      students: [],
     }),
 }));
 
-export default useStudentDialog;
+export default useGroupDialog;

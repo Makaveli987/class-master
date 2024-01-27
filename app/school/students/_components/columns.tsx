@@ -3,73 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { formatDate } from "@/lib/utils";
 import { Student } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { EditIcon, Trash2Icon } from "lucide-react";
+import { EditIcon } from "lucide-react";
 import Link from "next/link";
 
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import React from "react";
-import { toast } from "sonner";
+import { DeleteStudentButton } from "./delete-student-button";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   studentId: string;
 }
-
-// const EnrollButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-//   ({ className, studentId, asChild = false, ...props }, ref) => {
-//     return (
-//       <EnrollStudentDialog studentId={studentId}>
-//         <div>
-//           <Tooltip2 text="Add to course" side="top">
-//             <Button variant="ghost" className="h-8 w-8 p-0 group ">
-//               <BookPlusIcon className="w-4 h-4 text-muted-foreground group-hover:text-green-600" />
-//             </Button>
-//           </Tooltip2>
-//         </div>
-//       </EnrollStudentDialog>
-//     );
-//   }
-// );
-// EnrollButton.displayName = "EnrollButton";
-
-const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, studentId, asChild = false, ...props }, ref) => {
-    const router = useRouter();
-    function onDelete() {
-      axios
-        .delete(`/api/students/${studentId}`)
-        .then(() => {
-          toast.success("Student has been archived");
-          router.refresh();
-        })
-        .catch(() =>
-          toast.error("Something bad happend. Student has not been archived!")
-        );
-    }
-
-    return (
-      <ConfirmDialog
-        description="This action will archive the student. You will not be able to schedule classes or assign course for this student."
-        onConfirm={onDelete}
-      >
-        <div>
-          <Tooltip2 text="Delete" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group ">
-              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
-            </Button>
-          </Tooltip2>
-        </div>
-      </ConfirmDialog>
-    );
-  }
-);
-DeleteButton.displayName = "DeleteButton";
 
 export const columns: ColumnDef<Student>[] = [
   {
@@ -79,8 +26,13 @@ export const columns: ColumnDef<Student>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-4">
-        <div className="w-9 h-9 rounded-full bg-sky-200 text-sky-600 flex items-center justify-center">
-          DV
+        <div className="w-6 h-6 relative rounded-full flex justify-center items-center bg-muted">
+          <Image
+            src="/male-student.png"
+            alt="student"
+            fill
+            className="rounded-full"
+          />
         </div>
         <span className="font-medium">
           {row.original.firstName} {row.original.lastName}
@@ -115,28 +67,6 @@ export const columns: ColumnDef<Student>[] = [
     },
     enableSorting: false,
   },
-  // {
-  //   accessorKey: "createdAt",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Created" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const created = formatDate(row.original.createdAt);
-
-  //     return <span>{created}</span>;
-  //   },
-  // },
-  // {
-  //   accessorKey: "updatedAt",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Updated" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const updated = formatDate(row.original.updatedAt);
-
-  //     return <span>{updated}</span>;
-  //   },
-  // },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -150,7 +80,7 @@ export const columns: ColumnDef<Student>[] = [
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton studentId={studentId} />
+          <DeleteStudentButton studentId={studentId} buttonType="icon" />
         </div>
       );
     },

@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import StudentCourses from "../_components/student-courses";
 import StudenDetails from "../_components/student-details-card";
+import { DeleteStudentButton } from "../_components/delete-student-button";
 
 export default async function StudentPage({
   params,
@@ -23,11 +24,10 @@ export default async function StudentPage({
       <h3 className="pb-4 font-medium tracking-tight text-xl">Students</h3>
       <Card>
         <CardHeader>
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center">
             <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
               <Image
-                // src={`/${student?.gender.toLowerCase()}-student.png`}
-                src={`/female-student.png`}
+                src="/male-student.png"
                 alt={"test"}
                 fill
                 className="rounded-full"
@@ -40,6 +40,12 @@ export default async function StudentPage({
               <p className="text-muted-foreground text-sm">
                 Created: {formatDate(student?.createdAt!, false)}
               </p>
+            </div>
+            <div className="ml-auto">
+              <DeleteStudentButton
+                studentId={params.studentId}
+                buttonType="button"
+              />
             </div>
           </div>
         </CardHeader>

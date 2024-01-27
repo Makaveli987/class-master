@@ -1,24 +1,15 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircleIcon } from "lucide-react";
 import { getCourses } from "@/actions/get-courses";
 import { getEnrollmentsByGroupId } from "@/actions/get-enrolments";
 import { getGroup } from "@/actions/get-groups";
 import { getStudents } from "@/actions/get-students";
-import EnrollDialog from "@/components/enrolled-courses/enroll-dialog";
-import { EnrollUserType } from "@/hooks/use-enroll-dialog";
-import { DialogAction } from "@/lib/models/dialog-actions";
-import StudentCourses from "../../students/_components/student-courses";
-import GroupForm from "../_components/group-form";
 import { EnrollFormCourse } from "@/components/enrolled-courses/enroll-form";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { formatDate } from "@/lib/utils";
+import Image from "next/image";
+import { DeleteGroupButton } from "../_components/delete-group.button";
+import GroupCourses from "../_components/group-courses";
+import GroupDetails from "../_components/group-details";
 
 export default async function GroupPage({
   params,
@@ -34,75 +25,39 @@ export default async function GroupPage({
     <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Groups</h3>
       <Card>
-        <CardContent className="mt-6">
-          <Tabs defaultValue="profile">
-            <TabsList>
-              <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="courses">Courses</TabsTrigger>
-              <TabsTrigger value="classes">Classes</TabsTrigger>
-            </TabsList>
+        <CardHeader>
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
+              <Image src={`/group.png`} alt={"test"} height={55} width={55} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h2 className="text-xl font-bold tracking-tight">
+                {group?.name}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Created: {formatDate(group?.createdAt!, false)}
+              </p>
+            </div>
+            <div className="ml-auto">
+              <DeleteGroupButton
+                className="ml-auto"
+                groupId={group?.id}
+                buttonType="button"
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Separator className="my-1" />
+          <GroupDetails group={group || undefined} students={students || []} />
 
-            <TabsContent value="profile">
-              <CardHeader className="pl-2">
-                <CardTitle>Profile</CardTitle>
-                <CardDescription>
-                  This is how others will see group on the site.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-2 max-w-3xl">
-                <GroupForm
-                  group={group}
-                  students={students}
-                  action={DialogAction.EDIT}
-                />
-              </CardContent>
-            </TabsContent>
+          <Separator className="my-6" />
 
-            <TabsContent value="courses">
-              <CardHeader className="pl-2">
-                <CardTitle>Courses</CardTitle>
-                <CardDescription>
-                  Courses that group has attended
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-2 max-w-3xl">
-                <StudentCourses
-                  studentId={params.groupId}
-                  enrollments={enrollments || []}
-                  courses={courses || []}
-                />
-
-                <div className="flex justify-end">
-                  {/* <EnrollDialog
-                    courses={courses || []}
-                    userId={params.groupId}
-                    userType={EnrollUserType.GROUP}
-                  >
-                    <Button className="mt-12 ml-auto">
-                      <PlusCircleIcon className="w-4 h-4 mr-2" />
-                      Add Course
-                    </Button>
-                  </EnrollDialog> */}
-                </div>
-              </CardContent>
-            </TabsContent>
-
-            <TabsContent value="classes">
-              <CardHeader className="pl-2">
-                <CardTitle>Classes</CardTitle>
-                <CardDescription>
-                  Classes that group has attended
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-2">
-                <DataTable
-                  columns={[]}
-                  data={[]}
-                  filterPlaceholder="Search classes..."
-                />
-              </CardContent>
-            </TabsContent>
-          </Tabs>
+          <GroupCourses
+            enrollments={enrollments || []}
+            groupId={params.groupId}
+            courses={courses || []}
+          />
         </CardContent>
       </Card>
     </div>

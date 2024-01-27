@@ -1,60 +1,32 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
-import { Group } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import axios from "axios";
-import { EditIcon, Trash2Icon } from "lucide-react";
+import { EditIcon } from "lucide-react";
 import Link from "next/link";
-import React from "react";
-import { toast } from "sonner";
+import { DeleteGroupButton } from "./delete-group.button";
+import { GroupResponse } from "@/actions/get-groups";
+import Image from "next/image";
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean;
-  groupId: string;
-}
-
-const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, groupId, asChild = false, ...props }, ref) => {
-    function onDelete() {
-      axios
-        .delete(`/api/groups/${groupId}`)
-        .then(() => toast.success("Group has been archived"))
-        .catch(() =>
-          toast.error("Something bad happend. Group has not been archived!")
-        );
-    }
-
-    return (
-      <ConfirmDialog
-        description="This action will archive the group. You will not be able to assign students and classes to this group."
-        onConfirm={onDelete}
-      >
-        <div>
-          <Tooltip2 text="Delete" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group ">
-              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
-            </Button>
-          </Tooltip2>
-        </div>
-      </ConfirmDialog>
-    );
-  }
-);
-DeleteButton.displayName = "DeleteButton";
-
-export const columns: ColumnDef<Group>[] = [
+export const columns: ColumnDef<GroupResponse>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+    cell: ({ row }) => (
+      <div className="flex items-center gap-4">
+        <div className="w-6 h-6 relative rounded-full flex justify-center items-center bg-muted">
+          <Image src="/group.png" alt="group" fill className="rounded-full" />
+        </div>
+        <span className="font-medium">
+          <span className="font-medium">{row.original.name}</span>
+        </span>
+      </div>
+    ),
   },
   {
     accessorKey: "students",
@@ -66,7 +38,6 @@ export const columns: ColumnDef<Group>[] = [
       />
     ),
     cell: ({ row }) => (
-      // @ts-ignore
       <span className="font-medium">{row.original.students.length}</span>
     ),
   },
@@ -106,7 +77,7 @@ export const columns: ColumnDef<Group>[] = [
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton groupId={groupId} />
+          <DeleteGroupButton groupId={groupId} buttonType={"icon"} />
         </div>
       );
     },
