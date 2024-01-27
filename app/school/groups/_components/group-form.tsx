@@ -259,7 +259,7 @@ export default function GroupForm() {
             Close
           </Button>
 
-          <Button disabled={pending || !form.formState.isDirty} type="submit">
+          <Button disabled={pending} type="submit">
             {pending ? (
               <>
                 <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

@@ -22,7 +22,7 @@ export default function StudenDetails({ student }: StudenDetailsProps) {
   return (
     <div className="max-w-4xl py-4 px-6">
       <div className="flex justify-between">
-        <h3 className="text-lg font-medium">Basic Details</h3>
+        <h3 className="font-semibold">Basic Details</h3>
         {/* <CardTitle>Basic Details</CardTitle> */}
         <Button
           onClick={() => {

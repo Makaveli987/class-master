@@ -44,11 +44,9 @@ export default function StudentCourses({
   }
   return (
     <div className="max-w-4xl">
-      <CardHeader className="space-y-0">
-        <CardTitle className="text-lg font-medium">Courses</CardTitle>
-        <CardDescription className="mt-0">
-          Courses that student has attended
-        </CardDescription>
+      <CardHeader>
+        <CardTitle>Courses</CardTitle>
+        <CardDescription>Courses that student has attended</CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
         <div>
