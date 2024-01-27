@@ -4,7 +4,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import axios from "axios";
 import { Trash2Icon } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 
@@ -19,11 +19,14 @@ export const DeleteStudentButton = React.forwardRef<
   HTMLButtonElement,
   ButtonProps
 >(({ className, studentId, buttonType, asChild = false, ...props }, ref) => {
-  //   const router = useRouter();
+  const router = useRouter();
   function onDelete() {
     axios
       .delete(`/api/students/${studentId}`)
-      .then(() => toast.success("Student has been archived"))
+      .then(() => {
+        toast.success("Student has been archived");
+        router.refresh();
+      })
       .catch(() =>
         toast.error("Something bad happend. Group has not been archived!")
       );

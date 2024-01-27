@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
+import { DatePicker } from "@/components/ui/date-picker";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
@@ -55,6 +56,7 @@ export default function TeacherForm({
     }),
     email: z.string().min(1, "Field is required").email("Enter a valid email"),
     password: z.string(),
+    dateOfBirth: z.date({ required_error: "Field is required" }),
     phone: z.string().min(5, "Field is required"),
     role: z.string().min(1, "Field is required"),
   });
@@ -66,6 +68,7 @@ export default function TeacherForm({
         email: data.email,
         phone: data.phone,
         role: data.role,
+        dateOfBirth: data.dateOfBirth,
       }
     : {
         firstName: "",
@@ -245,6 +248,24 @@ export default function TeacherForm({
               )}
             />
           )}
+
+          <FormField
+            control={form.control}
+            name="dateOfBirth"
+            render={({ field }) => (
+              <FormItem className="">
+                <FormLabel>Date of Birth</FormLabel>
+                <FormControl>
+                  <DatePicker
+                    date={field.value}
+                    disabled={pending}
+                    setDate={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}

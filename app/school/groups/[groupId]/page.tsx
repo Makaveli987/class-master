@@ -51,8 +51,6 @@ export default async function GroupPage({
           <Separator className="my-1" />
           <GroupDetails group={group || undefined} students={students || []} />
 
-          <Separator className="my-6" />
-
           <GroupCourses
             enrollments={enrollments || []}
             groupId={params.groupId}

@@ -10,13 +10,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import useCourseDialog from "@/hooks/use-course-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Course } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -30,26 +31,18 @@ const formSchema = z.object({
   totalClasses: z.string().min(1, "Field is required"),
 });
 
-interface CourseFormProps {
-  data?: Course | null;
-  setDialogOpen?: Dispatch<SetStateAction<boolean>>;
-  action?: DialogAction;
-}
-
-export default function CourseForm({
-  data,
-  setDialogOpen,
-  action = DialogAction.CREATE,
-}: CourseFormProps) {
+export default function CourseForm() {
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
-  const defValues = data
+  const courseDialog = useCourseDialog();
+
+  const defValues = courseDialog.data
     ? {
-        name: data.name,
-        description: data.description,
-        pricePerClass: data.pricePerClass.toString(),
-        totalClasses: data.totalClasses.toString(),
+        name: courseDialog.data.name,
+        description: courseDialog.data.description,
+        pricePerClass: courseDialog.data.pricePerClass.toString(),
+        totalClasses: courseDialog.data.totalClasses.toString(),
       }
     : {
         name: "",
@@ -79,7 +72,7 @@ export default function CourseForm({
           });
           form.reset();
           router.refresh();
-          setDialogOpen?.(false);
+          courseDialog.close();
         }
       })
       .catch((error) => {
@@ -99,12 +92,13 @@ export default function CourseForm({
     };
 
     axios
-      .patch("/api/courses/" + data?.id, { ...payload })
+      .patch("/api/courses/" + courseDialog.data?.id, { ...payload })
       .then((response: AxiosResponse<Course>) => {
         if (response.status === 200) {
           toast.success("Course has been updated", {
             description: `${values.name}`,
           });
+          courseDialog.close();
           router.refresh();
         }
       })
@@ -120,7 +114,7 @@ export default function CourseForm({
   function onSubmit(values: z.infer<typeof formSchema>) {
     setPending(true);
 
-    action === DialogAction.CREATE
+    courseDialog.action === DialogAction.CREATE
       ? createCourse(values)
       : updateCourse(values);
   }
@@ -199,27 +193,20 @@ export default function CourseForm({
             )}
           />
 
-          <div className="flex items-center justify-end gap-2">
-            {action === DialogAction.CREATE && (
-              <Button
-                disabled={pending}
-                type="reset"
-                onClick={() => {
-                  form.reset();
-                  setDialogOpen?.(false);
-                }}
-                className="!mt-6 "
-                variant="outline"
-              >
-                Close
-              </Button>
-            )}
-
+          <div className="flex pt-4 flex-col-reverse sm:flex-row sm:items-center sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
             <Button
-              disabled={pending || !form.formState.isDirty}
-              className="!mt-6"
-              type="submit"
+              disabled={pending}
+              type="reset"
+              onClick={() => {
+                form.reset();
+                courseDialog.close();
+              }}
+              variant="outline"
             >
+              Close
+            </Button>
+
+            <Button disabled={pending || !form.formState.isDirty} type="submit">
               {pending ? (
                 <>
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

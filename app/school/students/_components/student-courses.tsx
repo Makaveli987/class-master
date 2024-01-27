@@ -44,9 +44,11 @@ export default function StudentCourses({
   }
   return (
     <div className="max-w-4xl">
-      <CardHeader>
-        <CardTitle>Courses</CardTitle>
-        <CardDescription>Courses that student has attended</CardDescription>
+      <CardHeader className="space-y-0">
+        <CardTitle className="text-lg font-medium">Courses</CardTitle>
+        <CardDescription className="mt-0">
+          Courses that student has attended
+        </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
         <div>
@@ -148,7 +150,7 @@ export default function StudentCourses({
           <Button
             onClick={() =>
               enrollDialog.open({
-                userId: "",
+                userId: studentId,
                 userType: EnrollUserType.STUDENT,
                 courses,
                 action: DialogAction.CREATE,

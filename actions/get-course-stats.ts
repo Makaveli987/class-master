@@ -18,11 +18,7 @@ export const getCourseStats = async (courseId: string) => {
       },
     });
 
-    const totalTeachers = await db.userPerCourse.count({
-      where: { courseId },
-    });
-
-    return { totalEnrollments, activeEnrollments, totalTeachers };
+    return { totalEnrollments, activeEnrollments };
   } catch (error) {
     console.error("[ENROLLMENTS] Error fetching Enrollements");
     return null;

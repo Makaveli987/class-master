@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 import { RoleType } from "@/lib/models/role";
-
+import Image from "next/image";
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
@@ -64,9 +64,19 @@ export const columns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <span className="font-medium">
-        {row.original.firstName} {row.original.lastName}
-      </span>
+      <div className="flex items-center gap-4">
+        <div className="w-6 h-6 relative rounded-full flex justify-center items-center bg-muted">
+          <Image
+            src="/teacher.png"
+            alt="student"
+            fill
+            className="rounded-full"
+          />
+        </div>
+        <span className="font-medium">
+          {row.original.firstName} {row.original.lastName}
+        </span>
+      </div>
     ),
   },
   {
@@ -92,25 +102,28 @@ export const columns: ColumnDef<User>[] = [
     enableSorting: false,
   },
   {
+    accessorKey: "dateOfBirth",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        className="pl-2 text-xs"
+        title="Date of Birth"
+      />
+    ),
+    cell: ({ row }) => {
+      const dateOfBirth = formatDate(row.original.dateOfBirth, false);
+      return <span>{dateOfBirth}</span>;
+    },
+    enableSorting: false,
+  },
+  {
     accessorKey: "createdAt",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created" />
     ),
     cell: ({ row }) => {
       const created = formatDate(row.original.createdAt);
-
       return <span>{created}</span>;
-    },
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated" />
-    ),
-    cell: ({ row }) => {
-      const updated = formatDate(row.original.updatedAt);
-
-      return <span>{updated}</span>;
     },
   },
   {

@@ -18,6 +18,9 @@ export const getGroups = async () => {
       where: { schoolId: currentUser?.schoolId, archived: false },
       include: {
         students: {
+          where: {
+            archived: false,
+          },
           select: {
             id: true,
           },
@@ -37,6 +40,9 @@ export const getGroup = async (groupId: string) => {
       where: { id: groupId, archived: false },
       include: {
         students: {
+          where: {
+            archived: false,
+          },
           select: {
             id: true,
             firstName: true,

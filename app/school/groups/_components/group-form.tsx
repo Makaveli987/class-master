@@ -244,21 +244,22 @@ export default function GroupForm() {
             </ScrollArea>
           )}
         </div>
-        <div className="flex items-center justify-end gap-2">
-          {groupDialog.action === DialogAction.CREATE && (
-            <Button
-              disabled={pending}
-              type="reset"
-              onClick={() => {
-                form.reset();
-                groupDialog.close();
-              }}
-              variant="outline"
-            >
-              Close
-            </Button>
-          )}
-          <Button disabled={pending} type="submit">
+        <div className="flex pt-4 flex-col-reverse sm:flex-row sm:items-center sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
+          <Button
+            disabled={pending}
+            type="reset"
+            onClick={(e) => {
+              e.preventDefault();
+              form.reset();
+
+              groupDialog.close();
+            }}
+            variant="outline"
+          >
+            Close
+          </Button>
+
+          <Button disabled={pending || !form.formState.isDirty} type="submit">
             {pending ? (
               <>
                 <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

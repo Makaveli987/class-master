@@ -1,30 +1,29 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { PlusCircleIcon } from "lucide-react";
-import { useState } from "react";
+import useCourseDialog from "@/hooks/use-course-dialog";
 import CourseForm from "./course-form";
 
 export default function CourseDialog() {
-  const [open, setOpen] = useState(false);
+  const studentDialog = useCourseDialog();
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircleIcon className="h-4 w-4 mr-2" /> Add Course
-        </Button>
-      </DialogTrigger>
+    <Dialog
+      open={studentDialog.isOpen}
+      onOpenChange={() => {
+        if (studentDialog.isOpen) {
+          studentDialog.close();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="mb-6">Add Course</DialogTitle>
-          <CourseForm setDialogOpen={setOpen} />
+          <CourseForm />
         </DialogHeader>
       </DialogContent>
     </Dialog>

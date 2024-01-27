@@ -2,6 +2,7 @@
 import { GroupResponse } from "@/actions/get-groups";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import useGroupDialog from "@/hooks/use-group-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { Student } from "@prisma/client";
@@ -18,21 +19,35 @@ export default function GroupDetails({ group, students }: GroupDetailsProps) {
   const groupDialog = useGroupDialog();
   return (
     <div className="max-w-4xl py-4 px-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Students</h3>
-        <Button
-          onClick={() => {
-            groupDialog.open({
-              data: group,
-              action: DialogAction.EDIT,
-              students: students || [],
-            });
-          }}
-          variant="outline"
-        >
-          <EditIcon className="w-4 h-4 mr-2" /> Edit
-        </Button>
-      </div>
+      {/* {group?.description && ( */}
+      <>
+        <div className="flex gap-16 justify-between">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-lg font-medium">Description</h3>
+            <p className="text-sm text-muted-foreground">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. At quos
+              doloribus dolor?
+            </p>
+          </div>
+          <Button
+            onClick={() => {
+              groupDialog.open({
+                data: group,
+                action: DialogAction.EDIT,
+                students: students || [],
+              });
+            }}
+            variant="outline"
+          >
+            <EditIcon className="w-4 h-4 mr-2" /> Edit
+          </Button>
+        </div>
+
+        <Separator className="my-6" />
+      </>
+      {/* )} */}
+
+      <h3 className="text-lg font-medium">Students</h3>
 
       {!group?.students.length ? (
         <p className="text-sm py-4 px-2">No students selected.</p>

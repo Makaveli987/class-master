@@ -1,5 +1,4 @@
 "use client";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,6 +20,7 @@ import { AssignedCourse } from "@/lib/models/assigned-course";
 import { User } from "@prisma/client";
 import axios from "axios";
 import { PlusCircleIcon, XIcon } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -83,104 +83,108 @@ export default function CourseTeachersCard({
   }
 
   return (
-    <Card className="flex-1 h-[524px]">
-      <CardHeader className="mb-3 relative max-w-[448px]">
-        <CardTitle>Teachers</CardTitle>
-        <CardDescription>Teachers that can teach this course</CardDescription>
-        <Popover
-          open={isPopoverOpen}
-          onOpenChange={() => {
-            setIsPopoverOpen((current) => !current);
-            setSelectedTeacher("");
-          }}
-        >
-          <PopoverTrigger asChild>
-            <div className="absolute right-0 top-4">
-              {/* <Tooltip2 text="Assign teacher"> */}
-              <Button variant="ghost">
-                <PlusCircleIcon className="w-5 h-5 mr-2" />
-                Assign Teacher
-              </Button>
-              {/* </Tooltip2> */}
-            </div>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <p className="pb-2 text-sm font-medium">Course</p>
-            <DropdownSelect
-              options={teachersOptions || []}
-              onChange={(value) => setSelectedTeacher(value)}
-              value={selectedTeacher}
-            />
-            <div className="flex justify-end mt-4">
-              <Button
-                disabled={!selectedTeacher}
-                className="ml-auto"
-                onClick={handleAssign}
-              >
-                Assign
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </CardHeader>
-      <CardContent>
-        {assignedTeachers?.length === 0 ? (
-          <p className="text-sm">
-            There are no teachers assigned to this course.
-          </p>
-        ) : (
-          <ScrollArea type="always" className="h-[400px]">
-            <div className="space-y-4">
-              {assignedTeachers?.map((teacher) => (
-                <div
-                  key={teacher.id}
-                  className="flex items-center justify-between hover:bg-muted rounded-lg p-2 max-w-[410px] group cursor-pointer"
+    <Card>
+      <div className="max-w-4xl">
+        <CardHeader className="max-w-4xl flex flex-row justify-between items-start">
+          <div>
+            <CardTitle>Teachers</CardTitle>
+            <CardDescription>
+              Teachers that can teach this course
+            </CardDescription>
+          </div>
+          <Popover
+            open={isPopoverOpen}
+            onOpenChange={() => {
+              setIsPopoverOpen((current) => !current);
+              setSelectedTeacher("");
+            }}
+          >
+            <PopoverTrigger asChild>
+              <div className="">
+                <Button variant="outline">
+                  <PlusCircleIcon className="w-5 h-5 mr-2" />
+                  Assign Teacher
+                </Button>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <p className="pb-2 text-sm font-medium">Course</p>
+              <DropdownSelect
+                options={teachersOptions || []}
+                onChange={(value) => setSelectedTeacher(value)}
+                value={selectedTeacher}
+              />
+              <div className="flex justify-end mt-4">
+                <Button
+                  disabled={!selectedTeacher}
+                  className="ml-auto"
+                  onClick={handleAssign}
                 >
+                  Assign
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </CardHeader>
+        <CardContent>
+          {assignedTeachers?.length === 0 ? (
+            <p className="text-sm">
+              There are no teachers assigned to this course.
+            </p>
+          ) : (
+            <ScrollArea type="always" className="max-h-[400px]">
+              <div className="space-y-0">
+                {assignedTeachers?.map((teacher) => (
                   <div
-                    className="flex items-center "
-                    onClick={() =>
-                      router.push(`/school/teachers/${teacher.user.id}`)
-                    }
+                    key={teacher.id}
+                    className="flex items-center justify-between hover:bg-muted rounded-lg  max-w-[410px] group cursor-pointer"
                   >
-                    <Avatar className="h-9 w-9">
-                      <AvatarFallback>
-                        {teacher?.user?.firstName?.[0]}
-                        {teacher?.user?.lastName?.[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="ml-4 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {`${teacher?.user?.firstName} ${teacher?.user?.lastName}`}
-                      </p>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {teacher?.user?.email}
-                      </p>
+                    <div
+                      className="flex items-center "
+                      onClick={() =>
+                        router.push(`/school/teachers/${teacher.user.id}`)
+                      }
+                    >
+                      <div className="flex gap-3 items-center px-2 py-1 hover:bg-muted rounded-md cursor-pointer">
+                        <div className="rounded-full flex items-center justify-center w-8 h-8 bg-muted relative">
+                          <Image
+                            src="/teacher.png"
+                            width={28}
+                            height={28}
+                            alt="student"
+                            className="rounded-full"
+                          />
+                        </div>
+                        <span className="text-sm font-medium">
+                          {`${teacher?.user?.firstName} ${teacher?.user?.lastName}`}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  <ConfirmDialog
-                    description={
-                      "This action will remove teacher from this course. You will not be able to assign students to this course with this teacher."
-                    }
-                    onConfirm={() => handleConfirm(teacher.id)}
-                  >
-                    <div>
-                      <Tooltip2 text="Unassign teacher">
-                        <Button
-                          className="hidden group-hover:block"
-                          variant="ghost"
-                        >
-                          <XIcon className="w-4 h-4" />
-                        </Button>
-                      </Tooltip2>
-                    </div>
-                  </ConfirmDialog>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        )}
-      </CardContent>
+                    <ConfirmDialog
+                      description={
+                        "This action will remove teacher from this course. You will not be able to assign students to this course with this teacher."
+                      }
+                      onConfirm={() => handleConfirm(teacher.id)}
+                    >
+                      <div>
+                        <Tooltip2 text="Unassign teacher">
+                          <Button
+                            className="hidden group-hover:block"
+                            variant="ghost"
+                          >
+                            <XIcon className="w-4 h-4" />
+                          </Button>
+                        </Tooltip2>
+                      </div>
+                    </ConfirmDialog>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+        </CardContent>
+      </div>
     </Card>
   );
 }

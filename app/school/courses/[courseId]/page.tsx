@@ -2,17 +2,11 @@ import { getAssignedTeachers } from "@/actions/get-assigned-teachers";
 import { getCourseStats } from "@/actions/get-course-stats";
 import { getCourse } from "@/actions/get-courses";
 import { getTeachers } from "@/actions/get-teachers";
-import StatsCard from "@/components/cards/stats-card";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { DialogAction } from "@/lib/models/dialog-actions";
-import { BookCheckIcon, BookOpenTextIcon, GraduationCap } from "lucide-react";
-import CourseForm from "../_components/course-form";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { formatDate } from "@/lib/utils";
+import Image from "next/image";
+import CourseDetails from "../_components/course-details";
 import CourseTeachersCard from "../_components/course-teachers-card";
 
 export default async function CoursePage({
@@ -35,43 +29,43 @@ export default async function CoursePage({
   return (
     <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Courses</h3>
-      <div className="mb-6 flex gap-6">
-        <StatsCard
-          title="Total Enrollments"
-          amount={courseStats?.totalEnrollments}
-          icon={<BookCheckIcon className="h-5 w-5 text-muted-foreground" />}
-        />
-        <StatsCard
-          title="Active Enrollments"
-          amount={courseStats?.activeEnrollments}
-          icon={<BookOpenTextIcon className="h-5 w-5 text-muted-foreground" />}
-        />
-        <StatsCard
-          title="Teachers"
-          amount={courseStats?.totalTeachers}
-          icon={<GraduationCap className="h-5 w-5 text-muted-foreground" />}
-        />
-      </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
+              <Image src={`/courses.png`} alt={"test"} height={40} width={40} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h2 className="text-xl font-bold tracking-tight">
+                {course?.name}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Created: {formatDate(course?.createdAt!, false)}
+              </p>
+            </div>
+            <div className="ml-auto">
+              {/* <DeleteGroupButton
+                className="ml-auto"
+                groupId={group?.id}
+                buttonType="button"
+              /> */}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Separator className="my-1" />
+          <CourseDetails
+            course={course || undefined}
+            courseStats={courseStats || undefined}
+          />
 
-      <div className="flex gap-6">
-        <Card className="flex-1">
-          <CardHeader className="mb-3">
-            <CardTitle>Course Info</CardTitle>
-            <CardDescription>
-              This is how others will see course on the site.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <CourseForm data={course} action={DialogAction.EDIT} />
-          </CardContent>
-        </Card>
-
-        <CourseTeachersCard
-          courseId={params.courseId}
-          teachers={teachers}
-          assignedTeachers={assignedTeachers}
-        ></CourseTeachersCard>
-      </div>
+          <CourseTeachersCard
+            courseId={params.courseId}
+            teachers={teachers}
+            assignedTeachers={assignedTeachers}
+          ></CourseTeachersCard>
+        </CardContent>
+      </Card>
     </div>
   );
 }

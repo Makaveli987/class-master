@@ -75,7 +75,6 @@ export default function StudentForm() {
           form.reset();
           studentDialog.close();
           router.refresh();
-          // setDialogOpen?.(false);
         }
       })
       .catch((error) => {
