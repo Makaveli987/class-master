@@ -33,7 +33,7 @@ export default async function CoursePage({
         <CardHeader>
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
-              <Image src={`/courses.png`} alt={"test"} height={40} width={40} />
+              <Image src={`/course.png`} alt={"test"} height={40} width={40} />
             </div>
             <div className="flex flex-col justify-center">
               <h2 className="text-xl font-bold tracking-tight">

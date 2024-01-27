@@ -29,7 +29,7 @@ export default function Header({ session }: HeaderProps) {
           <MenuIcon />
         </Button>
         <MobileSidebar session={session} />
-        <GraduationCapIcon className="w-5 h-5 ml-2" />
+        {/* <GraduationCapIcon className="w-5 h-5 ml-2" /> */}
         {session?.user.school?.name}
       </span>
       {session ? (

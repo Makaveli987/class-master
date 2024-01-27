@@ -18,12 +18,12 @@ interface GroupDetailsProps {
 export default function GroupDetails({ group, students }: GroupDetailsProps) {
   const groupDialog = useGroupDialog();
   return (
-    <div className="max-w-4xl py-4 px-6">
+    <div className="max-w-4xl pt-4 px-6">
       {/* {group?.description && ( */}
       <>
         <div className="flex gap-16 justify-between">
           <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-medium">Description</h3>
+            <h3 className="font-semibold">Description</h3>
             <p className="text-sm text-muted-foreground">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. At quos
               doloribus dolor?
@@ -47,12 +47,12 @@ export default function GroupDetails({ group, students }: GroupDetailsProps) {
       </>
       {/* )} */}
 
-      <h3 className="text-lg font-medium">Students</h3>
+      <h3 className="font-semibold">Students</h3>
 
       {!group?.students.length ? (
         <p className="text-sm py-4 px-2">No students selected.</p>
       ) : (
-        <ScrollArea className="max-h-[400px] py-4 mt-2" type="always">
+        <ScrollArea className="max-h-[400px] " type="always">
           {group.students.map((student) => (
             <div key={student.id} className="max-h-96 ">
               <Link href={`/school/students/${student.id}`}>
