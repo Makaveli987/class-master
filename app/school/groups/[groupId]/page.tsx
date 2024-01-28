@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
-import { DeleteGroupButton } from "../_components/delete-group.button";
+import { DeleteGroupButton } from "../_components/delete-group-button";
 import GroupCourses from "../_components/group-courses";
 import GroupDetails from "../_components/group-details";
 

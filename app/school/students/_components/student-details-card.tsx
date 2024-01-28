@@ -20,7 +20,7 @@ interface StudenDetailsProps {
 export default function StudenDetails({ student }: StudenDetailsProps) {
   const studentDialog = useStudentDialog();
   return (
-    <div className="max-w-4xl py-4 px-6">
+    <div className="max-w-4xl pt-4 pb-6 px-6">
       <div className="flex justify-between">
         <h3 className="font-semibold">Basic Details</h3>
         {/* <CardTitle>Basic Details</CardTitle> */}

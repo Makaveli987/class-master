@@ -18,7 +18,7 @@ export default function CourseDetails({
 }: CourseDetailsProps) {
   const courseDialog = useCourseDialog();
   return (
-    <div className="max-w-4xl pt-4 pr-6 ">
+    <div className="max-w-4xl p-6 ">
       <div className="flex gap-16 justify-between">
         <div className="flex flex-col gap-2">
           <h3 className="font-semibold">Description</h3>
@@ -39,7 +39,7 @@ export default function CourseDetails({
         </Button>
       </div>
 
-      <Separator className="my-6" />
+      {/* <Separator className="my-6" />
 
       <div className="mb-6 flex gap-6">
         <StatsCard
@@ -52,7 +52,7 @@ export default function CourseDetails({
           amount={courseStats?.activeEnrollments}
           icon={<BookOpenTextIcon className="h-5 w-5 text-muted-foreground" />}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

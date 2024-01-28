@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import CourseDetails from "../_components/course-details";
 import CourseTeachersCard from "../_components/course-teachers-card";
+import CourseDetailsHeader from "../_components/course-details-header";
 
 export default async function CoursePage({
   params,
@@ -31,29 +32,10 @@ export default async function CoursePage({
       <h3 className="pb-4 font-medium tracking-tight text-xl">Courses</h3>
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-6">
-            <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
-              <Image src={`/course.png`} alt={"test"} height={40} width={40} />
-            </div>
-            <div className="flex flex-col justify-center">
-              <h2 className="text-xl font-bold tracking-tight">
-                {course?.name}
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Created: {formatDate(course?.createdAt!, false)}
-              </p>
-            </div>
-            <div className="ml-auto">
-              {/* <DeleteGroupButton
-                className="ml-auto"
-                groupId={group?.id}
-                buttonType="button"
-              /> */}
-            </div>
-          </div>
+          <CourseDetailsHeader course={course || undefined} />
         </CardHeader>
         <CardContent>
-          <Separator className="my-1" />
+          <Separator />
           <CourseDetails
             course={course || undefined}
             courseStats={courseStats || undefined}

@@ -53,8 +53,6 @@ export default async function StudentPage({
           <Separator className="my-1" />
           <StudenDetails student={student || undefined} />
 
-          <Separator className="mt-4 mb-2" />
-
           <StudentCourses
             enrollments={enrollments || []}
             studentId={params.studentId}

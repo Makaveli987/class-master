@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon } from "lucide-react";
 import Link from "next/link";
-import { DeleteGroupButton } from "./delete-group.button";
+import { DeleteGroupButton } from "./delete-group-button";
 import { GroupResponse } from "@/actions/get-groups";
 import Image from "next/image";
 
