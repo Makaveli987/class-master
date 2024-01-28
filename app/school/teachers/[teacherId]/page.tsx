@@ -22,13 +22,11 @@ export default async function TeacherPage({
   const teacherStatsData = getTeachersStats(params.teacherId);
   const coursesData = getCourses();
   const assignedCoursesData = getAssignedCourses(params.teacherId);
-  const lastSixMonthData = countEnrollmentsByMonth() as any;
 
-  const [teacher, courses, assignedCourses, lastSixMonth] = await Promise.all([
+  const [teacher, courses, assignedCourses] = await Promise.all([
     teacherData,
     coursesData,
     assignedCoursesData,
-    lastSixMonthData,
   ]);
 
   return (
@@ -71,7 +69,6 @@ export default async function TeacherPage({
             teacherId={params.teacherId}
             courses={courses}
             assignedCourses={assignedCourses}
-            test={lastSixMonth}
           ></AssignedCoursesCard>
         </CardContent>
       </Card>

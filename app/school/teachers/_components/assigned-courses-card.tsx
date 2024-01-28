@@ -29,14 +29,12 @@ interface CourseTeachersCardProps {
   teacherId: string;
   courses?: Course[] | null;
   assignedCourses?: AssignedCourse[] | null;
-  test: any;
 }
 
 export default function AssignedTeachersCard({
   teacherId,
   courses,
   assignedCourses,
-  test,
 }: CourseTeachersCardProps) {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [courseOptions, setCourseOptions] = useState<any>([]);
