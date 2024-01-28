@@ -1,29 +1,29 @@
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { Student } from "@prisma/client";
+import { Student, User } from "@prisma/client";
 import { create } from "zustand";
 
 interface OpenParams {
-  data?: Student;
+  data?: User;
   action: DialogAction;
 }
 
-interface StudentDialogStore {
+interface TeacherDialogStore {
   isOpen: boolean;
   open: (params: OpenParams) => void;
   close: () => void;
-  data: Student | null;
+  data: User | null;
   action: DialogAction;
 }
 
-const useStudentDialog = create<StudentDialogStore>((set) => ({
+const useTeacherDialog = create<TeacherDialogStore>((set) => ({
   isOpen: false,
   data: null,
   action: DialogAction.CREATE,
   open: (params: OpenParams) => {
-    const student = params.data ? params.data : null;
+    const teacher = params.data ? params.data : null;
     set({
       isOpen: true,
-      data: student,
+      data: teacher,
       action: params.action,
     });
   },
@@ -40,4 +40,4 @@ const useStudentDialog = create<StudentDialogStore>((set) => ({
   },
 }));
 
-export default useStudentDialog;
+export default useTeacherDialog;

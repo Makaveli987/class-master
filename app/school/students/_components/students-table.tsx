@@ -3,7 +3,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { Student } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { columns } from "./columns";
-import StudentDialog from "./student-dialog";
+import StudentDialog from "../../../../components/dialogs/student-dialog/student-dialog";
 import { Button } from "@/components/ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import useStudentDialog from "@/hooks/use-student-dialog";

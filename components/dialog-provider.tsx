@@ -5,9 +5,10 @@ import ClassroomDialog from "./dialogs/classroom-dialog/classroom-dialog";
 import ExamDialog from "./dialogs/exam-dialog/exam-dialog";
 import NoteDialog from "./dialogs/notes-dialog/notes-dialog";
 import EnrollDialog from "./enrolled-courses/enroll-dialog";
-import StudentDialog from "@/app/school/students/_components/student-dialog";
-import GroupDialog from "@/app/school/groups/_components/group-dialog";
-import CourseDialog from "@/app/school/courses/_components/course-dialog";
+import StudentDialog from "@/components/dialogs/student-dialog/student-dialog";
+import GroupDialog from "@/components/dialogs/group-dialog/group-dialog";
+import CourseDialog from "@/components/dialogs/course-dialog/course-dialog";
+import TeacherDialog from "@/components/dialogs/teacher-dialog/teacher-dialog";
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -29,6 +30,7 @@ export const DialogProvider = () => {
       <StudentDialog />
       <GroupDialog />
       <CourseDialog />
+      <TeacherDialog />
     </>
   );
 };

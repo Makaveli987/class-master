@@ -55,7 +55,6 @@ export default function ExamDialog() {
       form.setValue("comment", "");
     }
 
-    console.log("examDialog.data", examDialog.data);
     form.clearErrors();
   }, [form, examDialog.data]);
 
@@ -103,8 +102,6 @@ export default function ExamDialog() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    console.log("values", values);
-    console.log("examsDialog.data", examDialog.data);
 
     !!examDialog.data ? updateExam(values) : createExam(values);
   }

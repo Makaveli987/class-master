@@ -1,10 +1,4 @@
 "use client";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import useCourseDialog from "@/hooks/use-course-dialog";
 import {
   Form,
@@ -26,6 +20,13 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(1, "Field is required").min(3, {
@@ -135,11 +136,11 @@ export default function CourseDialog() {
         }
       }}
     >
-      <DialogHeader>
-        <DialogTitle className="mb-6">Add Course</DialogTitle>
-      </DialogHeader>
-      <Form {...form}>
-        <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add Course</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
             <FormField
               control={form.control}
@@ -211,7 +212,7 @@ export default function CourseDialog() {
               )}
             />
 
-            <div className="flex pt-4 flex-col-reverse sm:flex-row sm:items-center sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
+            <DialogFooter className="pt-2">
               <Button
                 disabled={pending}
                 type="reset"
@@ -237,10 +238,10 @@ export default function CourseDialog() {
                   <>Save</>
                 )}
               </Button>
-            </div>
+            </DialogFooter>
           </form>
-        </DialogContent>
-      </Form>
+        </Form>
+      </DialogContent>
     </Dialog>
   );
 }

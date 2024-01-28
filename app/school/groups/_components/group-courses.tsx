@@ -114,8 +114,6 @@ export default function GroupCourses({
                         variant="ghost"
                         className="h-8 w-8 p-0 group"
                         onClick={(e) => {
-                          console.log("Edit clicked");
-
                           e.stopPropagation();
 
                           enrollDialog.open({

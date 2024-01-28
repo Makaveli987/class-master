@@ -9,13 +9,9 @@ import { BookCheckIcon, BookOpenTextIcon, EditIcon } from "lucide-react";
 
 interface CourseDetailsProps {
   course?: Course;
-  courseStats?: { totalEnrollments: number; activeEnrollments: number };
 }
 
-export default function CourseDetails({
-  course,
-  courseStats,
-}: CourseDetailsProps) {
+export default function CourseDetails({ course }: CourseDetailsProps) {
   const courseDialog = useCourseDialog();
   return (
     <div className="max-w-4xl p-6 ">
@@ -38,21 +34,6 @@ export default function CourseDetails({
           <EditIcon className="w-4 h-4 mr-2" /> Edit
         </Button>
       </div>
-
-      {/* <Separator className="my-6" />
-
-      <div className="mb-6 flex gap-6">
-        <StatsCard
-          title="Total Enrollments"
-          amount={courseStats?.totalEnrollments}
-          icon={<BookCheckIcon className="h-5 w-5 text-muted-foreground" />}
-        />
-        <StatsCard
-          title="Active Enrollments"
-          amount={courseStats?.activeEnrollments}
-          icon={<BookOpenTextIcon className="h-5 w-5 text-muted-foreground" />}
-        />
-      </div> */}
     </div>
   );
 }

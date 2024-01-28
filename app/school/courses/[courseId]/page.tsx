@@ -18,13 +18,13 @@ export default async function CoursePage({
   const courseData = getCourse(params.courseId);
   const assignedTeachersData = getAssignedTeachers(params.courseId);
   const teachersData = getTeachers();
-  const courseStatsData = getCourseStats(params.courseId);
+  // const courseStatsData = getCourseStats(params.courseId);
 
-  const [course, assignedTeachers, teachers, courseStats] = await Promise.all([
+  const [course, assignedTeachers, teachers] = await Promise.all([
     courseData,
     assignedTeachersData,
     teachersData,
-    courseStatsData,
+    // courseStatsData,
   ]);
 
   return (
@@ -36,10 +36,7 @@ export default async function CoursePage({
         </CardHeader>
         <CardContent>
           <Separator />
-          <CourseDetails
-            course={course || undefined}
-            courseStats={courseStats || undefined}
-          />
+          <CourseDetails course={course || undefined} />
 
           <CourseTeachersCard
             courseId={params.courseId}

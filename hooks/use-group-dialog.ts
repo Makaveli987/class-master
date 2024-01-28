@@ -24,8 +24,6 @@ const useGroupDialog = create<GroupDialogStore>((set) => ({
   action: DialogAction.CREATE,
   students: [],
   open: (params: OpenParams) => {
-    console.log("modal action", params.action);
-
     const group = params.data ? params.data : null;
     set({
       isOpen: true,

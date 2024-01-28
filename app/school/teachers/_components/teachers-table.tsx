@@ -4,7 +4,11 @@ import { User } from "@prisma/client";
 import { columns } from "./columns";
 
 import { useRouter } from "next/navigation";
-import TeacherDialog from "./teacher-dialog";
+import TeacherDialog from "../../../../components/dialogs/teacher-dialog/teacher-dialog";
+import { Button } from "@/components/ui/button";
+import { PlusCircleIcon } from "lucide-react";
+import useTeacherDialog from "@/hooks/use-teacher-dialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 
 interface TeachersTableProps {
   teachers: User[];
@@ -12,6 +16,7 @@ interface TeachersTableProps {
 
 export default function TeachersTable({ teachers }: TeachersTableProps) {
   const router = useRouter();
+  const teacherDialog = useTeacherDialog();
   return (
     <DataTable
       onRowClick={(rowData) => {
@@ -21,7 +26,12 @@ export default function TeachersTable({ teachers }: TeachersTableProps) {
       data={teachers || []}
       filterPlaceholder="Search teachers..."
     >
-      <TeacherDialog />
+      <Button
+        onClick={() => teacherDialog.open({ action: DialogAction.CREATE })}
+      >
+        <PlusCircleIcon className="w-4 h-4 mr-2" />
+        Add Teacher
+      </Button>
     </DataTable>
   );
 }

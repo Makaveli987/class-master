@@ -38,7 +38,6 @@ export const useExamDialog = create<ExamDialogStore>((set) => ({
   data: null,
   enrollmentId: "",
   open: (params: OpenParams) => {
-    console.log("params", params);
     set({
       isOpen: true,
       data: params?.exam,

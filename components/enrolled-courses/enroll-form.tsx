@@ -150,7 +150,6 @@ export default function EnrollForm() {
                     options={courseOptions}
                     onChange={(value) => {
                       form.setValue("teacherId", "");
-                      console.log("object :>> ", form.getValues());
                       filterTeachersOptions(value);
                       field.onChange(value);
                     }}

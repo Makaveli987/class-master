@@ -8,8 +8,6 @@ export async function PATCH(req: Request) {
     const currentUser = await getCurrentUser();
 
     const { teacherId, password } = await req.json();
-    console.log({ teacherId });
-    console.log({ password });
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });

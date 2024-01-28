@@ -2,6 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -16,8 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import useGroupDialog from "@/hooks/use-group-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Group } from "@prisma/client";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { Loader2Icon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,7 +43,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function GroupForm() {
+export default function GroupDialog() {
   const [pending, setPending] = useState(false);
   const [studentOptions, setStudentOptions] = useState<ComboboxOptions[]>([]);
   const [selectedStudents, setSelectedStudents] = useState<ComboboxOptions[]>(
@@ -49,11 +55,6 @@ export default function GroupForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: groupDialog?.data
-      ? {
-          name: groupDialog?.data?.name,
-        }
-      : { name: "" },
   });
 
   function setOptions() {
@@ -69,8 +70,6 @@ export default function GroupForm() {
       })
     );
 
-    console.log("assignedStudentsOptions", assignedStudentsOptions);
-
     const options = stdOptions?.filter(
       (studentOption) =>
         !assignedStudentsOptions?.some(
@@ -84,8 +83,15 @@ export default function GroupForm() {
   }
 
   useEffect(() => {
+    const defValues = groupDialog?.data
+      ? {
+          name: groupDialog?.data?.name,
+        }
+      : { name: "" };
+
+    form.reset(defValues);
     setOptions();
-  }, []);
+  }, [groupDialog.data, form]);
 
   function handleAddStudent(studentId: string) {
     const studentToBeAdded = studentOptions?.find(
@@ -122,7 +128,7 @@ export default function GroupForm() {
   function createGroup(data: GroupPayload) {
     axios
       .post("/api/groups", { ...data })
-      .then((response: AxiosResponse<Group>) => {
+      .then((response) => {
         if (response.status === 201) {
           toast.success("Group has been created", {
             description: `${data.name}`,
@@ -146,7 +152,7 @@ export default function GroupForm() {
   function updateGroup(data: GroupPayload) {
     axios
       .patch("/api/groups/" + groupDialog?.data?.id, { ...data })
-      .then((response: AxiosResponse<Group>) => {
+      .then((response) => {
         if (response.status === 200) {
           toast.success("Group has been updated", {
             description: `${data.name}`,
@@ -178,99 +184,118 @@ export default function GroupForm() {
       ? createGroup(payload)
       : updateGroup(payload);
   }
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-6"}>
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Group Name</FormLabel>
-              <FormControl>
-                <Input disabled={pending} placeholder="Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Dialog
+      open={groupDialog.isOpen}
+      onOpenChange={() => {
+        if (groupDialog.isOpen) {
+          groupDialog.close();
+        }
+      }}
+    >
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="mb-6">
+            {groupDialog.action === DialogAction.CREATE
+              ? "Add Group"
+              : "Edit Group"}
+          </DialogTitle>
+        </DialogHeader>
+        {/* <GroupForm /> */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-6"}>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Group Name</FormLabel>
+                  <FormControl>
+                    <Input disabled={pending} placeholder="Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="students">Students</Label>
-          <Combobox
-            placeholder="Select student..."
-            disabled={pending}
-            options={studentOptions || []}
-            onChange={(value) => {
-              console.log("value :>> ", value);
-              handleAddStudent(value);
-            }}
-          />
-        </div>
+            <div className="grid w-full items-center gap-1.5">
+              <Label htmlFor="students">Students</Label>
+              <Combobox
+                placeholder="Select student..."
+                disabled={pending}
+                options={studentOptions || []}
+                onChange={(value) => {
+                  handleAddStudent(value);
+                }}
+              />
+            </div>
 
-        <div>
-          <p className="mb-2 text-sm font-medium">Assigned students</p>
-          <Separator />
-          {!selectedStudents.length ? (
-            <p className="text-sm py-4 px-2">No students selected.</p>
-          ) : (
-            <ScrollArea className="max-h-[400px] py-4 px-1 ">
-              <div className="flex flex-col">
-                {selectedStudents.map((student, index) => (
-                  <div
-                    className="flex justify-between items-center hover:bg-muted transition-all rounded-lg p-1 group cursor-pointer"
-                    key={student.value}
-                    onClick={() =>
-                      router.push(`/school/students/${student.value}`)
-                    }
-                  >
-                    <p className="text-sm ml-2">
-                      {index + 1}. {student.label}
-                    </p>
-                    <Button
-                      disabled={pending}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveStudent(student.value);
-                      }}
-                      className="w-6 h-6 p-1"
-                      variant="ghost"
-                    >
-                      <XIcon className="w-3 h-3" />
-                    </Button>
+            <div>
+              <p className="mb-2 text-sm font-medium">Assigned students</p>
+              <Separator />
+              {!selectedStudents.length ? (
+                <p className="text-sm py-4 px-2">No students selected.</p>
+              ) : (
+                <ScrollArea className="max-h-[400px] py-4 px-1 ">
+                  <div className="flex flex-col">
+                    {selectedStudents.map((student, index) => (
+                      <div
+                        className="flex justify-between items-center hover:bg-muted transition-all rounded-lg p-1 group cursor-pointer"
+                        key={student.value}
+                        onClick={() =>
+                          router.push(`/school/students/${student.value}`)
+                        }
+                      >
+                        <p className="text-sm ml-2">
+                          {index + 1}. {student.label}
+                        </p>
+                        <Button
+                          disabled={pending}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveStudent(student.value);
+                          }}
+                          className="w-6 h-6 p-1"
+                          variant="ghost"
+                        >
+                          <XIcon className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </ScrollArea>
-          )}
-        </div>
-        <div className="flex pt-4 flex-col-reverse sm:flex-row sm:items-center sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
-          <Button
-            disabled={pending}
-            type="reset"
-            onClick={(e) => {
-              e.preventDefault();
-              form.reset();
+                </ScrollArea>
+              )}
+            </div>
+            <DialogFooter>
+              <Button
+                disabled={pending}
+                type="reset"
+                onClick={(e) => {
+                  e.preventDefault();
+                  form.reset();
 
-              groupDialog.close();
-            }}
-            variant="outline"
-          >
-            Close
-          </Button>
+                  groupDialog.close();
+                }}
+                variant="outline"
+              >
+                Close
+              </Button>
 
-          <Button disabled={pending} type="submit">
-            {pending ? (
-              <>
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                Saving
-              </>
-            ) : (
-              <>Save</>
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
+              <Button disabled={pending} type="submit">
+                {pending ? (
+                  <>
+                    <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                    Saving
+                  </>
+                ) : (
+                  <>Save</>
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }

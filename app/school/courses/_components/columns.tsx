@@ -1,57 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { formatDate } from "@/lib/utils";
 import { Course } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import axios from "axios";
-import { EditIcon, Trash2Icon } from "lucide-react";
+import { EditIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { toast } from "sonner";
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean;
-  courseId: string;
-}
-
-const DeleteButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, courseId, asChild = false, ...props }, ref) => {
-    const router = useRouter();
-    function onDelete() {
-      axios
-        .delete(`/api/courses/${courseId}`)
-        .then(() => {
-          router.refresh();
-          toast.success("Course has been archived");
-        })
-        .catch(() =>
-          toast.error("Something bad happend. Course has not been archived!")
-        );
-    }
-
-    return (
-      <ConfirmDialog
-        description="This action will archive the course. You will not be able to assign students and teachers to this course."
-        onConfirm={() => onDelete()}
-      >
-        <div>
-          <Tooltip2 text="Delete" side="top">
-            <Button variant="ghost" className="h-8 w-8 p-0 group ">
-              <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
-            </Button>
-          </Tooltip2>
-        </div>
-      </ConfirmDialog>
-    );
-  }
-);
-DeleteButton.displayName = "DeleteButton";
+import { DeleteCourseButton } from "./delete-course-button";
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -59,7 +17,14 @@ export const columns: ColumnDef<Course>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
-    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+    cell: ({ row }) => (
+      <div className="flex items-center gap-4">
+        <div className="w-6 h-6 relative rounded-full flex justify-center items-center bg-muted">
+          <Image src="/course.png" alt="course" fill className="rounded-full" />
+        </div>
+        <span className="font-medium">{row.original.name}</span>
+      </div>
+    ),
   },
   {
     accessorKey: "description",
@@ -123,7 +88,7 @@ export const columns: ColumnDef<Course>[] = [
               </Button>
             </Link>
           </Tooltip2>
-          <DeleteButton courseId={courseId} />
+          <DeleteCourseButton courseId={courseId} buttonType="icon" />
         </div>
       );
     },

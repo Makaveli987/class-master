@@ -38,13 +38,11 @@ export default function StudentCourses({
   const noteDialog = useNoteDialog();
   const router = useRouter();
 
-  console.log("enrollments", enrollments);
-
   if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
   }
   return (
-    <Card>
+    <Card className="mt-6">
       <div className="max-w-4xl">
         <CardHeader>
           <CardTitle>Courses</CardTitle>
@@ -116,8 +114,6 @@ export default function StudentCourses({
                         variant="ghost"
                         className="h-8 w-8 p-0 group"
                         onClick={(e) => {
-                          console.log("Edit clicked");
-
                           e.stopPropagation();
 
                           enrollDialog.open({

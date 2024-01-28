@@ -54,8 +54,6 @@ export default function CourseTeachersCard({
       label: `${teacher.firstName} ${teacher.lastName}`,
     }));
 
-    console.log("options", options);
-
     setTeachersOptions(options);
   }, [assignedTeachers, teachers]);
 
@@ -70,7 +68,6 @@ export default function CourseTeachersCard({
   }
 
   function handleAssign() {
-    console.log("selected course");
     axios
       .post("/api/course-assign", { courseId, teacherId: selectedTeacher })
       .then(() => {
@@ -85,8 +82,8 @@ export default function CourseTeachersCard({
   return (
     <Card>
       <div className="max-w-4xl">
-        <CardHeader className="max-w-4xl flex flex-row justify-between items-start">
-          <div>
+        <CardHeader className="flex flex-row justify-between items-start">
+          <div className="space-y-1.5">
             <CardTitle>Teachers</CardTitle>
             <CardDescription>
               Teachers that can teach this course
@@ -100,12 +97,10 @@ export default function CourseTeachersCard({
             }}
           >
             <PopoverTrigger asChild>
-              <div className="">
-                <Button variant="outline">
-                  <PlusCircleIcon className="w-5 h-5 mr-2" />
-                  Assign Teacher
-                </Button>
-              </div>
+              <Button>
+                <PlusCircleIcon className="w-5 h-5 mr-2" />
+                Assign Teacher
+              </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80">
               <p className="pb-2 text-sm font-medium">Course</p>
@@ -137,10 +132,10 @@ export default function CourseTeachersCard({
                 {assignedTeachers?.map((teacher) => (
                   <div
                     key={teacher.id}
-                    className="flex items-center justify-between hover:bg-muted rounded-lg  max-w-[410px] group cursor-pointer"
+                    className="flex items-center hover:bg-muted rounded-lg  max-w-[410px] group cursor-pointer"
                   >
                     <div
-                      className="flex items-center "
+                      className="flex items-center flex-1"
                       onClick={() =>
                         router.push(`/school/teachers/${teacher.user.id}`)
                       }

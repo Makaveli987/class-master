@@ -47,12 +47,10 @@ export default function NotesDialog() {
       ? form.setValue("text", noteDialog.data.text)
       : form.setValue("text", "");
 
-    console.log("noteDialog.data", noteDialog.data);
     form.clearErrors();
   }, [form, noteDialog.data]);
 
   function createNote(values: z.infer<typeof formSchema>): void {
-    console.log("ID NORE", noteDialog?.enrollmentId);
     axios
       .post("/api/notes", {
         ...values,
@@ -96,8 +94,6 @@ export default function NotesDialog() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    console.log("values", values);
-    console.log("notesDialog.data", noteDialog.data);
 
     !!noteDialog.data ? updateNote(values) : createNote(values);
   }

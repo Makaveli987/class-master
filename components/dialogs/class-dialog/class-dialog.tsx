@@ -141,7 +141,6 @@ export default function ClassDialog({
         })
         .then((response: any) => {
           setAttendeeOptions(response.data);
-          console.log("students", response.data);
         })
         .catch((error: any) => {
           toast.error("Something went wrong. Note wasn't added!");
@@ -162,7 +161,6 @@ export default function ClassDialog({
         })
         .then((response: any) => {
           setCourses(response.data);
-          console.log("courses", response.data);
         })
         .catch((error: any) => {
           toast.error("Something went wrong. Note wasn't added!");
@@ -182,7 +180,6 @@ export default function ClassDialog({
         })
         .then((response: any) => {
           setAttendeeOptions(response.data);
-          console.log("students", response.data);
         })
         .catch((error: any) => {
           toast.error("Something went wrong. Note wasn't added!");
@@ -203,7 +200,6 @@ export default function ClassDialog({
         })
         .then((response: any) => {
           setCourses(response.data);
-          console.log("courses", response.data);
         })
         .catch((error: any) => {
           toast.error("Something went wrong. Note wasn't added!");
@@ -228,8 +224,6 @@ export default function ClassDialog({
     form.setValue("attendeeId", "");
     form.setValue("courseId", "");
 
-    console.log("isSubstitute :>> ", isSubstitute);
-    console.log("originalTeacherId :>> ", originalTeacherId);
     if (classType === ClassType.STUDENT) {
       getStudents(originalTeacherId);
       getStudentEnrollments(originalTeacherId);
