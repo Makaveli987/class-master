@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -50,23 +49,23 @@ export default function StudentExams({
   }
 
   return (
-    <Card className="mt-6">
-      <CardHeader className="mb-3 relative ">
-        <CardTitle>Exams</CardTitle>
-        <CardDescription>Exams for this course enrollment</CardDescription>
-        <div className="absolute right-6 top-4">
-          <Button
-            onClick={() => {
-              examDialog.open({ enrollmentId, studentId });
-            }}
-            variant="ghost"
-          >
-            <PlusCircleIcon className="w-5 h-5 mr-2" />
-            Add Exam
-          </Button>
+    <>
+      <CardHeader className="mb-3 max-w-4xl flex flex-row">
+        <div className="space-y-1.5">
+          <CardTitle>Exams</CardTitle>
+          <CardDescription>Exams for this course enrollment</CardDescription>
         </div>
+        <Button
+          className="ml-auto"
+          onClick={() => {
+            examDialog.open({ enrollmentId, studentId });
+          }}
+        >
+          <PlusCircleIcon className="w-5 h-5 mr-2" />
+          Add Exam
+        </Button>
       </CardHeader>
-      <CardContent>
+      <CardContent className="max-w-4xl">
         {!exams?.length && <p>There are no exams.</p>}
 
         {!!exams?.length && (
@@ -85,7 +84,7 @@ export default function StudentExams({
             key={exam.id}
           >
             <div
-              className="col-span-5 grid grid-cols-5 justify-start gap-6 pl-4 py-4"
+              className="col-span-5 grid grid-cols-5 justify-start gap-6 pl-2 py-2"
               onClick={() => examDialog.open({ exam })}
             >
               <p className="text-sm text-muted-foreground font-medium col-span-1">
@@ -100,7 +99,7 @@ export default function StudentExams({
                 {exam.comment}
               </p> */}
             </div>
-            <div className="px-2 py-2 col-span-1">
+            <div className="col-span-1">
               <ConfirmDialog
                 description={
                   "This action will remove this exam from this enrollment. You will not be able to revert it."
@@ -122,6 +121,6 @@ export default function StudentExams({
           </div>
         ))}
       </CardContent>
-    </Card>
+    </>
   );
 }

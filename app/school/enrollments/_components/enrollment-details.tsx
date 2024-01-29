@@ -1,0 +1,87 @@
+"use client";
+import { EnrollmentResponse } from "@/actions/get-enrolments";
+import CourseProgress from "@/components/course-progress";
+import { Button } from "@/components/ui/button";
+import { BasicInfoItem } from "@/components/user/basic-info-item";
+import useStudentDialog from "@/hooks/use-student-dialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
+import { formatDate } from "@/lib/utils";
+import { Enrollment, Student } from "@prisma/client";
+import {
+  BarChart2Icon,
+  BarChart3Icon,
+  BookAIcon,
+  CalendarIcon,
+  EditIcon,
+  ListChecksIcon,
+  MailIcon,
+  PhoneIcon,
+} from "lucide-react";
+
+interface EnrollmentDetailsProps {
+  enrollment?: EnrollmentResponse;
+}
+
+export default function EnrollmentDetails({
+  enrollment,
+}: EnrollmentDetailsProps) {
+  //   const studentDialog = useStudentDialog();
+  return (
+    <div className="max-w-4xl pt-4 pb-6 px-6">
+      <div className="flex justify-between">
+        <h3 className="font-semibold">Basic Details</h3>
+        {/* <CardTitle>Basic Details</CardTitle> */}
+        <Button
+          onClick={
+            () => {}
+            // studentDialog.open({ data: student, action: DialogAction.EDIT })
+          }
+          variant="outline"
+        >
+          <EditIcon className="w-4 h-4 mr-2" /> Edit
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-5 mt-4">
+        <BasicInfoItem
+          icon={<MailIcon />}
+          label="Teacher"
+          value={
+            enrollment?.teacher?.firstName + " " + enrollment?.teacher?.lastName
+          }
+        />
+        <BasicInfoItem
+          icon={<BookAIcon />}
+          label="Course"
+          value={enrollment?.course?.name}
+        />
+
+        <div className="flex items-start gap-3">
+          <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
+            <ListChecksIcon />
+          </div>
+          <div className="flex flex-col text-sm mt-1.5">
+            <span className="text-muted-foreground text-xs">Goals</span>
+            <span className="font-medium whitespace-pre-wrap">
+              {enrollment?.courseGoals || "-"}
+            </span>
+          </div>
+        </div>
+        <div className="flex items-start gap-3">
+          <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
+            <BarChart3Icon />
+          </div>
+          <div className="flex flex-col justify-start items-start text-sm mt-1.5">
+            <span className="text-muted-foreground text-xs">Classes</span>
+            <CourseProgress
+              attendedClasses={enrollment?.attendedClasses || 0}
+              totalClasses={40}
+              className="mt-1.5"
+              labelPosition="left"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

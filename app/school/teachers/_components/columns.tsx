@@ -98,7 +98,6 @@ export const columns: ColumnDef<User>[] = [
       />
     ),
     cell: ({ row }) => {
-      // @ts-ignore
       const role = row.original.role;
       return (
         <Badge

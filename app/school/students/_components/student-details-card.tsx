@@ -7,11 +7,11 @@ import { formatDate } from "@/lib/utils";
 import { Student } from "@prisma/client";
 import { CalendarIcon, EditIcon, MailIcon, PhoneIcon } from "lucide-react";
 
-interface StudenDetailsProps {
+interface StudentDetailsProps {
   student?: Student;
 }
 
-export default function StudenDetails({ student }: StudenDetailsProps) {
+export default function StudentDetails({ student }: StudentDetailsProps) {
   const studentDialog = useStudentDialog();
   return (
     <div className="max-w-4xl pt-4 pb-6 px-6">

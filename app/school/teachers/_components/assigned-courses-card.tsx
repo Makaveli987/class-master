@@ -43,7 +43,6 @@ export default function AssignedTeachersCard({
   const router = useRouter();
 
   useEffect(() => {
-    console.log("test :>> ", test[0].count);
     const filteredArray = courses?.filter(
       (item1) => !assignedCourses?.some((item2) => item2.course.id === item1.id)
     );

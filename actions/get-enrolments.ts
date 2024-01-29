@@ -1,5 +1,13 @@
 import { db } from "@/lib/db";
 import getCurrentUser from "./get-current-user";
+import { Course, Enrollment, Group, Student, User } from "@prisma/client";
+
+export interface EnrollmentResponse extends Enrollment {
+  teacher?: User;
+  course?: Course;
+  student?: Student;
+  group?: Group;
+}
 
 export const getStudentsEnrollments = async () => {
   try {
@@ -12,7 +20,7 @@ export const getStudentsEnrollments = async () => {
         student: true,
       },
     });
-    return enrollments;
+    return enrollments as EnrollmentResponse[];
   } catch (error) {
     console.error("[ENROLLMENTS] Error fetching student enrollments");
     return null;
@@ -30,7 +38,7 @@ export const getGroupsEnrollments = async () => {
         group: true,
       },
     });
-    return enrollments;
+    return enrollments as EnrollmentResponse[];
   } catch (error) {
     console.error("[ENROLLMENTS] Error fetching group enrollments");
     return null;
@@ -46,7 +54,7 @@ export const getEnrollmentsByStudentId = async (studentId: string) => {
         course: true,
       },
     });
-    return enrollments;
+    return enrollments as EnrollmentResponse[];
   } catch (error) {
     console.error("[ENROLLMENTS] Error fetching enrollments by student id");
     return null;
@@ -62,7 +70,7 @@ export const getEnrollmentsByGroupId = async (groupId: string) => {
         course: true,
       },
     });
-    return enrollments;
+    return enrollments as EnrollmentResponse[];
   } catch (error) {
     console.error("[ENROLLMENTS] Error fetching enrollments by group id");
     return null;
@@ -80,7 +88,7 @@ export const getEnrollment = async (enrollmentId: string) => {
         group: true,
       },
     });
-    return enrollments;
+    return enrollments as EnrollmentResponse;
   } catch (error) {
     console.error("[ENROLLMENTS] Error fetching enrollments");
     return null;

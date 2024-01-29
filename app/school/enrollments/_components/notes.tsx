@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -15,7 +14,7 @@ import { NoteData, useNoteDialog } from "@/hooks/use-note-dialog";
 import { formatDate } from "@/lib/utils";
 import { Enrollment } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
-import { PlusCircleIcon, PlusIcon, XIcon } from "lucide-react";
+import { PlusCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -53,34 +52,35 @@ export default function Notes({
   }
 
   return (
-    <Card className="col-span-3">
-      <CardHeader className="mb-3 relative ">
-        <CardTitle>
-          {userType === EnrollUserType.GROUP ? "Group" : "Student"} Notes
-        </CardTitle>
-        <CardDescription>
-          Teacher notes for this course enrollment
-        </CardDescription>
-        <div className="absolute right-6 top-4">
-          <Button
-            variant="ghost"
-            onClick={() =>
-              noteDialog.open({
-                enrollmentId,
-                userId: userId || "",
-              })
-            }
-          >
-            <PlusCircleIcon className="w-5 h-5 mr-2" />
-            Add Note
-          </Button>
+    <>
+      <CardHeader className="mb-3 flex flex-row max-w-4xl">
+        <div className="space-y-1.5">
+          <CardTitle>
+            {userType === EnrollUserType.GROUP ? "Group" : "Student"} Notes
+          </CardTitle>
+          <CardDescription>
+            Teacher notes for this course enrollment
+          </CardDescription>
         </div>
+
+        <Button
+          className="ml-auto"
+          onClick={() =>
+            noteDialog.open({
+              enrollmentId,
+              userId: userId || "",
+            })
+          }
+        >
+          <PlusCircleIcon className="w-5 h-5 mr-2" />
+          Add Note
+        </Button>
       </CardHeader>
-      <CardContent>
+      <CardContent className="max-w-4xl">
         {!notes.length ? (
           <p className="text-sm">There are no notes for this course.</p>
         ) : (
-          <ScrollArea type="always" className="h-[400px] ">
+          <ScrollArea type="always" className="max-h-[500px] ">
             <div className="space-y-0">
               {notes.map((note) => (
                 <div
@@ -128,6 +128,6 @@ export default function Notes({
           </ScrollArea>
         )}
       </CardContent>
-    </Card>
+    </>
   );
 }

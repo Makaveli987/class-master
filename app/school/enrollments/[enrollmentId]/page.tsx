@@ -23,6 +23,10 @@ import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { getExams } from "@/actions/get-exams";
 import StudentExams from "../_components/student-exams";
+import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
+import EnrollmentDetails from "../_components/enrollment-details";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function EnrollmentId({
   params,
@@ -58,66 +62,76 @@ export default async function EnrollmentId({
   return (
     <div className="max-w-screen-2xl">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollment</h3>
-      <div className="mb-6 flex gap-6">
-        <StatsCard title={getEnrollentUserType()} icon={getEnrollentUserIcon()}>
-          <div className="text-xl font-bold">{getEnrollentUser()}</div>
-          <span className="text-sm text-muted-foreground">
-            Enrolled: {formatDate(enrollment.createdAt, false)}
-          </span>
-        </StatsCard>
-        <StatsCard
-          title="Progress"
-          icon={<BarChart2Icon className="h-5 w-5 text-muted-foreground" />}
-        >
-          <CourseProgress
-            attendedClasses={enrollment.attendedClasses}
-            totalClasses={40}
-            className="mt-4"
-          />
-        </StatsCard>
-      </div>
-      <div className="grid grid-cols-6 gap-6">
-        <Card className="col-span-3">
-          <CardHeader className="mb-3">
-            <CardTitle>Enrollment</CardTitle>
-            <CardDescription>
-              This is how others will see this enrollment on the site.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <EnrollForm />
-          </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <div className="flex gap-6 items-center">
+            <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
+              <Image
+                src="/male-student.png"
+                alt={"test"}
+                fill
+                className="rounded-full"
+              />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h2 className="text-xl font-bold tracking-tight">
+                {enrollment.student?.firstName +
+                  " " +
+                  enrollment.student?.lastName}
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Enrolled: {formatDate(enrollment.student?.createdAt!, false)}
+              </p>
+            </div>
 
-        <Notes
-          userType={
-            enrollment.groupId ? EnrollUserType.GROUP : EnrollUserType.STUDENT
-          }
-          notes={notes}
-          enrollmentId={params.enrollmentId}
-          userId={
-            enrollment.studentId ? enrollment.studentId : enrollment.groupId
-          }
-        />
-      </div>
+            <div className="ml-auto">
+              {/* <DeleteStudentButton
+                studentId={params.enrollmentId}
+                buttonType="button"
+              /> */}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Separator className="my-1" />
 
-      <div className="grid grid-cols-2 gap-6">
-        <Card className="mt-6">
-          <CardHeader className="mb-3">
-            <CardTitle>Classes</CardTitle>
-            <CardDescription>
-              All classes for this course enrollment
-            </CardDescription>
-          </CardHeader>
-          <CardContent></CardContent>
-        </Card>
+          <EnrollmentDetails enrollment={enrollment} />
 
-        <StudentExams
-          exams={exams}
-          enrollmentId={enrollment.id}
-          studentId={enrollment.studentId}
-        />
-      </div>
+          <Card className="mt-4">
+            <Tabs defaultValue="notes">
+              <TabsList className="grid grid-cols-12 rounded-b-none">
+                <TabsTrigger value="notes">Notes</TabsTrigger>
+                <TabsTrigger value="tests">Tests</TabsTrigger>
+                <TabsTrigger value="classes">Classes</TabsTrigger>
+              </TabsList>
+              <TabsContent value="notes">
+                <Notes
+                  userType={
+                    enrollment.groupId
+                      ? EnrollUserType.GROUP
+                      : EnrollUserType.STUDENT
+                  }
+                  notes={notes}
+                  enrollmentId={params.enrollmentId}
+                  userId={
+                    enrollment.studentId
+                      ? enrollment.studentId
+                      : enrollment.groupId
+                  }
+                />
+              </TabsContent>
+              <TabsContent value="tests">
+                <StudentExams
+                  exams={exams}
+                  enrollmentId={enrollment.id}
+                  studentId={enrollment.studentId}
+                />
+              </TabsContent>
+              <TabsContent value="classes">Classes</TabsContent>
+            </Tabs>
+          </Card>
+        </CardContent>
+      </Card>
     </div>
   );
 }

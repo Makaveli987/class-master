@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import StudentCourses from "../_components/student-courses";
-import StudenDetails from "../_components/student-details-card";
+import StudentDetails from "../_components/student-details-card";
 import { DeleteStudentButton } from "../_components/delete-student-button";
 
 export default async function StudentPage({
@@ -51,7 +51,7 @@ export default async function StudentPage({
         </CardHeader>
         <CardContent>
           <Separator className="my-1" />
-          <StudenDetails student={student || undefined} />
+          <StudentDetails student={student || undefined} />
 
           <StudentCourses
             enrollments={enrollments || []}
