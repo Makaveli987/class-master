@@ -1,7 +1,6 @@
-import { getCourses } from "@/actions/get-courses";
+import { CourseResponse, getCourses } from "@/actions/get-courses";
 import { getEnrollmentsByStudentId } from "@/actions/get-enrolments";
 import { getStudent } from "@/actions/get-students";
-import { EnrollFormCourse } from "@/components/enrolled-courses/enroll-form";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils";
@@ -16,7 +15,7 @@ export default async function StudentPage({
   params: { studentId: string };
 }) {
   const student = await getStudent(params.studentId);
-  const courses = (await getCourses()) as EnrollFormCourse[];
+  const courses = (await getCourses()) as CourseResponse[];
   const enrollments = await getEnrollmentsByStudentId(params.studentId);
 
   return (

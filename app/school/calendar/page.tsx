@@ -9,7 +9,7 @@ export default async function CalendarPage() {
 
   return (
     <div className="max-w-screen-2xl">
-      <ClassCalendar classrooms={classrooms} teachers={teachers} />
+      <ClassCalendar classrooms={classrooms || []} teachers={teachers || []} />
     </div>
   );
 }

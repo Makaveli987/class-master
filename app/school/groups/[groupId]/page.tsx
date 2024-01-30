@@ -2,7 +2,6 @@ import { getCourses } from "@/actions/get-courses";
 import { getEnrollmentsByGroupId } from "@/actions/get-enrolments";
 import { getGroup } from "@/actions/get-groups";
 import { getStudents } from "@/actions/get-students";
-import { EnrollFormCourse } from "@/components/enrolled-courses/enroll-form";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils";
@@ -18,7 +17,7 @@ export default async function GroupPage({
 }) {
   const group = await getGroup(params.groupId);
   const students = await getStudents();
-  const courses = (await getCourses()) as EnrollFormCourse[];
+  const courses = await getCourses();
   const enrollments = await getEnrollmentsByGroupId(params.groupId);
 
   return (

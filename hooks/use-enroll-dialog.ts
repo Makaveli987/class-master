@@ -1,14 +1,16 @@
+import { CourseResponse } from "@/actions/get-courses";
+import { EnrollmentResponse } from "@/actions/get-enrolments";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { create } from "zustand";
 
-export interface EnrollData {
-  id?: string;
-  courseId: string;
-  teacherId: string;
-  userId?: string;
-  courseGoals: string;
-  enrollmentId?: string;
-}
+// export interface EnrollData {
+//   id?: string;
+//   courseId: string;
+//   teacherId: string;
+//   userId?: string;
+//   courseGoals: string;
+//   enrollmentId?: string;
+// }
 
 export const EnrollUserType = {
   STUDENT: "STUDENT",
@@ -16,10 +18,10 @@ export const EnrollUserType = {
 } as const;
 
 interface OpenParams {
-  data?: EnrollData;
+  data?: EnrollmentResponse;
   userType: EnrollUserType;
-  userId: string;
-  courses: any[];
+  userId?: string | null;
+  courses?: CourseResponse[];
   action: DialogAction;
 }
 
@@ -31,29 +33,30 @@ interface EnrollDialogStore {
   isOpen: boolean;
   open: (params: OpenParams) => void;
   close: () => void;
-  data: EnrollData;
+  data: EnrollmentResponse;
   userType: EnrollUserType;
   // Student or Group ID
-  userId: string;
-  courses: any[];
+  userId: string | null;
+  courses: CourseResponse[];
   action: DialogAction;
 }
 
 const emptyData = {
   courseId: "",
   teacherId: "",
-  courseGoals: "",
-  enrollmentId: "",
+  courseGoals: null,
+  id: "",
+  studentId: null,
+  groupId: null,
+  schoolId: "",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  attendedClasses: 0,
 };
 
 const useEnrollDialog = create<EnrollDialogStore>((set) => ({
   isOpen: false,
-  data: {
-    courseId: "",
-    teacherId: "",
-    courseGoals: "",
-    enrollmentId: "",
-  },
+  data: emptyData,
   courses: [],
   userType: EnrollUserType.STUDENT,
   userId: "",

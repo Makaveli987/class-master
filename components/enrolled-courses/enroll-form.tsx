@@ -1,5 +1,5 @@
 "use client";
-import useEnrollDialog, { EnrollData } from "@/hooks/use-enroll-dialog";
+import useEnrollDialog from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";
@@ -21,7 +21,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import LinearLoader from "../ui/linear-loader";
 import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
@@ -29,13 +28,6 @@ const formSchema = z.object({
   teacherId: z.string().min(1, "Field is required"),
   courseGoals: z.string(),
 });
-
-export interface EnrollFormCourse extends Course {
-  userPerCourses: EnrollDialogUserPerCourse[];
-}
-interface EnrollDialogUserPerCourse extends UserPerCourse {
-  user: User;
-}
 
 export default function EnrollForm() {
   const [isPending, setIsPending] = useState<boolean>(false);
@@ -47,7 +39,11 @@ export default function EnrollForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: enrollDialog.data,
+    defaultValues: {
+      courseId: enrollDialog.data.courseId,
+      teacherId: enrollDialog.data.teacherId,
+      courseGoals: enrollDialog.data.courseGoals || "",
+    },
   });
 
   useEffect(() => {
@@ -56,9 +52,6 @@ export default function EnrollForm() {
       label: course.name,
     }));
     setCoursesOptions(cOptions || []);
-  }, [enrollDialog.courses]);
-
-  useEffect(() => {
     filterTeachersOptions(enrollDialog.data?.courseId);
   }, [enrollDialog]);
 
@@ -74,7 +67,7 @@ export default function EnrollForm() {
     setTeachersOptions(tOptions || []);
   }
 
-  function createEnrollment(values: EnrollData): void {
+  function createEnrollment(values: z.infer<typeof formSchema>): void {
     axios
       .post("/api/enrollment", {
         ...values,
@@ -96,9 +89,9 @@ export default function EnrollForm() {
       });
   }
 
-  function updateEnrollment(values: EnrollData): void {
+  function updateEnrollment(values: z.infer<typeof formSchema>): void {
     axios
-      .patch("/api/enrollment/" + enrollDialog.data.enrollmentId, {
+      .patch("/api/enrollment/" + enrollDialog.data.id, {
         ...values,
         userType: enrollDialog.userType,
         userId: enrollDialog.userId,

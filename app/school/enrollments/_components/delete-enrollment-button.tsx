@@ -11,30 +11,30 @@ import { toast } from "sonner";
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  courseId?: string;
+  enrollmentId?: string;
   buttonType: "icon" | "button";
 }
 
-export const DeleteCourseButton = React.forwardRef<
+export const DeleteEnrollmentButton = React.forwardRef<
   HTMLButtonElement,
   ButtonProps
->(({ className, courseId, buttonType, asChild = false, ...props }, ref) => {
+>(({ className, enrollmentId, buttonType, asChild = false, ...props }, ref) => {
   const router = useRouter();
   function onDelete() {
     axios
-      .delete(`/api/courses/${courseId}`)
+      .delete(`/api/enrollments/${enrollmentId}`)
       .then(() => {
-        toast.success("Course has been archived");
+        toast.success("Enrollment has been archived");
         router.refresh();
       })
       .catch(() =>
-        toast.error("Something bad happend. Course has not been archived!")
+        toast.error("Something bad happend. Enrollment has not been archived!")
       );
   }
 
   return (
     <ConfirmDialog
-      description="This action will archive the course. You will not be able to assign students and classes to this course."
+      description="This action will archive the enrollment. You will not be able to assign students and classes to this enrollment."
       onConfirm={onDelete}
     >
       <div>
@@ -49,7 +49,7 @@ export const DeleteCourseButton = React.forwardRef<
             {buttonType === "button" && (
               <Button variant="ghost-destructive">
                 <Trash2Icon className="h-4 w-4 mr-2" />
-                Delete Course
+                Delete Enrollment
               </Button>
             )}
           </>
@@ -58,4 +58,4 @@ export const DeleteCourseButton = React.forwardRef<
     </ConfirmDialog>
   );
 });
-DeleteCourseButton.displayName = "DeleteCourseButton";
+DeleteEnrollmentButton.displayName = "DeleteEnrollmentButton";

@@ -117,12 +117,7 @@ export default function GroupCourses({
                           e.stopPropagation();
 
                           enrollDialog.open({
-                            data: {
-                              enrollmentId: enrollment.id,
-                              courseId: enrollment.course.id,
-                              teacherId: enrollment.teacher.id,
-                              courseGoals: enrollment.courseGoals,
-                            },
+                            data: enrollment,
                             userType: EnrollUserType.GROUP,
                             userId: groupId,
                             courses,

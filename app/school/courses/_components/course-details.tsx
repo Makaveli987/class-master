@@ -1,23 +1,22 @@
 "use client";
-import StatsCard from "@/components/cards/stats-card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import useCourseDialog from "@/hooks/use-course-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { Course } from "@prisma/client";
-import { BookCheckIcon, BookOpenTextIcon, EditIcon } from "lucide-react";
+import { EditIcon } from "lucide-react";
 
 interface CourseDetailsProps {
   course?: Course;
+  courseStats?: { totalEnrollments: number; activeEnrollments: number };
 }
 
 export default function CourseDetails({ course }: CourseDetailsProps) {
   const courseDialog = useCourseDialog();
   return (
-    <div className="max-w-4xl p-6 ">
+    <div className="max-w-4xl pt-4 pb-6 px-6">
       <div className="flex gap-16 justify-between">
         <div className="flex flex-col gap-2">
-          <h3 className="font-semibold">Description</h3>
+          <h3 className="text-base font-semibold">Description</h3>
           <p className="text-sm text-muted-foreground">
             {course?.description ? course.description : "-"}
           </p>

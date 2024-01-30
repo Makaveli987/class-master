@@ -208,8 +208,8 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
     <div>
       <div className="flex flex-col gap-5 xl:flex-row">
         <ClassDialog
-          teachers={teachers.slice(1)}
-          classrooms={classrooms.slice(1)}
+          teachers={teachers?.slice(1) || []}
+          classrooms={classrooms?.slice(1) || []}
         />
 
         <ClassDetailsDialog />

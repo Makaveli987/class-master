@@ -1,5 +1,18 @@
 import { db } from "@/lib/db";
 import getCurrentUser from "./get-current-user";
+import { Course, User, UserPerCourse } from "@prisma/client";
+
+interface Teacher extends UserPerCourse {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
+export interface CourseResponse extends Course {
+  userPerCourses: Teacher[];
+}
 
 export const getCourses = async () => {
   try {
@@ -14,12 +27,17 @@ export const getCourses = async () => {
               where: {
                 archived: false,
               },
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
             },
           },
         },
       },
     });
-    return courses;
+    return courses as unknown as CourseResponse[];
   } catch (error) {
     console.error("[COURSES] Error fetching courses");
     return null;

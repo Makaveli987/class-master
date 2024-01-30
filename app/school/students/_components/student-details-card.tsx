@@ -16,8 +16,7 @@ export default function StudentDetails({ student }: StudentDetailsProps) {
   return (
     <div className="max-w-4xl pt-4 pb-6 px-6">
       <div className="flex justify-between">
-        <h3 className="font-semibold">Basic Details</h3>
-        {/* <CardTitle>Basic Details</CardTitle> */}
+        <h3 className="font-semibold text-base">Basic Details</h3>
         <Button
           onClick={() =>
             studentDialog.open({ data: student, action: DialogAction.EDIT })

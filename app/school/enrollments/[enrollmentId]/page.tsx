@@ -1,9 +1,7 @@
-import { getCourses } from "@/actions/get-courses";
-import { getEnrollment } from "@/actions/get-enrolments";
+import { CourseResponse, getCourses } from "@/actions/get-courses";
+import { EnrollmentResponse, getEnrollment } from "@/actions/get-enrolments";
 import { getNotes } from "@/actions/get-notes";
-import EnrollForm, {
-  EnrollFormCourse,
-} from "@/components/enrolled-courses/enroll-form";
+
 import {
   Card,
   CardContent,
@@ -27,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import EnrollmentDetails from "../_components/enrollment-details";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button";
 
 export default async function EnrollmentId({
   params,
@@ -35,9 +34,9 @@ export default async function EnrollmentId({
 }) {
   const enrollment = (await getEnrollment(
     params.enrollmentId
-  )) as EnrollmentData;
+  )) as EnrollmentResponse;
 
-  const courses = (await getCourses()) as EnrollFormCourse[];
+  const courses = await getCourses();
   const notes = (await getNotes(params.enrollmentId)) as NoteData[];
   const exams = await getExams(enrollment.id, enrollment.studentId || "");
 
@@ -52,11 +51,13 @@ export default async function EnrollmentId({
   }
 
   function getEnrollentUserIcon() {
-    return enrollment.studentId ? (
-      <UserIcon className="h-5 w-5 text-muted-foreground" />
-    ) : (
-      <Users className="h-5 w-5 text-muted-foreground" />
-    );
+    return enrollment.studentId ? "male-student" : "group";
+  }
+
+  function getEnrollentDate() {
+    return enrollment.studentId
+      ? enrollment.student?.createdAt
+      : enrollment.group?.createdAt;
   }
 
   return (
@@ -67,7 +68,7 @@ export default async function EnrollmentId({
           <div className="flex gap-6 items-center">
             <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
               <Image
-                src="/male-student.png"
+                src={`/${getEnrollentUserIcon()}.png`}
                 alt={"test"}
                 fill
                 className="rounded-full"
@@ -75,27 +76,22 @@ export default async function EnrollmentId({
             </div>
             <div className="flex flex-col justify-center">
               <h2 className="text-xl font-bold tracking-tight">
-                {enrollment.student?.firstName +
-                  " " +
-                  enrollment.student?.lastName}
+                {getEnrollentUser()}
               </h2>
               <p className="text-muted-foreground text-sm">
-                Enrolled: {formatDate(enrollment.student?.createdAt!, false)}
+                Enrolled: {formatDate(getEnrollentDate()!, false)}
               </p>
             </div>
 
             <div className="ml-auto">
-              {/* <DeleteStudentButton
-                studentId={params.enrollmentId}
-                buttonType="button"
-              /> */}
+              <DeleteEnrollmentButton buttonType="button" />
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <Separator className="my-1" />
 
-          <EnrollmentDetails enrollment={enrollment} />
+          <EnrollmentDetails enrollment={enrollment} courses={courses || []} />
 
           <Card className="mt-4">
             <Tabs defaultValue="notes">

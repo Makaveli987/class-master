@@ -35,7 +35,7 @@ export default async function CoursePage({
           <CourseDetailsHeader course={course || undefined} />
         </CardHeader>
         <CardContent>
-          <Separator />
+          <Separator className="my-1" />
           <CourseDetails course={course || undefined} />
 
           <CourseTeachersCard
