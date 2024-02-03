@@ -1,13 +1,13 @@
 import { db } from "@/lib/db";
 import getCurrentUser from "./get-current-user";
-import { Group } from "@prisma/client";
+import { Group, Student, StudentToGroup } from "@prisma/client";
+
+interface Students extends StudentToGroup {
+  student: Student;
+}
 
 export interface GroupResponse extends Group {
-  students: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  }[];
+  students: Students[];
 }
 
 export const getGroups = async () => {
@@ -18,11 +18,14 @@ export const getGroups = async () => {
       where: { schoolId: currentUser?.schoolId, archived: false },
       include: {
         students: {
-          where: {
-            archived: false,
-          },
-          select: {
-            id: true,
+          include: {
+            student: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         },
       },
@@ -40,13 +43,14 @@ export const getGroup = async (groupId: string) => {
       where: { id: groupId, archived: false },
       include: {
         students: {
-          where: {
-            archived: false,
-          },
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
+          include: {
+            student: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         },
       },

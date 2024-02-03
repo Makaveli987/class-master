@@ -1,6 +1,6 @@
 "use client";
 import { createRef, LegacyRef, useEffect, useState } from "react";
-import { PlusCircleIcon } from "lucide-react";
+import { DoorOpenIcon, PlusCircleIcon } from "lucide-react";
 import {
   DateSelectArg,
   EventClickArg,
@@ -29,13 +29,16 @@ import { Badge } from "@/components/ui/badge";
 import ClassDetailsDialog from "@/components/dialogs/class-details-dialog/class-details-dialog";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 import { RoleType } from "@/lib/models/role";
+import { ClassStatus, SchoolClass } from "@prisma/client";
+import LinearLoader from "@/components/ui/linear-loader";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
   teachers: DropdownSelectOptions[];
+  classes: SchoolClass[];
 }
 
-const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
+const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
   const classDialog = useClassDialog();
   const classDetailsDialog = useClassDetailsDialog();
 
@@ -55,71 +58,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const [currentDate, setCurrentDate] = useState<string>("");
 
   /** Added events (classes) */
-  const [currentEvents, setCurrentEvents] = useState<EventInput[]>([
-    {
-      start: "2024-01-22T11:00:00+01:00",
-      end: "2024-01-22T12:00:00+01:00",
-      overlap: true,
-      rendering: "background",
-      color: "#257e4a",
-    },
-    {
-      start: "2024-01-22T11:00:00+01:00",
-      end: "2024-01-22T12:00:00+01:00",
-      overlap: true,
-      rendering: "background",
-      color: "#257e4a",
-    },
-    {
-      start: "2024-01-22T11:00:00+01:00",
-      end: "2024-01-22T12:00:00+01:00",
-      overlap: true,
-      rendering: "background",
-      color: "#257e4a",
-    },
-    {
-      start: "2024-01-22T12:15:00+01:00",
-      end: "2024-01-22T13:00:00+01:00",
-      overlap: true,
-      rendering: "background",
-      color: "#257e4a",
-    },
-    {
-      start: "2024-01-22T12:15:00+01:00",
-      end: "2024-01-22T13:00:00+01:00",
-      overlap: true,
-      rendering: "background",
-      // color: "#257e4a",
-    },
-    {
-      start: "2024-01-22T11:30:00+01:00",
-      end: "2024-01-22T12:30:00+01:00",
-      overlap: true,
-      rendering: "background",
-      color: "#0d9488",
-    },
-    {
-      start: "2024-01-22T11:30:00+01:00",
-      end: "2024-01-22T12:30:00+01:00",
-      overlap: true,
-      rendering: "background",
-      color: "#0d9488",
-    },
-    {
-      start: "2024-01-22T11:30:00+01:00",
-      end: "2024-01-22T12:30:00+01:00",
-      overlap: true,
-      rendering: "background",
-      // color: "#0d9488",
-    },
-    {
-      start: "2024-01-22T15:30:00+01:00",
-      end: "2024-01-22T16:30:00+01:00",
-      overlap: true,
-      rendering: "background",
-      // color: "#0d9488",
-    },
-  ]);
+  const [currentEvents, setCurrentEvents] = useState<any[]>([]);
 
   const calendarRef = createRef() as LegacyRef<FullCalendar>;
 
@@ -156,7 +95,6 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
       extendedProps,
     }))(clickInfo.event);
 
-    console.log("eventInfo :>> ", eventInfo);
     setEventData(eventInfo);
     // open class details dialog
     classDetailsDialog.open();
@@ -170,7 +108,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
     const startTimestamp = new Date(calendarApi.view.currentStart).getTime();
     const endTimestamp = new Date(calendarApi.view.currentEnd).getTime();
 
-    // setCurrentEvents(events);
+    setCurrentEvents(classes);
   };
 
   /**
@@ -179,21 +117,63 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
    * @returns {JSX.Element}
    */
   const renderEventContent = (eventContent: EventContentArg): JSX.Element => {
+    console.log("eventContent", eventContent);
+    // return (
+    //   <div className="bg-red-500 rounded-sm h-full px-1">
+    //     {eventContent.event.extendedProps?.student?.firstName}
+    //   </div>
+    // );
+
     return (
-      <div className="flex flex-col gap-0 p-1 truncate overflow-hidden">
+      <div className="flex flex-col gap-1 p-1 truncate overflow-hidden bg-purple-500 rounded-sm h-full px-1 w-full">
         <div className="flex text-xs">
-          <b>Konstantin Vidic</b>
+          <b>
+            {eventContent.event.extendedProps?.student?.firstName}{" "}
+            {eventContent.event.extendedProps?.student?.lastName}
+          </b>
           <span className="mx-1"> |</span>
           <b>{eventContent.timeText}</b>
         </div>
 
-        <div>
-          <span className="bg-rose-600 rounded-sm text-xs px-1 font-medium">
-            Canceled
-          </span>
+        <div className="flex gap-1 items-center">
+          {eventContent.event.extendedProps.schoolClassStatus ===
+            ClassStatus.SCHEDULED && (
+            <span className="bg-sky-600 rounded-sm text-xs px-1 font-medium">
+              {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
+            </span>
+          )}
+          {eventContent.event.extendedProps.schoolClassStatus ===
+            ClassStatus.CANCELED && (
+            <span className="bg-rose-600 rounded-sm text-xs px-1 font-medium">
+              {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
+            </span>
+          )}
+          {eventContent.event.extendedProps.schoolClassStatus ===
+            ClassStatus.HELD && (
+            <span className="bg-emerald-600 rounded-sm text-xs px-1 font-medium">
+              {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
+            </span>
+          )}
+
+          <div className="flex items-center ml-2 text-xs ">
+            <DoorOpenIcon className="w-3.5 h-3.5 mr-1.5" strokeWidth={3} />
+            <span className="font-semibold truncate">
+              {eventContent.event.extendedProps.classroom?.name}
+            </span>
+          </div>
         </div>
       </div>
     );
+  };
+
+  const eventDidMount = (info: any) => {
+    console.log("info :>> ", info);
+    const eventColor = info.event.extendedProps.color;
+    const eventBackground = info.el.querySelector(".fc-event-main");
+
+    if (eventBackground) {
+      eventBackground.style.backgroundColor = "#eee";
+    }
   };
 
   useEffect((): void => {
@@ -260,13 +240,16 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative">
             <CalendarHeadbar
               calendarRef={calendarRef}
               setCurrentDate={setCurrentDate}
               getClasses={getClasses}
               currentDateRange={currentDate}
             />
+            {/* <div className="h-1.5 w-full">
+              <LinearLoader />
+            </div> */}
             <div className="w-[280px] sm:w-full overflow-auto">
               <div className="min-w-[500px]">
                 <FullCalendar
@@ -307,11 +290,13 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                   selectable={true}
                   selectMirror={true}
                   dayMaxEvents={true}
+                  eventDidMount={eventDidMount}
                   // weekends={weekendsVisible}
                   events={currentEvents} // alternatively, use the `events` setting to fetch from a feed
                   select={handleDateSelect}
                   eventContent={renderEventContent} // custom render function
                   eventClick={handleEventClick}
+                  eventClassNames={"border-none"}
                   // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
                   /* you can update a remote database when these fire:
                 eventAdd={function(){}}

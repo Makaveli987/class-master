@@ -38,12 +38,10 @@ export async function POST(req: Request) {
       // Step 2: Attach each student to the group
       await Promise.all(
         studentIds.map((studentId: string) =>
-          tx.student.update({
-            where: {
-              id: studentId,
-            },
+          tx.studentToGroup.create({
             data: {
               groupId: group.id,
+              studentId,
             },
           })
         )

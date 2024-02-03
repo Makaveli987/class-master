@@ -29,7 +29,6 @@ export async function PATCH(
     }
 
     const result = await db.$transaction(async (tx) => {
-      // Step 1: Update the group
       const group = await tx.group.update({
         where: {
           id: params.groupId,
@@ -39,48 +38,45 @@ export async function PATCH(
         },
       });
 
-      // Remove students from group
-      const groupStudents = await tx.student.findMany({
+      const groupStudents = await tx.studentToGroup.findMany({
         where: {
           groupId: params.groupId,
         },
       });
 
       if (groupStudents) {
-        const studentsToBeRemoved = groupStudents.filter(
-          (student) =>
-            !studentIds.some((studentId: string) => student.id === studentId)
+        const studentsToBeRemoved = groupStudents
+          .filter((student) => !studentIds.includes(student.studentId))
+          .map((student) => student.studentId);
+
+        // Remove students
+        await tx.studentToGroup.deleteMany({
+          where: {
+            studentId: { in: studentsToBeRemoved },
+            groupId: group.id,
+          },
+        });
+
+        const groupStudentIds = groupStudents.map(
+          (student) => student.studentId
         );
 
+        const studentsToAdd = studentIds.filter(
+          (id: string) => !groupStudentIds.includes(id)
+        );
+
+        // Add students
         await Promise.all(
-          studentsToBeRemoved.map((student) =>
-            tx.student.update({
-              where: {
-                id: student.id,
-              },
+          studentsToAdd.map(async (studentId: string) => {
+            return tx.studentToGroup.create({
               data: {
-                groupId: null,
+                studentId: studentId,
+                groupId: group.id,
               },
-            })
-          )
+            });
+          })
         );
       }
-
-      // Step 2: Add students to group
-      await Promise.all(
-        studentIds.map((studentId: string) =>
-          tx.student.update({
-            where: {
-              id: studentId,
-            },
-            data: {
-              groupId: group.id,
-            },
-          })
-        )
-      );
-
-      return group;
     });
 
     revalidatePath("/school/groups");
@@ -116,31 +112,17 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const result = await db.$transaction(async (tx) => {
-      // Step 1: Create the group
-      const group = await tx.group.update({
-        where: {
-          id: groupId,
-        },
-        data: {
-          archived: true,
-        },
-      });
-
-      await tx.student.updateMany({
-        where: {
-          groupId: groupId,
-        },
-        data: {
-          groupId: null,
-        },
-      });
-
-      return group;
+    const group = await db.group.update({
+      where: {
+        id: groupId,
+      },
+      data: {
+        archived: true,
+      },
     });
 
     revalidatePath("/school/groups");
-    return new NextResponse(JSON.stringify(result), {
+    return new NextResponse(JSON.stringify(group), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

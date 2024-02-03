@@ -31,14 +31,17 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { toast } from "sonner";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import LinearLoader from "@/components/ui/linear-loader";
 import { cn } from "@/lib/utils";
 import { RepeatScheduleType } from "@/lib/models/repeat-schedule";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { TimePicker } from "@/components/ui/time-picker";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { addDays } from "date-fns";
+import { addDays, getHours } from "date-fns";
+import { SchoolClass } from "@prisma/client";
+import { auth } from "@/auth";
+import { useSession } from "next-auth/react";
 
 const formSchema = z
   .object({
@@ -51,6 +54,7 @@ const formSchema = z
     attendeeId: z.string().min(1, "Field is required"),
     classroomId: z.string().min(1, "Field is required"),
     originalTeacherId: z.string(),
+    substituteTeacherId: z.string().optional(),
     substitute: z.boolean(),
     repeat: z.boolean(),
     repeatConfig: z.object({
@@ -66,7 +70,17 @@ const formSchema = z
   .refine((data) => !data.substitute || data.originalTeacherId, {
     path: ["originalTeacherId"],
     message: "Fields is required",
-  });
+  })
+  .refine(
+    (data) =>
+      !(data.repeat && data.repeatConfig.repeatSchedule === "SHIFTS") ||
+      (data.repeatConfig.firstWeekTime && data.repeatConfig.secondWeekTime),
+    {
+      path: ["repeatConfig"],
+      message:
+        "Both firstWeekTime and secondWeekTime are required when repeat is true and repeatSchedule is 'shift'",
+    }
+  );
 
 const repeatOptions = [
   { value: RepeatScheduleType.SAME_TIME, label: "Same Time" },
@@ -89,6 +103,9 @@ export default function ClassDialog({
   const [courses, setCourses] = useState([]);
 
   const classDialog = useClassDialog();
+  const router = useRouter();
+
+  const session = useSession();
 
   const defaultValues = {
     type: ClassType.STUDENT,
@@ -100,10 +117,6 @@ export default function ClassDialog({
     repeat: false,
     repeatConfig: {
       repeatSchedule: RepeatScheduleType.SAME_TIME,
-      range: {
-        from: new Date(),
-        to: addDays(new Date(), 30),
-      },
     },
   };
 
@@ -123,6 +136,12 @@ export default function ClassDialog({
   useEffect(() => {
     form.setValue("classroomId", classDialog.classroom);
     form.setValue("startDate", classDialog.startDate as Date);
+    form.setValue("repeatConfig.range.from", classDialog.startDate as Date);
+    form.setValue(
+      "repeatConfig.range.to",
+      addDays(classDialog.startDate as Date, 30)
+    );
+    form.setValue("repeatConfig.secondWeekTime", classDialog.startDate as Date);
     form.setValue("originalTeacherId", "");
     filterCourseOptions();
 
@@ -245,28 +264,31 @@ export default function ClassDialog({
     getAttendeesAndCourses();
   }, [classDialog]);
 
-  // function createNote(values: z.infer<typeof formSchema>): void {
-  //   console.log("ID NORE", classDialog?.enrollmentId);
-  //   axios
-  //     .post("/api/notes", {
-  //       ...values,
-  //       enrollmentId: classDialog?.enrollmentId,
-  //       userId: classDialog?.userId,
-  //     })
-  //     .then((response: AxiosResponse<Enrollment[]>) => {
-  //       if (response.status === 201) {
-  //         router.refresh();
-  //         toast.success("Note added successfully.");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Something went wrong. Note wasn't added!");
-  //     })
-  //     .finally(() => {
-  //       setIsPending(false);
-  //       classDialog.close();
-  //     });
-  // }
+  function createClass(values: z.infer<typeof formSchema>): void {
+    if (!values.substitute) {
+      values.originalTeacherId = session.data?.user.id || "";
+    } else {
+      values.substituteTeacherId = session.data?.user.id || "";
+    }
+
+    axios
+      .post("/api/classes", {
+        ...values,
+      })
+      .then((response: AxiosResponse<SchoolClass[]>) => {
+        if (response.status === 201) {
+          router.refresh();
+          toast.success("Class added successfully.");
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Note wasn't added!");
+      })
+      .finally(() => {
+        setIsPending(false);
+        classDialog.close();
+      });
+  }
 
   // function updateNote(values: z.infer<typeof formSchema>): void {
   //   axios
@@ -289,9 +311,9 @@ export default function ClassDialog({
   // }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // setIsPending(true);
-    console.log("values", values);
-    // console.log("notesDialog.data", classDialog.data);
+    setIsPending(true);
+    // console.log("values", values);
+    createClass(values);
 
     // !!classDialog.data ? updateNote(values) : createNote(values);
   }
@@ -458,7 +480,10 @@ export default function ClassDialog({
                         <FormControl>
                           <DropdownSelect
                             disabled={isPending}
-                            options={teachers}
+                            options={teachers.filter(
+                              (teacher) =>
+                                teacher.value !== session.data?.user.id
+                            )}
                             value={field.value}
                             onChange={(value) => {
                               field.onChange(value);
@@ -677,7 +702,6 @@ export default function ClassDialog({
                                 disabled={isPending}
                                 date={field.value}
                                 setDate={(value) => {
-                                  console.log("value 22222", value);
                                   field.onChange(value);
                                 }}
                               />

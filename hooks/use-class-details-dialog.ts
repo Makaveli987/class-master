@@ -1,21 +1,23 @@
-import { Class } from "@prisma/client";
+import { SchoolClass } from "@prisma/client";
 import { create } from "zustand";
 
-type ClassDetailsDialogStore = {
+type SchoolClassDetailsDialogStore = {
   isOpen: boolean;
-  open: (data?: Class) => void;
+  open: (data?: SchoolClass) => void;
   close: () => void;
-  data: Class | null;
+  data: SchoolClass | null;
 };
 
-export const useClassDetailsDialog = create<ClassDetailsDialogStore>((set) => ({
-  isOpen: false,
-  data: null,
-  open: (data?: Class) => {
-    set({
-      isOpen: true,
-      data,
-    });
-  },
-  close: () => set({ isOpen: false, data: null }),
-}));
+export const useClassDetailsDialog = create<SchoolClassDetailsDialogStore>(
+  (set) => ({
+    isOpen: false,
+    data: null,
+    open: (data?: SchoolClass) => {
+      set({
+        isOpen: true,
+        data,
+      });
+    },
+    close: () => set({ isOpen: false, data: null }),
+  })
+);

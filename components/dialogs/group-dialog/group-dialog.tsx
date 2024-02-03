@@ -65,8 +65,8 @@ export default function GroupDialog() {
 
     const assignedStudentsOptions = groupDialog?.data?.students?.map(
       (student) => ({
-        value: student.id,
-        label: `${student.firstName} ${student.lastName}`,
+        value: student.student.id,
+        label: `${student.student.firstName} ${student.student.lastName}`,
       })
     );
 
@@ -91,7 +91,7 @@ export default function GroupDialog() {
 
     form.reset(defValues);
     setOptions();
-  }, [groupDialog.data, form]);
+  }, [groupDialog, form]);
 
   function handleAddStudent(studentId: string) {
     const studentToBeAdded = studentOptions?.find(

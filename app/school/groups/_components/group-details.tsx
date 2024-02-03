@@ -17,6 +17,7 @@ interface GroupDetailsProps {
 
 export default function GroupDetails({ group, students }: GroupDetailsProps) {
   const groupDialog = useGroupDialog();
+
   return (
     <div className="max-w-4xl pt-4 pb-6 px-6">
       <div className="flex gap-16 justify-between">
@@ -50,8 +51,8 @@ export default function GroupDetails({ group, students }: GroupDetailsProps) {
       ) : (
         <ScrollArea className="max-h-[400px] " type="always">
           {group.students.map((student) => (
-            <div key={student.id} className="max-h-96 ">
-              <Link href={`/school/students/${student.id}`}>
+            <div key={student.student.id} className="max-h-96 ">
+              <Link href={`/school/students/${student.student.id}`}>
                 <div className="flex gap-3 items-center px-2 py-1 hover:bg-muted rounded-md cursor-pointer">
                   <div className="rounded-full flex items-center justify-center w-8 h-8 bg-muted relative">
                     <Image
@@ -63,7 +64,7 @@ export default function GroupDetails({ group, students }: GroupDetailsProps) {
                     />
                   </div>
                   <span className="text-sm font-medium">
-                    {student.firstName + " " + student.lastName}
+                    {student.student.firstName + " " + student.student.lastName}
                   </span>
                 </div>
               </Link>

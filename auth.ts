@@ -16,7 +16,7 @@ export const {
     error: "/sign-in",
   },
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 60 * 60 * 24 /* one day */ },
   callbacks: {
     async signIn({ user, account }) {
       // Allow OAuth without email verification

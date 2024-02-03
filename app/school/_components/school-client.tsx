@@ -4,13 +4,20 @@ import { useSession } from "next-auth/react";
 import Header from "./header";
 import { Sidebar } from "./sidebar";
 import { MobileSidebar } from "./sidebar-mobile";
+import { useRouter } from "next/navigation";
 
 export default function SchoolClient({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      void router.push("/sign-in");
+    },
+  });
 
   return (
     <div className="flex h-screen">

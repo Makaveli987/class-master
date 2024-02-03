@@ -23,12 +23,18 @@ export const getTeachersStats = async (teacherId: string) => {
       where: { userId: teacherId },
     });
 
-    const orgClasses = await db.class.count({
-      where: { originalTeacherId: teacherId, classStatus: ClassStatus.HELD },
+    const orgClasses = await db.schoolClass.count({
+      where: {
+        originalTeacherId: teacherId,
+        schoolClassStatus: ClassStatus.HELD,
+      },
     });
 
-    const subClasses = await db.class.count({
-      where: { substituteTeacherId: teacherId, classStatus: ClassStatus.HELD },
+    const subClasses = await db.schoolClass.count({
+      where: {
+        substituteTeacherId: teacherId,
+        schoolClassStatus: ClassStatus.HELD,
+      },
     });
 
     return {

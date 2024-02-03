@@ -1,4 +1,4 @@
-import { Class } from "@prisma/client";
+import { SchoolClass } from "@prisma/client";
 import { create } from "zustand";
 
 interface OpenParams {
