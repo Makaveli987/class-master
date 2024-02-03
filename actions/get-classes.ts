@@ -16,6 +16,12 @@ export const getClasses = async () => {
             lastName: true,
           },
         },
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         course: {
           select: {
             id: true,

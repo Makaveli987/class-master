@@ -1,6 +1,13 @@
 "use client";
 import { createRef, LegacyRef, useEffect, useState } from "react";
-import { DoorOpenIcon, PlusCircleIcon } from "lucide-react";
+import {
+  Clock10Icon,
+  ClockIcon,
+  DoorOpenIcon,
+  PlusCircleIcon,
+  User2Icon,
+  Users2Icon,
+} from "lucide-react";
 import {
   DateSelectArg,
   EventClickArg,
@@ -108,7 +115,8 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
     const startTimestamp = new Date(calendarApi.view.currentStart).getTime();
     const endTimestamp = new Date(calendarApi.view.currentEnd).getTime();
 
-    setCurrentEvents(classes);
+    const events = classes.map((cl) => ({ ...cl, borderColor: "#ff0000" }));
+    setCurrentEvents(events);
   };
 
   /**
@@ -123,40 +131,52 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
     //   </div>
     // );
 
+    console.log("eventContent :>> ", eventContent);
     return (
-      <div className="flex flex-col gap-1 p-1 truncate overflow-hidden bg-purple-500 rounded-sm h-full px-1 w-full">
-        <div className="flex text-xs">
-          <b>
-            {eventContent.event.extendedProps?.student?.firstName}{" "}
-            {eventContent.event.extendedProps?.student?.lastName}
-          </b>
-          <span className="mx-1"> |</span>
-          <b>{eventContent.timeText}</b>
+      <div className="flex relative flex-col gap-1 border  p-1 pl-1.5 text-card-foreground truncate overflow-hidden bg-teacher-purple rounded-sm h-full px-1 w-full">
+        <div className="flex text-xs ">
+          {eventContent.event.extendedProps?.studentId ? (
+            <b className="w-1/2">
+              {eventContent.event.extendedProps?.student?.firstName}{" "}
+              {eventContent.event.extendedProps?.student?.lastName}
+            </b>
+          ) : (
+            <b className="w-1/2">
+              {eventContent.event.extendedProps?.group?.name}
+            </b>
+          )}
+
+          <div className="flex items-center ">
+            <ClockIcon className="w-3 h-3 mr-1.5" strokeWidth={2} />
+            <b className="font-normal">{eventContent.timeText}</b>
+          </div>
         </div>
 
-        <div className="flex gap-1 items-center">
+        <div className="flex items-center">
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.SCHEDULED && (
-            <span className="bg-sky-600 rounded-sm text-xs px-1 font-medium">
-              {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
-            </span>
+            <div className="w-1/2">
+              <span className="bg-info  rounded-sm text-xs px-1">
+                {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
+              </span>
+            </div>
           )}
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.CANCELED && (
-            <span className="bg-rose-600 rounded-sm text-xs px-1 font-medium">
+            <span className="bg-rose-600 rounded-sm text-xs px-1">
               {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
             </span>
           )}
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.HELD && (
-            <span className="bg-emerald-600 rounded-sm text-xs px-1 font-medium">
+            <span className="bg-emerald-600 rounded-sm text-xs px-1">
               {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
             </span>
           )}
 
-          <div className="flex items-center ml-2 text-xs ">
-            <DoorOpenIcon className="w-3.5 h-3.5 mr-1.5" strokeWidth={3} />
-            <span className="font-semibold truncate">
+          <div className="flex items-center text-xs ">
+            <DoorOpenIcon className="w-3 h-3 mr-1.5" strokeWidth={2} />
+            <span className="font-normal truncate">
               {eventContent.event.extendedProps.classroom?.name}
             </span>
           </div>
@@ -295,7 +315,9 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
                   select={handleDateSelect}
                   eventContent={renderEventContent} // custom render function
                   eventClick={handleEventClick}
-                  eventClassNames={"border-none"}
+                  eventClassNames={"shadow-none border-0 rounded-sm"}
+                  // eventColor="#378006"
+                  // eventBorderColor="#ff0000"
                   // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
                   /* you can update a remote database when these fire:
                 eventAdd={function(){}}

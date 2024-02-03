@@ -86,9 +86,9 @@
   @apply text-muted-foreground;
 }
 
-.fc-daygrid-event-harness {
-  @apply bg-green-800 text-slate-50 mb-1 rounded;
-}
+// .fc-daygrid-event-harness {
+//   @apply bg-green-800 text-slate-50 mb-1 rounded;
+// }
 
 .fc-daygrid-day-top {
   @apply text-muted-foreground;
@@ -105,4 +105,22 @@
 
 .fc .fc-col-header-cell-cushion {
   @apply py-1.5 text-sm;
+}
+
+.fc-timegrid-event .fc-event-main {
+  @apply p-0 rounded-sm;
+}
+
+// .fc-timegrid-event .fc-event-main {
+//   @apply shadow-sm shadow-slate-200;
+//   box-shadow: none;
+// }
+
+.fc-timegrid-event-harness-inset .fc-timegrid-event,
+.fc-timegrid-event.fc-event-mirror,
+.fc-timegrid-more-link {
+  @apply rounded-sm;
+  // box-shadow: 0 0 1 #7c7c7c;
+  box-shadow: none;
+  // @apply shadow-sm shadow-slate-200;
 }
