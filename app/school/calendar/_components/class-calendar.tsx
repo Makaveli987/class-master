@@ -133,45 +133,49 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
 
     console.log("eventContent :>> ", eventContent);
     return (
-      <div className="flex relative flex-col gap-1 border  p-1 pl-1.5 text-card-foreground truncate overflow-hidden bg-teacher-purple rounded-sm h-full px-1 w-full">
-        <div className="flex text-xs ">
+      <div className="flex flex-col border p-1 pl-1.5 text-card-foreground truncate bg-teacher-purple rounded-sm h-full px-1 w-full overflow-hidden">
+        <div className="flex w-full text-xs">
           {eventContent.event.extendedProps?.studentId ? (
-            <b className="w-1/2">
+            <b className="min-w-[90px]">
               {eventContent.event.extendedProps?.student?.firstName}{" "}
               {eventContent.event.extendedProps?.student?.lastName}
             </b>
           ) : (
-            <b className="w-1/2">
+            <b className="min-w-[90px]">
               {eventContent.event.extendedProps?.group?.name}
             </b>
           )}
 
-          <div className="flex items-center ">
+          <div className="flex items-center">
             <ClockIcon className="w-3 h-3 mr-1.5" strokeWidth={2} />
             <b className="font-normal">{eventContent.timeText}</b>
           </div>
         </div>
 
-        <div className="flex items-center">
+        <div className="flex w-full items-center ">
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.SCHEDULED && (
-            <div className="w-1/2">
-              <span className="bg-info  rounded-sm text-xs px-1">
+            <div className="min-w-[90px]">
+              <span className="bg-info rounded-sm text-xs px-1">
                 {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
               </span>
             </div>
           )}
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.CANCELED && (
-            <span className="bg-rose-600 rounded-sm text-xs px-1">
-              {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
-            </span>
+            <div className="min-w-[90px]">
+              <span className="bg-rose-600 rounded-sm text-xs px-1">
+                {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
+              </span>
+            </div>
           )}
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.HELD && (
-            <span className="bg-emerald-600 rounded-sm text-xs px-1">
-              {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
-            </span>
+            <div className="min-w-[90px]">
+              <span className="bg-emerald-600 rounded-sm text-xs px-1">
+                {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
+              </span>
+            </div>
           )}
 
           <div className="flex items-center text-xs ">
@@ -252,7 +256,7 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
                   classDialog.open(params);
                 }}
               >
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center">
                   <PlusCircleIcon className="w-4 h-4 mr-2" />
                   <span>Add Class</span>
                 </div>
