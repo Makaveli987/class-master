@@ -117,7 +117,6 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
    * @returns {JSX.Element}
    */
   const renderEventContent = (eventContent: EventContentArg): JSX.Element => {
-    console.log("eventContent", eventContent);
     // return (
     //   <div className="bg-red-500 rounded-sm h-full px-1">
     //     {eventContent.event.extendedProps?.student?.firstName}

@@ -141,6 +141,7 @@ export default function ClassDialog({
       "repeatConfig.range.to",
       addDays(classDialog.startDate as Date, 30)
     );
+    form.setValue("repeatConfig.firstWeekTime", classDialog.startDate as Date);
     form.setValue("repeatConfig.secondWeekTime", classDialog.startDate as Date);
     form.setValue("originalTeacherId", "");
     filterCourseOptions();
