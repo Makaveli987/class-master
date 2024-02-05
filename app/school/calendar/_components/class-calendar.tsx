@@ -1,5 +1,5 @@
 "use client";
-import { createRef, LegacyRef, useEffect, useState } from "react";
+import { createRef, LegacyRef, useEffect, useRef, useState } from "react";
 import {
   Clock10Icon,
   ClockIcon,
@@ -38,11 +38,13 @@ import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 import { RoleType } from "@/lib/models/role";
 import { ClassStatus, SchoolClass } from "@prisma/client";
 import LinearLoader from "@/components/ui/linear-loader";
+import React from "react";
+import { SchoolClassResponse } from "@/actions/get-classes";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
   teachers: DropdownSelectOptions[];
-  classes: SchoolClass[];
+  classes: SchoolClassResponse[];
 }
 
 const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
@@ -58,7 +60,7 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
   );
 
   /** Selected event data */
-  let [eventData, setEventData] = useState({});
+  // let [eventData, setEventData] = useState({});
 
   const [weekendsVisible, setWeekendsVisible] = useState<boolean>(false);
 
@@ -67,7 +69,9 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
   /** Added events (classes) */
   const [currentEvents, setCurrentEvents] = useState<any[]>([]);
 
-  const calendarRef = createRef() as LegacyRef<FullCalendar>;
+  // const calendarRef = createRef() as LegacyRef<FullCalendar>;
+  // const calendarRef = React.createRef();
+  const calendarRef = useRef(null);
 
   /**
    * Called when time/date is selected
@@ -76,16 +80,23 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
    */
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
     console.log("selectedInfo", selectInfo);
-    setEventData(selectInfo);
+    // setEventData(selectInfo);
 
     classDialog.open({
       startDate: selectInfo.start,
+      refreshCalendar: refreshCalendar,
       classroom:
         selectedClassroom && selectedClassroom !== "all"
           ? selectedClassroom
           : "",
     });
   };
+
+  function refreshCalendar() {
+    // @ts-ignore
+    const calendarApi = calendarRef?.current.getApi();
+    calendarApi.refetchEvents();
+  }
 
   /**
    * Called when event is clicked
@@ -94,26 +105,33 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
    * @param {EventClickArg} clickInfo event info
    */
   const handleEventClick = (clickInfo: EventClickArg): void => {
-    const eventInfo = (({ id, title, startStr, endStr, extendedProps }) => ({
-      id,
-      title,
-      startStr,
-      endStr,
-      extendedProps,
-    }))(clickInfo.event);
+    // const eventInfo = (({ id, start, end, extendedProps }) => ({
+    //   id,
+    //   start,
+    //   end,
+    //   extendedProps,
+    // }))(clickInfo.event);
 
-    setEventData(eventInfo);
+    // setEventData(eventInfo);
+    // console.log("eventInfo", eventInfo);
+
     // open class details dialog
-    classDetailsDialog.open();
-    // classDialog.open();
+    const classDetails = {
+      ...clickInfo.event.extendedProps,
+      id: clickInfo.event.id,
+      start: clickInfo.event.start,
+      end: clickInfo.event.end,
+    } as SchoolClassResponse;
+
+    classDetailsDialog.open(classDetails);
   };
 
   /** Get classes */
   const getClasses = async () => {
     // @ts-ignore
-    const calendarApi = calendarRef?.current.getApi();
-    const startTimestamp = new Date(calendarApi.view.currentStart).getTime();
-    const endTimestamp = new Date(calendarApi.view.currentEnd).getTime();
+    // const calendarApi = calendarRef?.current.getApi();
+    // const startTimestamp = new Date(calendarApi.view.currentStart).getTime();
+    // const endTimestamp = new Date(calendarApi.view.currentEnd).getTime();
 
     const events = classes.map((cl) => ({ ...cl, borderColor: "#ff0000" }));
     setCurrentEvents(events);
@@ -125,23 +143,16 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
    * @returns {JSX.Element}
    */
   const renderEventContent = (eventContent: EventContentArg): JSX.Element => {
-    // return (
-    //   <div className="bg-red-500 rounded-sm h-full px-1">
-    //     {eventContent.event.extendedProps?.student?.firstName}
-    //   </div>
-    // );
-
-    console.log("eventContent :>> ", eventContent);
     return (
       <div className="flex flex-col border p-1 pl-1.5 text-card-foreground truncate bg-teacher-purple rounded-sm h-full px-1 w-full overflow-hidden">
-        <div className="flex w-full text-xs">
+        <div className="flex w-96 text-xs ">
           {eventContent.event.extendedProps?.studentId ? (
-            <b className="min-w-[90px]">
+            <b className="min-w-[90px] mr-2">
               {eventContent.event.extendedProps?.student?.firstName}{" "}
               {eventContent.event.extendedProps?.student?.lastName}
             </b>
           ) : (
-            <b className="min-w-[90px]">
+            <b className="min-w-[90px] mr-2">
               {eventContent.event.extendedProps?.group?.name}
             </b>
           )}
@@ -152,7 +163,7 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
           </div>
         </div>
 
-        <div className="flex w-full items-center ">
+        <div className="flex w-full items-center gap-2">
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.SCHEDULED && (
             <div className="min-w-[90px]">
@@ -187,16 +198,6 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
         </div>
       </div>
     );
-  };
-
-  const eventDidMount = (info: any) => {
-    console.log("info :>> ", info);
-    const eventColor = info.event.extendedProps.color;
-    const eventBackground = info.el.querySelector(".fc-event-main");
-
-    if (eventBackground) {
-      eventBackground.style.backgroundColor = "#eee";
-    }
   };
 
   useEffect((): void => {
@@ -248,6 +249,7 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
               <Button
                 onClick={() => {
                   const params = {
+                    refreshCalendar: refreshCalendar,
                     classroom:
                       selectedClassroom && selectedClassroom !== "all"
                         ? selectedClassroom
@@ -313,18 +315,18 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
                   selectable={true}
                   selectMirror={true}
                   dayMaxEvents={true}
-                  eventDidMount={eventDidMount}
                   // weekends={weekendsVisible}
                   events={currentEvents} // alternatively, use the `events` setting to fetch from a feed
                   select={handleDateSelect}
                   eventContent={renderEventContent} // custom render function
                   eventClick={handleEventClick}
                   eventClassNames={"shadow-none border-0 rounded-sm"}
+                  // dayCellContent={() => <span>1</span>}
                   // eventColor="#378006"
                   // eventBorderColor="#ff0000"
                   // eventsSet={handleEvents} // called after events are initialized/added/changed/removed
                   /* you can update a remote database when these fire:
-                eventAdd={function(){}}
+                eventAdd={refreshCalendar}
                 eventChange={function(){}}
                 eventRemove={function(){}}
                 */

@@ -63,7 +63,7 @@ export default async function TeacherPage({
         <CardContent>
           <Separator className="my-1" />
 
-          <TeacherDetails teacher={teacher} />
+          <TeacherDetails teacher={teacher || undefined} />
 
           <AssignedCoursesCard
             teacherId={params.teacherId}

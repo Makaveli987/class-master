@@ -1,10 +1,11 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { ComboboxOptions } from "@/components/ui/combobox";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export interface GroupedEnrollment {
   atendeeId: string;
-  courses: { value: string; label: string }[];
+  courses: ComboboxOptions[];
 }
 
 export async function GET(req: NextRequest) {

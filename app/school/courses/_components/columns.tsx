@@ -10,6 +10,7 @@ import { EditIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { DeleteCourseButton } from "./delete-course-button";
+import { format } from "date-fns";
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -58,7 +59,10 @@ export const columns: ColumnDef<Course>[] = [
       <DataTableColumnHeader column={column} title="Created" />
     ),
     cell: ({ row }) => {
-      const created = formatDate(row.original.createdAt);
+      const created = format(
+        row.original.createdAt as Date,
+        "dd-MMM-yyyy HH:mm"
+      );
 
       return <span>{created}</span>;
     },
@@ -69,7 +73,10 @@ export const columns: ColumnDef<Course>[] = [
       <DataTableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => {
-      const updated = formatDate(row.original.updatedAt);
+      const updated = format(
+        row.original.updatedAt as Date,
+        "dd-MMM-yyyy HH:mm"
+      );
 
       return <span>{updated}</span>;
     },

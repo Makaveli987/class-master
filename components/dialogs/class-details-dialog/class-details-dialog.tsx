@@ -35,6 +35,9 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
+import { formatDate, getTimeFromDate } from "@/lib/utils";
+import { format } from "date-fns";
+import StudentClassForm from "./student-class-form";
 
 const formSchema = z.object({
   description: z.string(),
@@ -43,71 +46,76 @@ const formSchema = z.object({
 });
 
 export default function ClassDetailsDialog() {
-  const [isPending, setIsPending] = useState<boolean>(false);
+  // const [isPending, setIsPending] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      description: "",
-      note: "",
-      classStatus: ClassStatus.SCHEDULED,
-    },
-  });
+  // const defaultValues = {
+  //   description: "",
+  //   note: "",
+  //   classStatus: classDetailsDialog.data?.schoolClassStatus,
+  // };
 
-  useEffect(() => {
-    form.clearErrors();
-  }, [form, classDetailsDialog.data]);
+  // const form = useForm<z.infer<typeof formSchema>>({
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues,
+  // });
 
-  function createClassroom(values: z.infer<typeof formSchema>): void {
-    axios
-      .post("/api/classrooms", {
-        ...values,
-      })
-      .then((response: AxiosResponse<Enrollment[]>) => {
-        if (response.status === 201) {
-          router.refresh();
-          toast.success("Classroom added successfully.");
-        }
-      })
-      .catch((error) => {
-        toast.error("Something went wrong. Classroom wasn't added!");
-      })
-      .finally(() => {
-        setIsPending(false);
-        classDetailsDialog.close();
-      });
-  }
+  // useEffect(() => {
+  //   console.log("classDetailsDialog.data :>> ", classDetailsDialog.data);
+  //   // setTimeout(() => {
+  //   form.reset(defaultValues);
+  //   // }, 200);
+  // }, [form, classDetailsDialog.data]);
 
-  function updateClassroom(values: z.infer<typeof formSchema>): void {
-    axios
-      .patch("/api/classrooms/" + classDetailsDialog.data?.id, {
-        ...values,
-      })
-      .then((response: AxiosResponse<Enrollment[]>) => {
-        if (response.status === 200) {
-          router.refresh();
-          toast.success("Classroom, successfully updated.");
-        }
-      })
-      .catch((error) => {
-        toast.error("Something went wrong. Classroom, wasn't updated!");
-      })
-      .finally(() => {
-        setIsPending(false);
-        classDetailsDialog.close();
-      });
-  }
+  // function createClassroom(values: z.infer<typeof formSchema>): void {
+  //   axios
+  //     .post("/api/classrooms", {
+  //       ...values,
+  //     })
+  //     .then((response: AxiosResponse<Enrollment[]>) => {
+  //       if (response.status === 201) {
+  //         router.refresh();
+  //         toast.success("Classroom added successfully.");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       toast.error("Something went wrong. Classroom wasn't added!");
+  //     })
+  //     .finally(() => {
+  //       setIsPending(false);
+  //       classDetailsDialog.close();
+  //     });
+  // }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsPending(true);
+  // function updateClassroom(values: z.infer<typeof formSchema>): void {
+  //   axios
+  //     .patch("/api/classrooms/" + classDetailsDialog.data?.id, {
+  //       ...values,
+  //     })
+  //     .then((response: AxiosResponse<Enrollment[]>) => {
+  //       if (response.status === 200) {
+  //         router.refresh();
+  //         toast.success("Classroom, successfully updated.");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       toast.error("Something went wrong. Classroom, wasn't updated!");
+  //     })
+  //     .finally(() => {
+  //       setIsPending(false);
+  //       classDetailsDialog.close();
+  //     });
+  // }
 
-    !!classDetailsDialog.data
-      ? updateClassroom(values)
-      : createClassroom(values);
-  }
+  // function onSubmit(values: z.infer<typeof formSchema>) {
+  //   setIsPending(true);
+
+  //   !!classDetailsDialog.data
+  //     ? updateClassroom(values)
+  //     : createClassroom(values);
+  // }
 
   return (
     <Dialog
@@ -130,7 +138,7 @@ export default function ClassDetailsDialog() {
             </div>
             <div className="flex flex-col text-sm">
               <span className="text-muted-foreground text-xs">Student</span>
-              <span className="font-medium">Konstantin Vidic</span>
+              <span className="font-medium">{`${classDetailsDialog.data?.student?.firstName} ${classDetailsDialog.data?.student?.lastName}`}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -139,7 +147,11 @@ export default function ClassDetailsDialog() {
             </div>
             <div className="flex flex-col text-sm">
               <span className="text-muted-foreground text-xs">Teacher</span>
-              <span className="font-medium">Natasa Blagojevic</span>
+              {classDetailsDialog.data?.substituteTeacherId ? (
+                <span className="font-medium">{`${classDetailsDialog.data?.substituteTeacher?.firstName} ${classDetailsDialog.data?.substituteTeacher?.lastName}`}</span>
+              ) : (
+                <span className="font-medium">{`${classDetailsDialog.data?.originalTeacher?.firstName} ${classDetailsDialog.data?.originalTeacher?.lastName}`}</span>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3 text-sm">
@@ -149,8 +161,17 @@ export default function ClassDetailsDialog() {
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">Date</span>
               <div className="flex gap-4 font-medium text-sm">
-                <span className="font-medium">12.01.2024.</span>
-                <span className="font-medium">10:30 -11: 30</span>
+                <span className="font-medium">
+                  {classDetailsDialog.data?.start &&
+                    format(
+                      classDetailsDialog.data?.start as Date,
+                      "dd-MMM-yyyy"
+                    )}
+                </span>
+                <span className="font-medium">
+                  {getTimeFromDate(classDetailsDialog.data?.start as Date)} -{" "}
+                  {getTimeFromDate(classDetailsDialog.data?.end as Date)}
+                </span>
               </div>
             </div>
           </div>
@@ -162,7 +183,7 @@ export default function ClassDetailsDialog() {
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">Course</span>
               <span className="font-medium">
-                Engleski jezik - konverzacija A2.2
+                {classDetailsDialog.data?.course.name}
               </span>
             </div>
           </div>
@@ -172,14 +193,18 @@ export default function ClassDetailsDialog() {
             </div>
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">Classroom</span>
-              <span className="font-medium">Yellow Classroom</span>
+              <span className="font-medium">
+                {classDetailsDialog.data?.classroom.name}
+              </span>
             </div>
           </div>
         </div>
 
         <Separator className="mt-6 mb-4" />
 
-        <Form {...form}>
+        {classDetailsDialog.data?.studentId ? <StudentClassForm /> : null}
+
+        {/* <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
@@ -191,7 +216,7 @@ export default function ClassDetailsDialog() {
                     <Textarea
                       value={field.value}
                       onChange={field.onChange}
-                      className="h-28"
+                      className="h-20"
                       placeholder="Class description..."
                     />
                   </FormControl>
@@ -210,7 +235,7 @@ export default function ClassDetailsDialog() {
                     <Textarea
                       value={field.value}
                       onChange={field.onChange}
-                      className="h-28"
+                      className="h-20"
                       placeholder="Type note..."
                     />
                   </FormControl>
@@ -250,7 +275,7 @@ export default function ClassDetailsDialog() {
               )}
             />
 
-            {/* <div className="flex gap-2 justify-end"> */}
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
             <DialogFooter>
               <Button variant="destructive" className="sm:mr-auto">
                 Delete
@@ -276,9 +301,9 @@ export default function ClassDetailsDialog() {
                 )}
               </Button>
             </DialogFooter>
-            {/* </div> */}
+            </div>
           </form>
-        </Form>
+        </Form> */}
       </DialogContent>
     </Dialog>
   );

@@ -1,13 +1,7 @@
+import { Course, User } from "@prisma/client";
+
 export interface AssignedCourse {
   id: string;
-  course: {
-    id: string;
-    name: string;
-  };
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email?: string;
-  };
+  course: Pick<Course, "id" | "name">;
+  user: Pick<User, "id" | "firstName" | "lastName" | "email">;
 }

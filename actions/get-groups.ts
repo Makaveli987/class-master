@@ -3,7 +3,7 @@ import getCurrentUser from "./get-current-user";
 import { Group, Student, StudentToGroup } from "@prisma/client";
 
 interface Students extends StudentToGroup {
-  student: Student;
+  student: Pick<Student, "id" | "firstName" | "lastName">;
 }
 
 export interface GroupResponse extends Group {

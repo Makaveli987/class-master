@@ -1,5 +1,22 @@
 import { db } from "@/lib/db";
 import getCurrentUser from "./get-current-user";
+import {
+  Classroom,
+  Course,
+  Group,
+  SchoolClass,
+  Student,
+  User,
+} from "@prisma/client";
+
+export interface SchoolClassResponse extends SchoolClass {
+  student: Pick<Student, "id" | "firstName" | "lastName">;
+  group: Pick<Group, "id" | "name">;
+  course: Pick<Course, "id" | "name">;
+  originalTeacher: Pick<User, "id" | "firstName" | "lastName">;
+  substituteTeacher: Pick<User, "id" | "firstName" | "lastName">;
+  classroom: Pick<Classroom, "id" | "name">;
+}
 
 export const getClasses = async () => {
   try {
@@ -50,7 +67,7 @@ export const getClasses = async () => {
         },
       },
     });
-    return classes;
+    return classes as SchoolClassResponse[];
   } catch (error) {
     console.error("[CLASSES] Error fetching classes ", error);
     return null;

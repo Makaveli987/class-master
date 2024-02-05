@@ -146,6 +146,8 @@ export default function ClassDialog({
     form.setValue("originalTeacherId", "");
     filterCourseOptions();
 
+    // form.reset(defaultValues);
+
     setTimeout(() => {
       form.reset(defaultValues);
     }, 200);
@@ -163,7 +165,7 @@ export default function ClassDialog({
           setAttendeeOptions(response.data);
         })
         .catch((error: any) => {
-          toast.error("Something went wrong. Note wasn't added!");
+          toast.error("Something went wrong. Error fetching students!");
         })
         .finally(() => setIsFetching(false));
     },
@@ -183,7 +185,7 @@ export default function ClassDialog({
           setCourses(response.data);
         })
         .catch((error: any) => {
-          toast.error("Something went wrong. Note wasn't added!");
+          toast.error("Something went wrong. Error fetching enrollments!");
         })
         .finally(() => setIsFetching(false));
     },
@@ -202,7 +204,7 @@ export default function ClassDialog({
           setAttendeeOptions(response.data);
         })
         .catch((error: any) => {
-          toast.error("Something went wrong. Note wasn't added!");
+          toast.error("Something went wrong. Error fetching groups!");
         })
         .finally(() => setIsFetching(false));
     },
@@ -222,7 +224,7 @@ export default function ClassDialog({
           setCourses(response.data);
         })
         .catch((error: any) => {
-          toast.error("Something went wrong. Note wasn't added!");
+          toast.error("Something went wrong. Error fetching enrollments!");
         })
         .finally(() => setIsFetching(false));
     },
@@ -278,12 +280,15 @@ export default function ClassDialog({
       })
       .then((response: AxiosResponse<SchoolClass[]>) => {
         if (response.status === 201) {
-          router.refresh();
+          // router.refresh();
+          classDialog?.refreshCalendar?.();
           toast.success("Class added successfully.");
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Note wasn't added!");
+        console.error(error);
+
+        toast.error("Something went wrong. Class wasn't added!");
       })
       .finally(() => {
         setIsPending(false);
@@ -330,7 +335,7 @@ export default function ClassDialog({
         if (classDialog.isOpen) {
           classDialog.close();
         }
-        form.reset();
+        // form.reset(defaultValues);
       }}
     >
       <DialogContent className="max-h-screen overflow-y-auto overflow-x-auto">

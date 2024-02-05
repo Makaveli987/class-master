@@ -10,6 +10,7 @@ import { BasicInfoItem } from "@/components/user/basic-info-item";
 import useTeacherDialog from "@/hooks/use-teacher-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { formatDate } from "@/lib/utils";
+import { User } from "@prisma/client";
 import axios from "axios";
 import {
   CalendarIcon,
@@ -24,7 +25,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 interface TeacherDetailsProps {
-  teacher?: any;
+  teacher?: User;
 }
 
 export default function TeacherDetails({ teacher }: TeacherDetailsProps) {

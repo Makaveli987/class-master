@@ -26,6 +26,7 @@ import Image from "next/image";
 import EnrollmentDetails from "../_components/enrollment-details";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button";
+import { format } from "date-fns";
 
 export default async function EnrollmentId({
   params,
@@ -79,7 +80,7 @@ export default async function EnrollmentId({
                 {getEnrollentUser()}
               </h2>
               <p className="text-muted-foreground text-sm">
-                Enrolled: {formatDate(getEnrollentDate()!, false)}
+                Enrolled: {format(getEnrollentDate()!, "dd-MMM-yyyy")}
               </p>
             </div>
 

@@ -3,11 +3,7 @@ import getCurrentUser from "./get-current-user";
 import { Course, User, UserPerCourse } from "@prisma/client";
 
 interface Teacher extends UserPerCourse {
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
+  user: Pick<User, "id" | "firstName" | "lastName">;
 }
 
 export interface CourseResponse extends Course {

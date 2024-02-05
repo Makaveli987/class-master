@@ -1,21 +1,10 @@
-import { Note } from "@prisma/client";
+import { Group, Note, Student, User } from "@prisma/client";
 import { create } from "zustand";
 
 export interface NoteData extends Note {
-  teacher: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-  student?: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-  group?: {
-    id: string;
-    name: string;
-  };
+  teacher: Pick<User, "id" | "firstName" | "lastName">;
+  student?: Pick<Student, "id" | "firstName" | "lastName">;
+  group?: Pick<Group, "id" | "name">;
 }
 
 interface OpenParams {
