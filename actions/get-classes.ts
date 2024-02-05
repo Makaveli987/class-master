@@ -28,20 +28,20 @@ export const getClasses = async () => {
             name: true,
           },
         },
-        originalTeacher: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        substituteTeacher: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
+        // originalTeacher: {
+        //   select: {
+        //     id: true,
+        //     firstName: true,
+        //     lastName: true,
+        //   },
+        // },
+        // substituteTeacher: {
+        //   select: {
+        //     id: true,
+        //     firstName: true,
+        //     lastName: true,
+        //   },
+        // },
         classroom: {
           select: {
             id: true,
