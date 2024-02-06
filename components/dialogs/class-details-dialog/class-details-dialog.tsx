@@ -22,7 +22,6 @@ import {
   UserIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -38,6 +37,10 @@ import {
 import { formatDate, getTimeFromDate } from "@/lib/utils";
 import { format } from "date-fns";
 import StudentClassForm from "./student-class-form";
+import { useEffect, useState } from "react";
+import { GroupStudentsResponse } from "@/app/api/groups/[groupId]/students/route";
+import GroupClassForm from "./group-class-form";
+import LinearLoader from "@/components/ui/linear-loader";
 
 const formSchema = z.object({
   description: z.string(),
@@ -46,28 +49,31 @@ const formSchema = z.object({
 });
 
 export default function ClassDetailsDialog() {
-  // const [isPending, setIsPending] = useState<boolean>(false);
+  const [students, setStudents] = useState<GroupStudentsResponse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
   const router = useRouter();
 
-  // const defaultValues = {
-  //   description: "",
-  //   note: "",
-  //   classStatus: classDetailsDialog.data?.schoolClassStatus,
-  // };
-
-  // const form = useForm<z.infer<typeof formSchema>>({
-  //   resolver: zodResolver(formSchema),
-  //   defaultValues,
-  // });
-
-  // useEffect(() => {
-  //   console.log("classDetailsDialog.data :>> ", classDetailsDialog.data);
-  //   // setTimeout(() => {
-  //   form.reset(defaultValues);
-  //   // }, 200);
-  // }, [form, classDetailsDialog.data]);
+  useEffect(() => {
+    if (classDetailsDialog.data?.id) {
+      console.log("classDetailsDialog.data :>> ", classDetailsDialog.data);
+      if (classDetailsDialog.data.group?.id) {
+        setIsLoading(true);
+        // TODO: This should be fetched from attendece table
+        axios
+          .get(`/api/groups/${classDetailsDialog.data.group.id}/students`)
+          .then((response: AxiosResponse<GroupStudentsResponse[]>) => {
+            console.log("response :>> ", response.data);
+            setStudents(response.data);
+          })
+          .catch((error) => {
+            toast.error("Something went wrong. Classroom wasn't added!");
+          })
+          .finally(() => setIsLoading(false));
+      }
+    }
+  }, [classDetailsDialog.data]);
 
   // function createClassroom(values: z.infer<typeof formSchema>): void {
   //   axios
@@ -126,19 +132,27 @@ export default function ClassDetailsDialog() {
         }
       }}
     >
-      <DialogContent className="max-w-[700px] max-h-screen overflow-auto">
+      <DialogContent className="max-w-[650px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Class Details</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-3 gap-6 mt-4">
+        {/* <div className=" max-h-96 overflow-auto"> */}
+        <div className="h-1.5 w-full">{isLoading && <LinearLoader />}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-3 gap-3 mt-4">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
               <UserIcon />
             </div>
             <div className="flex flex-col text-sm">
-              <span className="text-muted-foreground text-xs">Student</span>
-              <span className="font-medium">{`${classDetailsDialog.data?.student?.firstName} ${classDetailsDialog.data?.student?.lastName}`}</span>
+              <span className="text-muted-foreground text-xs">
+                {classDetailsDialog.data?.studentId ? "Student" : "Group"}
+              </span>
+              <span className="font-medium">
+                {classDetailsDialog.data?.studentId
+                  ? `${classDetailsDialog.data?.student?.firstName} ${classDetailsDialog.data?.student?.lastName}`
+                  : `${classDetailsDialog.data?.group.name}`}
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -200,110 +214,14 @@ export default function ClassDetailsDialog() {
           </div>
         </div>
 
-        <Separator className="mt-6 mb-4" />
+        <Separator className="mt-4 mb-2" />
 
-        {classDetailsDialog.data?.studentId ? <StudentClassForm /> : null}
-
-        {/* <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      value={field.value}
-                      onChange={field.onChange}
-                      className="h-20"
-                      placeholder="Class description..."
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="note"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Student Note</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      value={field.value}
-                      onChange={field.onChange}
-                      className="h-20"
-                      placeholder="Type note..."
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="classStatus"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Class Status</FormLabel>
-                  <FormControl>
-                    <DropdownSelect
-                      options={[
-                        {
-                          value: ClassStatus.SCHEDULED,
-                          label: "Scheduled",
-                        },
-                        {
-                          value: ClassStatus.HELD,
-                          label: "Held",
-                        },
-                        {
-                          value: ClassStatus.CANCELED,
-                          label: "Canceled",
-                        },
-                      ]}
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
-            <DialogFooter>
-              <Button variant="destructive" className="sm:mr-auto">
-                Delete
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  classDetailsDialog.close();
-                }}
-              >
-                Cancel
-              </Button>
-
-              <Button disabled={isPending} type="submit">
-                {isPending ? (
-                  <>
-                    <Loader2Icon className="h-4 w-4 animate-spin" />
-                    Saving
-                  </>
-                ) : (
-                  "Save"
-                )}
-              </Button>
-            </DialogFooter>
-            </div>
-          </form>
-        </Form> */}
+        {classDetailsDialog.data?.studentId ? (
+          <StudentClassForm />
+        ) : (
+          <GroupClassForm students={students} />
+        )}
+        {/* </div> */}
       </DialogContent>
     </Dialog>
   );

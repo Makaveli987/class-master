@@ -113,7 +113,7 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
     // }))(clickInfo.event);
 
     // setEventData(eventInfo);
-    // console.log("eventInfo", eventInfo);
+    console.log("clickInfo.event", clickInfo.event);
 
     // open class details dialog
     const classDetails = {
@@ -122,6 +122,8 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
       start: clickInfo.event.start,
       end: clickInfo.event.end,
     } as SchoolClassResponse;
+
+    console.log("classDetails :>> ", classDetails);
 
     classDetailsDialog.open(classDetails);
   };

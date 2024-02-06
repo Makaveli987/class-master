@@ -144,7 +144,7 @@ Sidebar.Skeleton = function SkeletonSidebar() {
           <Logo />
         </Link>
       </div>
-      <Separator />
+      <Separator className="bg-[#1E293B]" />
 
       <div className="space-y-4 py-5">
         <div className="px-3 py-2">

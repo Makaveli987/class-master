@@ -49,7 +49,7 @@ export default function StudentClassForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="description"
@@ -60,7 +60,7 @@ export default function StudentClassForm() {
                 <Textarea
                   value={field.value}
                   onChange={field.onChange}
-                  className="h-20"
+                  className="h-14"
                   placeholder="Class description..."
                 />
               </FormControl>
@@ -79,7 +79,7 @@ export default function StudentClassForm() {
                 <Textarea
                   value={field.value}
                   onChange={field.onChange}
-                  className="h-20"
+                  className="h-14"
                   placeholder="Type note..."
                 />
               </FormControl>
