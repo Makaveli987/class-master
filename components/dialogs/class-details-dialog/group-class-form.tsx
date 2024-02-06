@@ -29,8 +29,8 @@ interface StudentProps {
 
 type FormValues = {
   description: string;
-  attendees: { studentId: string; attended: boolean }[];
-  notes: { studentId: string; content: string }[];
+  attendees: { studentId: string; attended: boolean; noteContent: string }[];
+  // notes: { studentId: string; content: string }[];
 };
 
 export default function GroupClassForm({ students }: StudentProps) {
@@ -42,13 +42,13 @@ export default function GroupClassForm({ students }: StudentProps) {
     defaultValues: {
       description: "",
       attendees: [
-        { studentId: "1", attended: false },
-        { studentId: "2", attended: false },
+        { studentId: "1", attended: false, noteContent: "" },
+        { studentId: "2", attended: false, noteContent: "" },
       ],
-      notes: [
-        { studentId: "1", content: "test" },
-        { studentId: "2", content: "test" },
-      ],
+      // notes: [
+      //   { studentId: "1", content: "test" },
+      //   { studentId: "2", content: "test" },
+      // ],
     },
   });
   const { fields: attendees, update: updateAtendee } = useFieldArray({
@@ -56,10 +56,10 @@ export default function GroupClassForm({ students }: StudentProps) {
     name: "attendees",
   } as never);
 
-  const { fields: notes, update: updateNote } = useFieldArray({
-    control: form.control,
-    name: "notes",
-  });
+  // const { fields: notes, update: updateNote } = useFieldArray({
+  //   control: form.control,
+  //   name: "notes",
+  // });
 
   function onSubmit(values: any) {
     console.log("values", values);
@@ -74,15 +74,16 @@ export default function GroupClassForm({ students }: StudentProps) {
     const attendees = students?.map((student) => ({
       studentId: student.id,
       attended: false,
+      noteContent: "",
     }));
-    const notes = students?.map((student) => ({
-      studentId: student.id,
-      content: "",
-    }));
+    // const notes = students?.map((student) => ({
+    //   studentId: student.id,
+    //   content: "",
+    // }));
 
     form.setValue("attendees", attendees);
-    form.setValue("notes", notes);
-    console.log("students", students);
+    // form.setValue("notes", notes);
+    // console.log("students", students);
   }, [form, students]);
 
   return (
@@ -122,12 +123,12 @@ export default function GroupClassForm({ students }: StudentProps) {
         </div>
 
         {!students.length ? (
-          <div className="flex flex-row max-h-72 overflow-auto border border-t-0">
+          <div className="flex flex-row max-h-72 border border-t-0">
             <span className="text-sm px-6 py-2"> No students.</span>
           </div>
         ) : (
-          <div className="flex flex-row max-h-72 overflow-auto border border-t-0 rounded-b-md">
-            <div className="flex flex-1 flex-col">
+          <div className="flex flex-row max-h-72  border border-t-0 rounded-b-md">
+            <div className="flex flex-1 flex-col overflow-auto">
               {attendees.map((field, index) => (
                 <div
                   key={field.id}
@@ -135,7 +136,7 @@ export default function GroupClassForm({ students }: StudentProps) {
                 >
                   <FormField
                     control={form.control}
-                    name={`attendees.${index}`}
+                    name={`attendees.${index}.attended`}
                     render={({ field }) => (
                       <FormItem className="flex flex-1 justify-between items-center ">
                         <FormLabel className="py-5 pl-2 w-full cursor-pointer ">
@@ -146,13 +147,27 @@ export default function GroupClassForm({ students }: StudentProps) {
                           <Checkbox
                             className="mr-4 sm:mr-10"
                             disabled={isPending}
-                            checked={field.value.attended}
-                            onCheckedChange={(value) => {
-                              field.onChange({
-                                studentId: field.value.studentId,
-                                attended: value,
-                              });
-                            }}
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    key={field.id}
+                    control={form.control}
+                    name={`attendees.${index}.noteContent`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="h-[48px] min-w-50 sm:min-w-72 rounded-b-md rounded-t-md bg-card my-1"
+                            placeholder="Type note..."
                           />
                         </FormControl>
                         <FormMessage />
@@ -162,14 +177,14 @@ export default function GroupClassForm({ students }: StudentProps) {
                 </div>
               ))}
             </div>
-            <div className="flex flex-col min-w-50 sm:min-w-72 h-14">
+            {/* <div className="flex flex-col min-w-50 sm:min-w-72 h-14">
               {notes.map((field, index) => (
                 <FormField
                   key={field.id}
                   control={form.control}
                   name={`notes.${index}`}
                   render={({ field }) => (
-                    <FormItem className="pt-[3px] pb-[3px] border-b">
+                    <FormItem className="pt-[4.5px] pb-[4.5px] border-b">
                       <FormControl>
                         <Textarea
                           value={field.value.content}
@@ -188,7 +203,7 @@ export default function GroupClassForm({ students }: StudentProps) {
                   )}
                 />
               ))}
-            </div>
+            </div> */}
           </div>
         )}
 
