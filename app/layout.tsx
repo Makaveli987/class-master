@@ -41,7 +41,7 @@ export default function RootLayout({
               position="top-center"
               richColors
               theme="light"
-              duration={2500}
+              duration={3500}
             />
             {children}
             <DialogProvider />

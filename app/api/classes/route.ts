@@ -4,20 +4,20 @@ import { ClassStatus } from "@/lib/models/class-status";
 import { ClassType } from "@/lib/models/class-type";
 import { RepeatScheduleType } from "@/lib/models/repeat-schedule";
 
-import {
-  addDays,
-  addMinutes,
-  getDay,
-  getHours,
-  isSameWeek,
-  setHours,
-} from "date-fns";
+import { addDays, addMinutes, format, getHours, setHours } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
     const currentUser = await getCurrentUser();
+    const skippedDates = [];
+    const onlineClassroom = await db.classroom.findFirst({
+      where: { schoolId: currentUser?.schoolId, name: "Online" },
+      select: {
+        id: true,
+      },
+    });
 
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -32,7 +32,6 @@ export async function POST(req: Request) {
       substituteTeacherId,
       repeat,
       repeatConfig,
-      substitute,
       startDate,
       type,
     } = await req.json();
@@ -66,21 +65,32 @@ export async function POST(req: Request) {
       let currentDay = from;
 
       while (currentDay <= to) {
-        const classData = await db.schoolClass.create({
-          data: {
-            courseId,
-            originalTeacherId,
-            substituteTeacherId: substituteTeacherId || null,
-            classroomId,
-            schoolClassStatus: ClassStatus.SCHEDULED,
-            studentId: type === ClassType.STUDENT ? attendeeId : null,
-            groupId: type === ClassType.GROUP ? attendeeId : null,
-            start: currentDay,
-            end: addMinutes(currentDay, Number(duration)),
-            duration,
-            schoolId: currentUser.schoolId,
-          },
-        });
+        const isAvailable = await isClassTimeSlotAvailable(
+          classroomId,
+          currentDay,
+          addMinutes(new Date(currentDay), Number(duration)),
+          onlineClassroom?.id
+        );
+
+        if (isAvailable) {
+          const classData = await db.schoolClass.create({
+            data: {
+              courseId,
+              originalTeacherId,
+              substituteTeacherId: substituteTeacherId || null,
+              classroomId,
+              schoolClassStatus: ClassStatus.SCHEDULED,
+              studentId: type === ClassType.STUDENT ? attendeeId : null,
+              groupId: type === ClassType.GROUP ? attendeeId : null,
+              start: currentDay,
+              end: addMinutes(currentDay, Number(duration)),
+              duration,
+              schoolId: currentUser.schoolId,
+            },
+          });
+        } else {
+          skippedDates.push(format(currentDay, "dd-MMM-yyyy HH:mm"));
+        }
 
         currentDay = addDays(currentDay, 7);
       }
@@ -100,21 +110,32 @@ export async function POST(req: Request) {
           ? setHours(new Date(currentDay), firstWeekTime)
           : setHours(new Date(currentDay), secondWeekTime);
 
-        const classData = await db.schoolClass.create({
-          data: {
-            courseId,
-            originalTeacherId,
-            substituteTeacherId: substituteTeacherId || null,
-            classroomId,
-            schoolClassStatus: ClassStatus.SCHEDULED,
-            studentId: type === ClassType.STUDENT ? attendeeId : null,
-            groupId: type === ClassType.GROUP ? attendeeId : null,
-            start: currentDay,
-            end: addMinutes(currentDay, Number(duration)),
-            duration,
-            schoolId: currentUser.schoolId,
-          },
-        });
+        const isAvailable = await isClassTimeSlotAvailable(
+          classroomId,
+          currentDay,
+          addMinutes(new Date(currentDay), Number(duration)),
+          onlineClassroom?.id
+        );
+
+        if (isAvailable) {
+          const classData = await db.schoolClass.create({
+            data: {
+              courseId,
+              originalTeacherId,
+              substituteTeacherId: substituteTeacherId || null,
+              classroomId,
+              schoolClassStatus: ClassStatus.SCHEDULED,
+              studentId: type === ClassType.STUDENT ? attendeeId : null,
+              groupId: type === ClassType.GROUP ? attendeeId : null,
+              start: currentDay,
+              end: addMinutes(currentDay, Number(duration)),
+              duration,
+              schoolId: currentUser.schoolId,
+            },
+          });
+        } else {
+          skippedDates.push(format(currentDay, "dd-MMM-yyyy HH:mm"));
+        }
 
         isFirstWeek = !isFirstWeek;
         currentDay = addDays(currentDay, 7);
@@ -122,26 +143,53 @@ export async function POST(req: Request) {
     }
 
     if (!repeat) {
-      const classData = await db.schoolClass.create({
-        data: {
-          courseId,
-          originalTeacherId: originalTeacherId,
-          substituteTeacherId: substituteTeacherId || null,
-          classroomId,
-          schoolClassStatus: ClassStatus.SCHEDULED,
-          studentId: type === ClassType.STUDENT ? attendeeId : null,
-          groupId: type === ClassType.GROUP ? attendeeId : null,
-          start: startDate,
-          end: addMinutes(new Date(startDate), Number(duration)),
-          duration,
-          schoolId: currentUser.schoolId,
+      const isAvailable = await isClassTimeSlotAvailable(
+        classroomId,
+        startDate,
+        addMinutes(new Date(startDate), Number(duration)),
+        onlineClassroom?.id
+      );
+
+      if (isAvailable) {
+        const classData = await db.schoolClass.create({
+          data: {
+            courseId,
+            originalTeacherId: originalTeacherId,
+            substituteTeacherId: substituteTeacherId || null,
+            classroomId,
+            schoolClassStatus: ClassStatus.SCHEDULED,
+            studentId: type === ClassType.STUDENT ? attendeeId : null,
+            groupId: type === ClassType.GROUP ? attendeeId : null,
+            start: startDate,
+            end: addMinutes(new Date(startDate), Number(duration)),
+            duration,
+            schoolId: currentUser.schoolId,
+          },
+        });
+      } else {
+        return new NextResponse(
+          JSON.stringify({ error: "Date already taken" }),
+          {
+            status: 400,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+    }
+
+    revalidatePath("/school/calendar");
+    if (skippedDates.length) {
+      return new NextResponse(JSON.stringify({ skippedDates }), {
+        status: 201,
+        headers: {
+          "Content-Type": "application/json",
         },
       });
     }
 
-    revalidatePath("/school/calendar");
-
-    return new NextResponse(JSON.stringify("success"), {
+    return new NextResponse(JSON.stringify("Class created!"), {
       status: 201,
       headers: {
         "Content-Type": "application/json",
@@ -158,4 +206,33 @@ export async function POST(req: Request) {
       }
     );
   }
+}
+
+async function isClassTimeSlotAvailable(
+  classroomId: string,
+  start: Date,
+  end: Date,
+  onlineClassroomId?: string
+) {
+  if (onlineClassroomId === classroomId) {
+    return true;
+  }
+  const overlappingClasses = await db.schoolClass.findMany({
+    where: {
+      classroomId: classroomId,
+      OR: [
+        {
+          AND: [{ start: { lte: start } }, { end: { gte: start } }],
+        },
+        {
+          AND: [{ start: { lte: end } }, { end: { gte: end } }],
+        },
+        {
+          AND: [{ start: { gte: start } }, { end: { lte: end } }],
+        },
+      ],
+    },
+  });
+
+  return overlappingClasses.length === 0;
 }

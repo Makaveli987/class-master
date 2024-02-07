@@ -1,24 +1,32 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogOverlay,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
+import LinearLoader from "@/components/ui/linear-loader";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { TimePicker } from "@/components/ui/time-picker";
 import { useClassDialog } from "@/hooks/use-class-dialog";
 import { ClassType } from "@/lib/models/class-type";
+import { RepeatScheduleType } from "@/lib/models/repeat-schedule";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { addDays } from "date-fns";
 import { Loader2Icon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "../../ui/button";
 import {
@@ -30,18 +38,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { toast } from "sonner";
-import axios, { AxiosResponse } from "axios";
-import LinearLoader from "@/components/ui/linear-loader";
-import { cn } from "@/lib/utils";
-import { RepeatScheduleType } from "@/lib/models/repeat-schedule";
-import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { TimePicker } from "@/components/ui/time-picker";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { addDays, getHours } from "date-fns";
-import { SchoolClass } from "@prisma/client";
-import { auth } from "@/auth";
-import { useSession } from "next-auth/react";
 
 const formSchema = z
   .object({
@@ -278,8 +274,13 @@ export default function ClassDialog({
       .post("/api/classes", {
         ...values,
       })
-      .then((response: AxiosResponse<SchoolClass[]>) => {
-        if (response.status === 201) {
+      .then((response) => {
+        if (response.data.skippedDates) {
+          toast.warning(
+            "Some classes were not scheduled due to selected time not being available."
+          );
+        }
+        if (response.status === 201 && !response.data.skippedDates) {
           // router.refresh();
           classDialog?.refreshCalendar?.();
           toast.success("Class added successfully.");
@@ -288,7 +289,7 @@ export default function ClassDialog({
       .catch((error) => {
         console.error(error);
 
-        toast.error("Something went wrong. Class wasn't added!");
+        toast.error(error.response.data.error);
       })
       .finally(() => {
         setIsPending(false);
@@ -296,32 +297,9 @@ export default function ClassDialog({
       });
   }
 
-  // function updateNote(values: z.infer<typeof formSchema>): void {
-  //   axios
-  //     .patch("/api/notes/" + classDialog.data?.id, {
-  //       ...values,
-  //     })
-  //     .then((response: AxiosResponse<Enrollment[]>) => {
-  //       if (response.status === 200) {
-  //         router.refresh();
-  //         toast.success("Note successfully updated.");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Something went wrong. Note wasn't updated!");
-  //     })
-  //     .finally(() => {
-  //       setIsPending(false);
-  //       classDialog.close();
-  //     });
-  // }
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    // console.log("values", values);
     createClass(values);
-
-    // !!classDialog.data ? updateNote(values) : createNote(values);
   }
 
   function onErrors(errors: any) {
@@ -335,7 +313,6 @@ export default function ClassDialog({
         if (classDialog.isOpen) {
           classDialog.close();
         }
-        // form.reset(defaultValues);
       }}
     >
       <DialogContent className="max-h-screen overflow-y-auto overflow-x-auto">

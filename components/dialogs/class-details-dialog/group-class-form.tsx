@@ -2,7 +2,6 @@
 import { GroupStudentsResponse } from "@/app/api/groups/[groupId]/students/route";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
   FormControl,
@@ -11,29 +10,24 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { SelectSeparator } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import Loader from "@/components/ui/page-loader";
 import { Textarea } from "@/components/ui/textarea";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ClassStatus } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 
 interface StudentProps {
   students: GroupStudentsResponse[];
+  isLoading: boolean;
 }
 
 type FormValues = {
   description: string;
   attendees: { studentId: string; attended: boolean; noteContent: string }[];
-  // notes: { studentId: string; content: string }[];
 };
 
-export default function GroupClassForm({ students }: StudentProps) {
+export default function GroupClassForm({ students, isLoading }: StudentProps) {
   const [isPending, setIsPending] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
@@ -45,21 +39,12 @@ export default function GroupClassForm({ students }: StudentProps) {
         { studentId: "1", attended: false, noteContent: "" },
         { studentId: "2", attended: false, noteContent: "" },
       ],
-      // notes: [
-      //   { studentId: "1", content: "test" },
-      //   { studentId: "2", content: "test" },
-      // ],
     },
   });
   const { fields: attendees, update: updateAtendee } = useFieldArray({
     control: form.control,
     name: "attendees",
   } as never);
-
-  // const { fields: notes, update: updateNote } = useFieldArray({
-  //   control: form.control,
-  //   name: "notes",
-  // });
 
   function onSubmit(values: any) {
     console.log("values", values);
@@ -76,14 +61,8 @@ export default function GroupClassForm({ students }: StudentProps) {
       attended: false,
       noteContent: "",
     }));
-    // const notes = students?.map((student) => ({
-    //   studentId: student.id,
-    //   content: "",
-    // }));
 
     form.setValue("attendees", attendees);
-    // form.setValue("notes", notes);
-    // console.log("students", students);
   }, [form, students]);
 
   return (
@@ -122,12 +101,18 @@ export default function GroupClassForm({ students }: StudentProps) {
           </div>
         </div>
 
-        {!students.length ? (
-          <div className="flex flex-row max-h-72 border border-t-0">
+        {isLoading && !students.length && (
+          <div className="flex flex-row h-20 border border-t-0 relative">
+            <Loader />
+          </div>
+        )}
+
+        {!isLoading && !students.length ? (
+          <div className="flex flex-row h-20 border border-t-0">
             <span className="text-sm px-6 py-2"> No students.</span>
           </div>
         ) : (
-          <div className="flex flex-row max-h-72  border border-t-0 rounded-b-md">
+          <div className="flex flex-row max-h-80  border border-t-0 rounded-b-md">
             <div className="flex flex-1 flex-col overflow-auto">
               {attendees.map((field, index) => (
                 <div
@@ -166,7 +151,7 @@ export default function GroupClassForm({ students }: StudentProps) {
                           <Textarea
                             value={field.value}
                             onChange={field.onChange}
-                            className="h-[48px] min-w-50 sm:min-w-72 rounded-b-md rounded-t-md bg-card my-1"
+                            className="h-[48px] min-w-50 sm:min-w-72 rounded-b-md rounded-t-md bg-card"
                             placeholder="Type note..."
                           />
                         </FormControl>
@@ -177,33 +162,6 @@ export default function GroupClassForm({ students }: StudentProps) {
                 </div>
               ))}
             </div>
-            {/* <div className="flex flex-col min-w-50 sm:min-w-72 h-14">
-              {notes.map((field, index) => (
-                <FormField
-                  key={field.id}
-                  control={form.control}
-                  name={`notes.${index}`}
-                  render={({ field }) => (
-                    <FormItem className="pt-[4.5px] pb-[4.5px] border-b">
-                      <FormControl>
-                        <Textarea
-                          value={field.value.content}
-                          onChange={(value) =>
-                            field.onChange({
-                              studentId: field.value.studentId,
-                              content: value.target.value,
-                            })
-                          }
-                          className="h-[48px] rounded-b-md rounded-t-md"
-                          placeholder="Type note..."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </div> */}
           </div>
         )}
 

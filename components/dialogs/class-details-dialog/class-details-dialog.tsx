@@ -75,54 +75,6 @@ export default function ClassDetailsDialog() {
     }
   }, [classDetailsDialog.data]);
 
-  // function createClassroom(values: z.infer<typeof formSchema>): void {
-  //   axios
-  //     .post("/api/classrooms", {
-  //       ...values,
-  //     })
-  //     .then((response: AxiosResponse<Enrollment[]>) => {
-  //       if (response.status === 201) {
-  //         router.refresh();
-  //         toast.success("Classroom added successfully.");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Something went wrong. Classroom wasn't added!");
-  //     })
-  //     .finally(() => {
-  //       setIsPending(false);
-  //       classDetailsDialog.close();
-  //     });
-  // }
-
-  // function updateClassroom(values: z.infer<typeof formSchema>): void {
-  //   axios
-  //     .patch("/api/classrooms/" + classDetailsDialog.data?.id, {
-  //       ...values,
-  //     })
-  //     .then((response: AxiosResponse<Enrollment[]>) => {
-  //       if (response.status === 200) {
-  //         router.refresh();
-  //         toast.success("Classroom, successfully updated.");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       toast.error("Something went wrong. Classroom, wasn't updated!");
-  //     })
-  //     .finally(() => {
-  //       setIsPending(false);
-  //       classDetailsDialog.close();
-  //     });
-  // }
-
-  // function onSubmit(values: z.infer<typeof formSchema>) {
-  //   setIsPending(true);
-
-  //   !!classDetailsDialog.data
-  //     ? updateClassroom(values)
-  //     : createClassroom(values);
-  // }
-
   return (
     <Dialog
       open={classDetailsDialog.isOpen}
@@ -138,8 +90,7 @@ export default function ClassDetailsDialog() {
         </DialogHeader>
 
         {/* <div className=" max-h-96 overflow-auto"> */}
-        <div className="h-1.5 w-full">{isLoading && <LinearLoader />}</div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-3 gap-3 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-3 gap-2">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
               <UserIcon />
@@ -214,12 +165,12 @@ export default function ClassDetailsDialog() {
           </div>
         </div>
 
-        <Separator className="mt-4 mb-2" />
+        <Separator className="mt-2 mb-1" />
 
         {classDetailsDialog.data?.studentId ? (
           <StudentClassForm />
         ) : (
-          <GroupClassForm students={students} />
+          <GroupClassForm students={students} isLoading={isLoading} />
         )}
         {/* </div> */}
       </DialogContent>
