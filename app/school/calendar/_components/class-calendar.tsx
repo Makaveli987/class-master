@@ -130,11 +130,6 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
 
   /** Get classes */
   const getClasses = async () => {
-    // @ts-ignore
-    // const calendarApi = calendarRef?.current.getApi();
-    // const startTimestamp = new Date(calendarApi.view.currentStart).getTime();
-    // const endTimestamp = new Date(calendarApi.view.currentEnd).getTime();
-
     const events = classes.map((cl) => ({ ...cl, borderColor: "#ff0000" }));
     setCurrentEvents(events);
   };
@@ -169,7 +164,7 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.SCHEDULED && (
             <div className="min-w-[90px]">
-              <span className="bg-info rounded-sm text-xs px-1">
+              <span className="bg-info  rounded-sm text-xs px-1">
                 {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
               </span>
             </div>
@@ -185,7 +180,7 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.HELD && (
             <div className="min-w-[90px]">
-              <span className="bg-emerald-600 rounded-sm text-xs px-1">
+              <span className="bg-emerald-300 border border-emerald-600 rounded-sm text-xs px-1">
                 {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
               </span>
             </div>

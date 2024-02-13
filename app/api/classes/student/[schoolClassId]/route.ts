@@ -1,0 +1,87 @@
+import getCurrentUser from "@/actions/get-current-user";
+import { db } from "@/lib/db";
+import { ClassStatus } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
+
+export interface UpdateClassPayload {
+  description?: string;
+  note?: string;
+  noteId?: string;
+  classStatus: ClassStatus;
+  enrollmentId: string;
+  userId: string;
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { schoolClassId: string } }
+) {
+  try {
+    const currentUser = await getCurrentUser();
+    const { schoolClassId } = params;
+
+    if (!currentUser) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const {
+      description,
+      note,
+      noteId,
+      classStatus,
+      enrollmentId,
+      userId,
+    }: UpdateClassPayload = await req.json();
+
+    const schoolClass = await db.schoolClass.update({
+      where: {
+        id: schoolClassId,
+      },
+      data: {
+        description,
+        schoolClassStatus: classStatus,
+      },
+    });
+
+    if (note && !noteId) {
+      await db.note.create({
+        data: {
+          enrollmentId,
+          teacherId: currentUser.id,
+          text: note,
+          userId,
+          schoolClassId,
+        },
+      });
+    }
+
+    if (note && noteId) {
+      await db.note.update({
+        where: { id: noteId },
+        data: {
+          text: note,
+        },
+      });
+    }
+
+    revalidatePath("/school/calendar");
+    return new NextResponse(JSON.stringify(schoolClass), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.log("error", error);
+    return new NextResponse(
+      JSON.stringify({ error: "Internal Server Error" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}

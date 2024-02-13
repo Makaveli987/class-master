@@ -46,7 +46,7 @@ const formSchema = z
       required_error: "Field is required.",
     }),
     duration: z.string().min(1, "Field is required"),
-    courseId: z.string().min(1, "Field is required"),
+    enrollmentId: z.string().min(1, "Field is required"),
     attendeeId: z.string().min(1, "Field is required"),
     classroomId: z.string().min(1, "Field is required"),
     originalTeacherId: z.string(),
@@ -95,8 +95,8 @@ export default function ClassDialog({
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState(false);
   const [attendeeOptions, setAttendeeOptions] = useState([]);
-  const [coursesOptions, setCoursesOptions] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [enrolledCoursesOptions, setEnrolledCoursesOptions] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
   const classDialog = useClassDialog();
   const router = useRouter();
@@ -106,7 +106,7 @@ export default function ClassDialog({
   const defaultValues = {
     type: ClassType.STUDENT,
     duration: "60",
-    courseId: "",
+    enrollmentId: "",
     attendeeId: "",
     originalTeacherId: "",
     substitute: false,
@@ -178,7 +178,7 @@ export default function ClassDialog({
           params: teacherId ? { substituteTeacher: teacherId } : null,
         })
         .then((response: any) => {
-          setCourses(response.data);
+          setEnrolledCourses(response.data);
         })
         .catch((error: any) => {
           toast.error("Something went wrong. Error fetching enrollments!");
@@ -217,7 +217,7 @@ export default function ClassDialog({
           params: teacherId ? { substituteTeacher: teacherId } : null,
         })
         .then((response: any) => {
-          setCourses(response.data);
+          setEnrolledCourses(response.data);
         })
         .catch((error: any) => {
           toast.error("Something went wrong. Error fetching enrollments!");
@@ -229,18 +229,21 @@ export default function ClassDialog({
 
   const filterCourseOptions = useCallback(() => {
     const atendeeId = form.getValues("attendeeId");
+    const options = enrolledCourses?.find(
+      // @ts-ignore
+      (course) => course.atendeeId === atendeeId
+    );
     // @ts-ignore
-    const options = courses.find((course) => course.atendeeId === atendeeId);
-    // @ts-ignore
-    setCoursesOptions(options?.courses);
-  }, [courses, form]);
+    setEnrolledCoursesOptions(options?.courses);
+    console.log("options :>> ", options);
+  }, [enrolledCourses, form]);
 
   const getAttendeesAndCourses = useCallback(() => {
     const classType = form.getValues("type");
     const isSubstitute = form.getValues("substitute");
     const originalTeacherId = form.getValues("originalTeacherId");
     form.setValue("attendeeId", "");
-    form.setValue("courseId", "");
+    form.setValue("enrollmentId", "");
 
     if (classType === ClassType.STUDENT) {
       getStudents(originalTeacherId);
@@ -517,7 +520,7 @@ export default function ClassDialog({
               />
               <FormField
                 control={form.control}
-                name="courseId"
+                name="enrollmentId"
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex flex-col space-y-2">
@@ -526,7 +529,7 @@ export default function ClassDialog({
                         <DropdownSelect
                           disabled={isPending}
                           placeholder="Select course..."
-                          options={coursesOptions}
+                          options={enrolledCoursesOptions}
                           value={field.value}
                           onChange={field.onChange}
                         />

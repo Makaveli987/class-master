@@ -1,32 +1,19 @@
-import { CourseResponse, getCourses } from "@/actions/get-courses";
+import { getCourses } from "@/actions/get-courses";
 import { EnrollmentResponse, getEnrollment } from "@/actions/get-enrolments";
 import { getNotes } from "@/actions/get-notes";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { getExams } from "@/actions/get-exams";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { NoteData } from "@/hooks/use-note-dialog";
-import { DialogAction } from "@/lib/models/dialog-actions";
-import { EnrollmentData } from "@/lib/models/enrollment-data";
-import Notes from "../_components/notes";
-import StatsCard from "@/components/cards/stats-card";
-import { BarChart2Icon, PlusCircleIcon, UserIcon, Users } from "lucide-react";
-import CourseProgress from "@/components/course-progress";
-import { formatDate } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { getExams } from "@/actions/get-exams";
-import StudentExams from "../_components/student-exams";
-import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
-import EnrollmentDetails from "../_components/enrollment-details";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button";
 import { format } from "date-fns";
+import Image from "next/image";
+import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button";
+import EnrollmentDetails from "../_components/enrollment-details";
+import Notes from "../_components/notes";
+import StudentExams from "../_components/student-exams";
 
 export default async function EnrollmentId({
   params,
@@ -37,8 +24,12 @@ export default async function EnrollmentId({
     params.enrollmentId
   )) as EnrollmentResponse;
 
+  const userId = enrollment.studentId
+    ? enrollment.studentId
+    : enrollment.groupId || "";
+
   const courses = await getCourses();
-  const notes = (await getNotes(params.enrollmentId)) as NoteData[];
+  const notes = (await getNotes(params.enrollmentId, userId)) as NoteData[];
   const exams = await getExams(enrollment.id, enrollment.studentId || "");
 
   function getEnrollentUser() {

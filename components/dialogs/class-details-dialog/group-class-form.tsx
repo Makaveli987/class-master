@@ -1,7 +1,13 @@
 "use client";
-import { GroupStudentsResponse } from "@/app/api/groups/[groupId]/students/route";
+import { AttendanceResponse } from "@/app/api/attendance/class/[schoolClassId]/route";
+import {
+  AttendancePayload,
+  UpdateClassGroupPayload,
+} from "@/app/api/classes/group/[schoolClassId]/route";
+import { NoteResponse } from "@/app/api/notes/class/[schoolClassId]/route";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
   FormControl,
@@ -13,57 +19,108 @@ import {
 import Loader from "@/components/ui/page-loader";
 import { Textarea } from "@/components/ui/textarea";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
+import { ClassStatus } from "@prisma/client";
+import axios from "axios";
 import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-interface StudentProps {
-  students: GroupStudentsResponse[];
+interface GroupClassFormProps {
+  attendance: AttendanceResponse[];
+  notes: NoteResponse[];
   isLoading: boolean;
 }
 
 type FormValues = {
   description: string;
-  attendees: { studentId: string; attended: boolean; noteContent: string }[];
+  classStatus: ClassStatus;
+  attendees: AttendancePayload[];
 };
 
-export default function GroupClassForm({ students, isLoading }: StudentProps) {
+export default function GroupClassForm({
+  attendance,
+  notes,
+  isLoading,
+}: GroupClassFormProps) {
   const [isPending, setIsPending] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
-
+  const router = useRouter();
   const form = useForm<FormValues>({
     defaultValues: {
-      description: "",
+      description: classDetailsDialog.data?.description || "",
+      classStatus: classDetailsDialog.data?.schoolClassStatus,
       attendees: [
-        { studentId: "1", attended: false, noteContent: "" },
-        { studentId: "2", attended: false, noteContent: "" },
+        {
+          attendanceId: "",
+          studentId: "1",
+          attended: false,
+          noteContent: "",
+          noteId: "",
+        },
       ],
     },
   });
+
   const { fields: attendees, update: updateAtendee } = useFieldArray({
     control: form.control,
     name: "attendees",
   } as never);
 
-  function onSubmit(values: any) {
-    console.log("values", values);
+  function updateSchoolClass(payload: UpdateClassGroupPayload) {
+    setIsPending(true);
+    axios
+      .patch("/api/classes/group/" + classDetailsDialog.data?.id, {
+        ...payload,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          router.refresh();
+          toast.success("Class successfully updated.");
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Class wasn't updated!");
+      })
+      .finally(() => {
+        setIsPending(false);
+        classDetailsDialog.close();
+      });
+  }
 
-    // setIsPending(true);
-    // !!classDetailsDialog.data
-    //   ? updateClassroom(values)
-    //   : createClassroom(values);
+  function onSubmit(values: any) {
+    const userId = classDetailsDialog.data?.schoolId
+      ? classDetailsDialog.data?.schoolId
+      : classDetailsDialog.data?.groupId;
+
+    const payload = {
+      ...values,
+      classStatus: values.classStatus as ClassStatus,
+      enrollmentId: classDetailsDialog.data?.enrollmentId || "",
+      userId: userId || "",
+    };
+    console.log("values", payload);
+
+    updateSchoolClass(payload);
   }
 
   useEffect(() => {
-    const attendees = students?.map((student) => ({
-      studentId: student.id,
-      attended: false,
-      noteContent: "",
+    const attendees = attendance?.map((attendance) => ({
+      attendanceId: attendance.id,
+      studentId: attendance.student.id,
+      attended: attendance.attended,
+      noteContent:
+        notes.find((note) => note.userId === attendance.student.id)?.text || "",
+      noteId:
+        notes.find((note) => note.userId === attendance.student.id)?.id || "",
     }));
 
+    console.log("attendees", attendees);
+
     form.setValue("attendees", attendees);
-  }, [form, students]);
+  }, [form, attendance, notes]);
 
   return (
     <Form {...form}>
@@ -87,8 +144,39 @@ export default function GroupClassForm({ students, isLoading }: StudentProps) {
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="classStatus"
+          render={({ field }) => (
+            <FormItem className="mt-4">
+              <FormLabel>Class Status</FormLabel>
+              <FormControl>
+                <DropdownSelect
+                  options={[
+                    {
+                      value: ClassStatus.SCHEDULED,
+                      label: "Scheduled",
+                    },
+                    {
+                      value: ClassStatus.HELD,
+                      label: "Held",
+                    },
+                    {
+                      value: ClassStatus.CANCELED,
+                      label: "Canceled",
+                    },
+                  ]}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <h3 className="mt-6 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Attendence
+          Attendance
         </h3>
 
         <div className="flex px-2 py-1 items-center mt-3 border rounded-t-md">
@@ -101,13 +189,13 @@ export default function GroupClassForm({ students, isLoading }: StudentProps) {
           </div>
         </div>
 
-        {isLoading && !students.length && (
+        {isLoading && !attendance.length && (
           <div className="flex flex-row h-20 border border-t-0 relative">
             <Loader />
           </div>
         )}
 
-        {!isLoading && !students.length ? (
+        {!isLoading && !attendance.length ? (
           <div className="flex flex-row h-20 border border-t-0">
             <span className="text-sm px-6 py-2"> No students.</span>
           </div>
@@ -125,8 +213,8 @@ export default function GroupClassForm({ students, isLoading }: StudentProps) {
                     render={({ field }) => (
                       <FormItem className="flex flex-1 justify-between items-center ">
                         <FormLabel className="py-5 pl-2 w-full cursor-pointer ">
-                          {students[index]?.firstName}{" "}
-                          {students[index]?.lastName}
+                          {attendance[index]?.student.firstName}{" "}
+                          {attendance[index]?.student.lastName}
                         </FormLabel>
                         <FormControl>
                           <Checkbox
@@ -182,7 +270,7 @@ export default function GroupClassForm({ students, isLoading }: StudentProps) {
           <Button disabled={isPending} type="submit">
             {isPending ? (
               <>
-                <Loader2Icon className="h-4 w-4 animate-spin" />
+                <Loader2Icon className="h-4 w-4 mr-2 animate-spin" />
                 Saving
               </>
             ) : (

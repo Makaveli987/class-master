@@ -23,7 +23,7 @@ export function AccountMenu({ initials, email, fullName }: AccountMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="focus-visible:ring-0">
-        <Button className="h-10 w-10 rounded-full">{initials}</Button>
+        <Button className="h-9 w-9 rounded-full">{initials}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">

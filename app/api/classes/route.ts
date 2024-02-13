@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     const {
       attendeeId,
       classroomId,
-      courseId,
+      enrollmentId,
       duration,
       originalTeacherId,
       substituteTeacherId,
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     if (
       !attendeeId ||
       !classroomId ||
-      !courseId ||
+      !enrollmentId ||
       !duration ||
       !startDate ||
       !type
@@ -55,6 +55,12 @@ export async function POST(req: Request) {
       );
     }
 
+    const group = await db.group.findUnique({
+      where: { id: attendeeId },
+      select: { students: { select: { studentId: true } } },
+    });
+
+    // Reacuring classes same day/time each week
     if (
       repeat &&
       repeatConfig.repeatSchedule === RepeatScheduleType.SAME_TIME
@@ -75,7 +81,7 @@ export async function POST(req: Request) {
         if (isAvailable) {
           const classData = await db.schoolClass.create({
             data: {
-              courseId,
+              enrollmentId,
               originalTeacherId,
               substituteTeacherId: substituteTeacherId || null,
               classroomId,
@@ -88,6 +94,23 @@ export async function POST(req: Request) {
               schoolId: currentUser.schoolId,
             },
           });
+
+          // Create attendance
+          if (group?.students) {
+            await Promise.all(
+              group.students.map((student) =>
+                db.attendance.create({
+                  data: {
+                    schoolClassId: classData.id,
+                    studentId: student.studentId,
+                    attended: false,
+                    schoolId: currentUser.schoolId,
+                    enrollmentId,
+                  },
+                })
+              )
+            );
+          }
         } else {
           skippedDates.push(format(currentDay, "dd-MMM-yyyy HH:mm"));
         }
@@ -96,6 +119,7 @@ export async function POST(req: Request) {
       }
     }
 
+    // Reacuring classes same day but different time each week
     if (repeat && repeatConfig.repeatSchedule === RepeatScheduleType.SHIFTS) {
       const from = new Date(repeatConfig.range.from);
       const to = new Date(repeatConfig.range.to);
@@ -120,7 +144,7 @@ export async function POST(req: Request) {
         if (isAvailable) {
           const classData = await db.schoolClass.create({
             data: {
-              courseId,
+              enrollmentId,
               originalTeacherId,
               substituteTeacherId: substituteTeacherId || null,
               classroomId,
@@ -133,6 +157,23 @@ export async function POST(req: Request) {
               schoolId: currentUser.schoolId,
             },
           });
+
+          // Create attendance
+          if (group?.students) {
+            await Promise.all(
+              group.students.map((student) =>
+                db.attendance.create({
+                  data: {
+                    schoolClassId: classData.id,
+                    studentId: student.studentId,
+                    attended: false,
+                    schoolId: currentUser.schoolId,
+                    enrollmentId,
+                  },
+                })
+              )
+            );
+          }
         } else {
           skippedDates.push(format(currentDay, "dd-MMM-yyyy HH:mm"));
         }
@@ -153,7 +194,7 @@ export async function POST(req: Request) {
       if (isAvailable) {
         const classData = await db.schoolClass.create({
           data: {
-            courseId,
+            enrollmentId,
             originalTeacherId: originalTeacherId,
             substituteTeacherId: substituteTeacherId || null,
             classroomId,
@@ -166,6 +207,23 @@ export async function POST(req: Request) {
             schoolId: currentUser.schoolId,
           },
         });
+
+        // Create attendance
+        if (group?.students) {
+          const attendance = await Promise.all(
+            group.students.map((student) =>
+              db.attendance.create({
+                data: {
+                  schoolClassId: classData.id,
+                  studentId: student.studentId,
+                  attended: false,
+                  schoolId: currentUser.schoolId,
+                  enrollmentId,
+                },
+              })
+            )
+          );
+        }
       } else {
         return new NextResponse(
           JSON.stringify({ error: "Date already taken" }),

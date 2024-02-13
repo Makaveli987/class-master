@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     const groupedEnrollments = enrollments.reduce(
       (acc: Record<string, GroupedEnrollment>, enrollment) => {
         const courseInfo = {
-          value: enrollment.courseId,
+          value: enrollment.id,
           label: enrollment.course.name,
         };
 

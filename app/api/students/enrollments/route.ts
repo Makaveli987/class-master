@@ -26,14 +26,14 @@ export async function GET(req: NextRequest) {
         student: {
           select: { id: true, firstName: true, lastName: true },
         },
-        course: true,
+        course: { select: { name: true } },
       },
     });
 
     const groupedEnrollments = enrollments.reduce(
       (acc: Record<string, GroupedEnrollment>, enrollment) => {
         const courseInfo = {
-          value: enrollment.courseId,
+          value: enrollment.id,
           label: enrollment.course.name,
         };
 

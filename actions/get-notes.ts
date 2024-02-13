@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
 
-export const getNotes = async (enrollmentId: string) => {
+export const getNotes = async (enrollmentId: string, userId: string) => {
   try {
     const notes = await db.note.findMany({
-      where: { enrollmentId },
+      where: { enrollmentId, userId },
       include: {
         teacher: {
           select: {

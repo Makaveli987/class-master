@@ -45,7 +45,7 @@ export default function StudentCourses({
     <Card className="mt-6">
       <div className="max-w-4xl">
         <CardHeader>
-          <CardTitle>Courses</CardTitle>
+          <CardTitle>Enrolled Courses</CardTitle>
           <CardDescription>Courses that student has attended</CardDescription>
         </CardHeader>
         <CardContent>

@@ -2,78 +2,72 @@
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DropdownSelect } from "@/components/ui/dropdown-select";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
-import { ClassStatus } from "@/lib/models/class-status";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Enrollment } from "@prisma/client";
+import { getTimeFromDate } from "@/lib/utils";
 import axios, { AxiosResponse } from "axios";
+import { format } from "date-fns";
 import {
   BookAIcon,
   CalendarCheck2Icon,
   GraduationCap,
-  Loader2Icon,
   UserIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
-import { Button } from "../../ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../../ui/form";
-import { formatDate, getTimeFromDate } from "@/lib/utils";
-import { format } from "date-fns";
-import StudentClassForm from "./student-class-form";
-import { useEffect, useState } from "react";
-import { GroupStudentsResponse } from "@/app/api/groups/[groupId]/students/route";
 import GroupClassForm from "./group-class-form";
-import LinearLoader from "@/components/ui/linear-loader";
-
-const formSchema = z.object({
-  description: z.string(),
-  note: z.string(),
-  classStatus: z.string(),
-});
+import StudentClassForm from "./student-class-form";
+import { AttendanceResponse } from "@/app/api/attendance/class/[schoolClassId]/route";
+import { NoteResponse } from "@/app/api/notes/class/[schoolClassId]/route";
 
 export default function ClassDetailsDialog() {
-  const [students, setStudents] = useState<GroupStudentsResponse[]>([]);
+  const [attendance, setAttendance] = useState<AttendanceResponse[]>([]);
+  const [notes, setNotes] = useState<NoteResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
   const router = useRouter();
+
+  const getAttendance = useCallback(() => {
+    axios
+      .get(`/api/attendance/class/${classDetailsDialog?.data?.id}`)
+      .then((response: AxiosResponse<AttendanceResponse[]>) => {
+        console.log("response :>> ", response.data);
+        setAttendance(response.data);
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Classroom wasn't added!");
+      })
+      .finally(() => setIsLoading(false));
+  }, [classDetailsDialog?.data?.id]);
+
+  const getNotes = useCallback(() => {
+    axios
+      .get(`/api/notes/class/${classDetailsDialog?.data?.id}`)
+      .then((response: AxiosResponse<NoteResponse[]>) => {
+        console.log("notes :>> ", response.data);
+        setNotes(response.data);
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Classroom wasn't added!");
+      })
+      .finally(() => setIsLoading(false));
+  }, [classDetailsDialog?.data?.id]);
 
   useEffect(() => {
     if (classDetailsDialog.data?.id) {
       console.log("classDetailsDialog.data :>> ", classDetailsDialog.data);
       if (classDetailsDialog.data.group?.id) {
         setIsLoading(true);
-        // TODO: This should be fetched from attendece table
-        axios
-          .get(`/api/groups/${classDetailsDialog.data.group.id}/students`)
-          .then((response: AxiosResponse<GroupStudentsResponse[]>) => {
-            console.log("response :>> ", response.data);
-            setStudents(response.data);
-          })
-          .catch((error) => {
-            toast.error("Something went wrong. Classroom wasn't added!");
-          })
-          .finally(() => setIsLoading(false));
+        getAttendance();
       }
+      getNotes();
     }
-  }, [classDetailsDialog.data]);
+  }, [classDetailsDialog.data, getAttendance, getNotes]);
 
   return (
     <Dialog
@@ -148,7 +142,7 @@ export default function ClassDetailsDialog() {
             <div className="flex flex-col">
               <span className="text-muted-foreground text-xs">Course</span>
               <span className="font-medium">
-                {classDetailsDialog.data?.course.name}
+                {classDetailsDialog.data?.enrollment.course.name}
               </span>
             </div>
           </div>
@@ -168,9 +162,13 @@ export default function ClassDetailsDialog() {
         <Separator className="mt-2 mb-1" />
 
         {classDetailsDialog.data?.studentId ? (
-          <StudentClassForm />
+          <StudentClassForm notes={notes} />
         ) : (
-          <GroupClassForm students={students} isLoading={isLoading} />
+          <GroupClassForm
+            attendance={attendance}
+            notes={notes}
+            isLoading={isLoading}
+          />
         )}
         {/* </div> */}
       </DialogContent>

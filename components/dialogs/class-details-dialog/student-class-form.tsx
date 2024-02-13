@@ -1,4 +1,6 @@
 "use client";
+import { UpdateClassPayload } from "@/app/api/classes/student/[schoolClassId]/route";
+import { NoteResponse } from "@/app/api/notes/class/[schoolClassId]/route";
 import { Button } from "@/components/ui/button";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
@@ -13,24 +15,36 @@ import { Textarea } from "@/components/ui/textarea";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClassStatus } from "@prisma/client";
+import axios from "axios";
 import { Loader2Icon } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  description: z.string(),
-  note: z.string(),
-  classStatus: z.string(),
+  description: z.string().optional(),
+  note: z.string().optional(),
+  classStatus: z.string().optional(),
 });
 
-export default function StudentClassForm() {
+interface StudentClassFormProps {
+  notes: NoteResponse[];
+  isLoading?: boolean;
+}
+
+export default function StudentClassForm({
+  isLoading,
+  notes,
+}: StudentClassFormProps) {
   const [isPending, setIsPending] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
+  const router = useRouter();
 
   const defaultValues = {
-    description: "",
+    description: classDetailsDialog.data?.description || "",
     note: "",
     classStatus: classDetailsDialog.data?.schoolClassStatus,
   };
@@ -40,11 +54,45 @@ export default function StudentClassForm() {
     defaultValues,
   });
 
+  useEffect(() => {
+    form.setValue("note", notes[0]?.text);
+  }, [form, notes]);
+
+  function updateSchoolClass(payload: UpdateClassPayload) {
+    setIsPending(true);
+    axios
+      .patch("/api/classes/student/" + classDetailsDialog.data?.id, {
+        ...payload,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          router.refresh();
+          toast.success("Class successfully updated.");
+        }
+      })
+      .catch((error) => {
+        toast.error("Something went wrong. Class wasn't updated!");
+      })
+      .finally(() => {
+        setIsPending(false);
+        classDetailsDialog.close();
+      });
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // setIsPending(true);
-    // !!classDetailsDialog.data
-    //   ? updateClassroom(values)
-    //   : createClassroom(values);
+    const userId = classDetailsDialog.data?.schoolId
+      ? classDetailsDialog.data?.schoolId
+      : classDetailsDialog.data?.groupId;
+
+    const payload: UpdateClassPayload = {
+      ...values,
+      classStatus: values.classStatus as ClassStatus,
+      enrollmentId: classDetailsDialog.data?.enrollmentId || "",
+      userId: userId || "",
+      noteId: notes[0].id,
+    };
+
+    updateSchoolClass(payload);
   }
 
   return (
@@ -119,7 +167,7 @@ export default function StudentClassForm() {
           )}
         />
 
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0 pt-2">
           <Button variant="destructive" className="sm:mr-auto">
             Delete
           </Button>
@@ -136,7 +184,7 @@ export default function StudentClassForm() {
           <Button disabled={isPending} type="submit">
             {isPending ? (
               <>
-                <Loader2Icon className="h-4 w-4 animate-spin" />
+                <Loader2Icon className="h-4 w-4 mr-2 animate-spin" />
                 Saving
               </>
             ) : (

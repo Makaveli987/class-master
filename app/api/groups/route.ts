@@ -93,8 +93,6 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log("enrollments :>> ", enrollments);
-
     const mappedStudents = enrollments.map((enrollment) => ({
       value: enrollment.group?.id,
       label: enrollment.group?.name,

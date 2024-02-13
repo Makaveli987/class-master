@@ -12,7 +12,7 @@ import {
 export interface SchoolClassResponse extends SchoolClass {
   student: Pick<Student, "id" | "firstName" | "lastName">;
   group: Pick<Group, "id" | "name">;
-  course: Pick<Course, "id" | "name">;
+  enrollment: { id: string; course: Pick<Course, "id" | "name"> };
   originalTeacher: Pick<User, "id" | "firstName" | "lastName">;
   substituteTeacher: Pick<User, "id" | "firstName" | "lastName">;
   classroom: Pick<Classroom, "id" | "name">;
@@ -39,26 +39,31 @@ export const getClasses = async () => {
             name: true,
           },
         },
-        course: {
+        enrollment: {
           select: {
             id: true,
-            name: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
-        // originalTeacher: {
-        //   select: {
-        //     id: true,
-        //     firstName: true,
-        //     lastName: true,
-        //   },
-        // },
-        // substituteTeacher: {
-        //   select: {
-        //     id: true,
-        //     firstName: true,
-        //     lastName: true,
-        //   },
-        // },
+        originalTeacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        substituteTeacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
         classroom: {
           select: {
             id: true,
@@ -67,7 +72,18 @@ export const getClasses = async () => {
         },
       },
     });
+
     return classes as SchoolClassResponse[];
+    // const classes = await db.schoolClass.deleteMany({
+    //   where: {
+    //     schoolId: currentUser?.schoolId,
+    //   },
+    // });
+    // const att = await db.attendance.deleteMany({
+    //   where: {
+    //     schoolId: currentUser?.schoolId,
+    //   },
+    // });
   } catch (error) {
     console.error("[CLASSES] Error fetching classes ", error);
     return null;
