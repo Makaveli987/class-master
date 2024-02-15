@@ -53,7 +53,7 @@ export default async function EnrollmentId({
   }
 
   return (
-    <div className="max-w-screen-2xl">
+    <div className="max-w-[900px] m-auto">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollment</h3>
       <Card>
         <CardHeader>

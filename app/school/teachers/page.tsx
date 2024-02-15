@@ -9,7 +9,7 @@ export default async function TeacherPage() {
 
   return (
     <RoleGate allowedRole={RoleType.ADMIN}>
-      <div className="max-w-screen-2xl">
+      <div className="max-w-screen-2xl m-auto">
         <h3 className="pb-4 font-medium tracking-tight text-xl">Teachers</h3>
         <Card className="pt-6">
           <CardContent>

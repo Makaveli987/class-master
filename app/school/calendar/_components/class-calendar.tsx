@@ -1,76 +1,67 @@
 "use client";
-import { createRef, LegacyRef, useEffect, useRef, useState } from "react";
-import {
-  Clock10Icon,
-  ClockIcon,
-  DoorOpenIcon,
-  PlusCircleIcon,
-  User2Icon,
-  Users2Icon,
-} from "lucide-react";
-import {
-  DateSelectArg,
-  EventClickArg,
-  EventContentArg,
-  EventInput,
-} from "@fullcalendar/core";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listPlugin from "@fullcalendar/list";
-import interactionPlugin from "@fullcalendar/interaction";
-import "./calendar.scss";
+import ClassDialog from "@/components/dialogs/class-dialog/class-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import CalendarHeadbar from "./calendar-headbar";
 import {
   DropdownSelect,
   DropdownSelectOptions,
 } from "@/components/ui/dropdown-select";
 import { Label } from "@/components/ui/label";
 import { useClassDialog } from "@/hooks/use-class-dialog";
-import ClassDialog from "@/components/dialogs/class-dialog/class-dialog";
-import { useSession } from "next-auth/react";
+import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  PlusCircleIcon,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import "./calendar.scss";
 
-import { Badge } from "@/components/ui/badge";
-import ClassDetailsDialog from "@/components/dialogs/class-details-dialog/class-details-dialog";
-import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
-import { RoleType } from "@/lib/models/role";
-import { ClassStatus, SchoolClass } from "@prisma/client";
-import LinearLoader from "@/components/ui/linear-loader";
-import React from "react";
 import { SchoolClassResponse } from "@/actions/get-classes";
+import ClassDetailsDialog from "@/components/dialogs/class-details-dialog/class-details-dialog";
+import LinearLoader from "@/components/ui/linear-loader";
+import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
+import useFilteredClasses from "@/hooks/use-filter-classes";
+import EventContent from "./event.content";
+import { getCurrentWeekRange } from "@/lib/utils";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
   teachers: DropdownSelectOptions[];
-  classes: SchoolClassResponse[];
 }
 
-const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
+interface DateChangeArgs {
+  action?: "prev" | "next";
+  startDate?: Date;
+  endDate?: Date;
+}
+
+const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const classDialog = useClassDialog();
   const classDetailsDialog = useClassDetailsDialog();
 
-  const session = useSession();
+  const [activeViewIndex, setActiveViewIndex] = useState<number>(1);
 
-  const [selectedClassroom, setSelectedClassroom] = useState<string>("");
-
-  const [selectedTeacher, setSelectedTeacher] = useState<string>(
-    session.data?.user.role === RoleType.TEACHER ? session.data?.user.id : ""
-  );
-
-  /** Selected event data */
-  // let [eventData, setEventData] = useState({});
+  const {
+    fetchClasses,
+    filteredClasses,
+    loading,
+    updateDateRange,
+    classroomId,
+    updateClassroomId,
+    teacherId,
+    updateTeacherId,
+  } = useFilteredClasses();
 
   const [weekendsVisible, setWeekendsVisible] = useState<boolean>(false);
 
   const [currentDate, setCurrentDate] = useState<string>("");
 
-  /** Added events (classes) */
-  const [currentEvents, setCurrentEvents] = useState<any[]>([]);
-
-  // const calendarRef = createRef() as LegacyRef<FullCalendar>;
-  // const calendarRef = React.createRef();
   const calendarRef = useRef(null);
 
   /**
@@ -80,15 +71,11 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
    */
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
     console.log("selectedInfo", selectInfo);
-    // setEventData(selectInfo);
 
     classDialog.open({
       startDate: selectInfo.start,
       refreshCalendar: refreshCalendar,
-      classroom:
-        selectedClassroom && selectedClassroom !== "all"
-          ? selectedClassroom
-          : "",
+      classroom: classroomId && classroomId !== "all" ? classroomId : "",
     });
   };
 
@@ -105,14 +92,6 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
    * @param {EventClickArg} clickInfo event info
    */
   const handleEventClick = (clickInfo: EventClickArg): void => {
-    // const eventInfo = (({ id, start, end, extendedProps }) => ({
-    //   id,
-    //   start,
-    //   end,
-    //   extendedProps,
-    // }))(clickInfo.event);
-
-    // setEventData(eventInfo);
     console.log("clickInfo.event", clickInfo.event);
 
     // open class details dialog
@@ -123,82 +102,33 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
       end: clickInfo.event.end,
     } as SchoolClassResponse;
 
-    console.log("classDetails :>> ", classDetails);
-
     classDetailsDialog.open(classDetails);
   };
 
-  /** Get classes */
-  const getClasses = async () => {
-    const events = classes.map((cl) => ({ ...cl, borderColor: "#ff0000" }));
-    setCurrentEvents(events);
-  };
+  function handleDateChange(args: DateChangeArgs) {
+    // @ts-ignore
+    const calendarApi = calendarRef?.current.getApi();
+    if (args.action === "prev") {
+      calendarApi.prev();
+    }
 
-  /**
-   * Event content that will be displayed in Calendar
-   * @param {EventContentArg} eventContent
-   * @returns {JSX.Element}
-   */
-  const renderEventContent = (eventContent: EventContentArg): JSX.Element => {
-    return (
-      <div className="flex flex-col border p-1 pl-1.5 text-card-foreground truncate bg-teacher-purple rounded-sm h-full px-1 w-full overflow-hidden">
-        <div className="flex w-96 text-xs ">
-          {eventContent.event.extendedProps?.studentId ? (
-            <b className="min-w-[90px] mr-2">
-              {eventContent.event.extendedProps?.student?.firstName}{" "}
-              {eventContent.event.extendedProps?.student?.lastName}
-            </b>
-          ) : (
-            <b className="min-w-[90px] mr-2">
-              {eventContent.event.extendedProps?.group?.name}
-            </b>
-          )}
+    if (args.action === "next") {
+      calendarApi.next();
+    }
+    console.log("calendarApi?.currentData :>> ", calendarApi?.currentData);
 
-          <div className="flex items-center">
-            <ClockIcon className="w-3 h-3 mr-1.5" strokeWidth={2} />
-            <b className="font-normal">{eventContent.timeText}</b>
-          </div>
-        </div>
+    const date = calendarApi?.currentData?.viewTitle;
+    const start = args.startDate
+      ? args.startDate
+      : calendarApi?.view.currentStart;
+    const end = args.endDate ? args.endDate : calendarApi?.view.currentEnd;
 
-        <div className="flex w-full items-center gap-2">
-          {eventContent.event.extendedProps.schoolClassStatus ===
-            ClassStatus.SCHEDULED && (
-            <div className="min-w-[90px]">
-              <span className="bg-info  rounded-sm text-xs px-1">
-                {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
-              </span>
-            </div>
-          )}
-          {eventContent.event.extendedProps.schoolClassStatus ===
-            ClassStatus.CANCELED && (
-            <div className="min-w-[90px]">
-              <span className="bg-rose-600 rounded-sm text-xs px-1">
-                {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
-              </span>
-            </div>
-          )}
-          {eventContent.event.extendedProps.schoolClassStatus ===
-            ClassStatus.HELD && (
-            <div className="min-w-[90px]">
-              <span className="bg-emerald-300 border border-emerald-600 rounded-sm text-xs px-1">
-                {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
-              </span>
-            </div>
-          )}
-
-          <div className="flex items-center text-xs ">
-            <DoorOpenIcon className="w-3 h-3 mr-1.5" strokeWidth={2} />
-            <span className="font-normal truncate">
-              {eventContent.event.extendedProps.classroom?.name}
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  };
+    updateDateRange(start, end);
+    setCurrentDate(date);
+  }
 
   useEffect((): void => {
-    getClasses();
+    fetchClasses();
     // @ts-ignore0
     const calendarApi = calendarRef?.current.getApi();
     const date = calendarApi.currentData.viewTitle;
@@ -222,35 +152,36 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
                 <div className="w-full md:w-60 flex flex-col gap-2">
                   <Label>Classroom</Label>
                   <DropdownSelect
+                    disabled={loading}
                     placeholder="Select classroom"
                     options={classrooms}
-                    value={selectedClassroom}
+                    value={classroomId || undefined}
                     onChange={(value) => {
-                      setSelectedClassroom(value);
+                      updateClassroomId(value);
                     }}
                   />
                 </div>
                 <div className="w-full md:w-60  flex flex-col gap-2">
                   <Label>Teacher</Label>
                   <DropdownSelect
+                    disabled={loading}
                     placeholder="Select teacher"
                     options={teachers}
-                    value={selectedTeacher}
+                    value={teacherId || undefined}
                     onChange={(value) => {
-                      setSelectedTeacher(value);
+                      updateTeacherId(value);
                     }}
                   />
                 </div>
               </div>
 
               <Button
+                disabled={loading}
                 onClick={() => {
                   const params = {
                     refreshCalendar: refreshCalendar,
                     classroom:
-                      selectedClassroom && selectedClassroom !== "all"
-                        ? selectedClassroom
-                        : "",
+                      classroomId && classroomId !== "all" ? classroomId : "",
                   };
                   classDialog.open(params);
                 }}
@@ -263,17 +194,135 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
             </div>
           </CardHeader>
           <CardContent className="relative">
-            <CalendarHeadbar
-              calendarRef={calendarRef}
-              setCurrentDate={setCurrentDate}
-              getClasses={getClasses}
-              currentDateRange={currentDate}
-            />
-            {/* <div className="h-1.5 w-full">
-              <LinearLoader />
-            </div> */}
+            <div className="flex flex-col gap-3 md:flex-row items-center justify-between mb-4">
+              <div className="flex">
+                <Button
+                  disabled={loading}
+                  size="sm"
+                  onClick={() => handleDateChange({ action: "prev" })}
+                  variant="outline"
+                  className="rounded-r-none"
+                >
+                  <ChevronLeftIcon className="w-4 h-4" />
+                </Button>
+                <Button
+                  disabled={loading}
+                  size="sm"
+                  onClick={() => handleDateChange({ action: "next" })}
+                  variant="outline"
+                  className="rounded-l-none border-l-0"
+                >
+                  <ChevronRightIcon className="w-4 h-4" />
+                </Button>
+
+                <Button
+                  size="sm"
+                  disabled={loading}
+                  onClick={() => {
+                    // @ts-ignore
+                    const calendarApi = calendarRef?.current.getApi();
+                    // @ts-ignore
+                    // const date = calendarRef?.current?.currentData?.viewTitle;
+                    // console.log("date :>> ", date);
+                    // fix date not being shown
+                    calendarApi.today();
+                    const { currentDate, startOfWeekDate, endOfWeekDate } =
+                      getCurrentWeekRange();
+
+                    handleDateChange({
+                      startDate: startOfWeekDate,
+                      endDate: endOfWeekDate,
+                    });
+                  }}
+                  variant="outline"
+                  className="ml-4 text-sm"
+                >
+                  Today
+                </Button>
+              </div>
+
+              <span className="text-xl font-semibold">{currentDate}</span>
+
+              <div className="flex">
+                <Button
+                  disabled={loading}
+                  size="sm"
+                  className="rounded-r-none border-r-0 text-sm"
+                  variant={activeViewIndex === 0 ? "default" : "outline"}
+                  onClick={() => {
+                    // @ts-ignore
+                    const calendarApi = calendarRef?.current.getApi();
+                    calendarApi.changeView("dayGridMonth");
+
+                    handleDateChange({});
+                    setActiveViewIndex(0);
+                  }}
+                >
+                  Month
+                </Button>
+
+                <Button
+                  disabled={loading}
+                  size="sm"
+                  className="rounded-none border-r-0 text-sm"
+                  variant={activeViewIndex === 1 ? "default" : "outline"}
+                  onClick={() => {
+                    // @ts-ignore
+                    const calendarApi = calendarRef?.current.getApi();
+                    calendarApi.changeView("timeGridWeek");
+                    handleDateChange({});
+                    setActiveViewIndex(1);
+                  }}
+                >
+                  Week
+                </Button>
+
+                <Button
+                  disabled={loading}
+                  size="sm"
+                  className="rounded-l-none text-sm"
+                  variant={activeViewIndex === 2 ? "default" : "outline"}
+                  onClick={() => {
+                    // @ts-ignore
+                    const calendarApi = calendarRef?.current.getApi();
+                    calendarApi.changeView("timeGridDay");
+                    handleDateChange({});
+                    setActiveViewIndex(2);
+                  }}
+                >
+                  Day
+                </Button>
+
+                {/* <Button
+                      size="sm"
+                      className="rounded-l-none text-sm"
+                      variant={activeViewIndex === 3 ? "default" : "outline"}
+                      onClick={() => {
+                        // @ts-ignore
+                        const calendarApi = calendarRef?.current.getApi();
+                        calendarApi.changeView("listWeek");
+                        const date = calendarApi?.currentData?.viewTitle;
+                        setCurrentDate(date);
+                        getClasses();
+                        setActiveViewIndex(3);
+                      }}
+                    >
+                      List
+        </Button> */}
+              </div>
+            </div>
+
             <div className="w-[280px] sm:w-full overflow-auto">
-              <div className="min-w-[500px]">
+              <div className="h-1.5">
+                {loading ? <LinearLoader /> : "not loading"}
+              </div>
+
+              <div className="min-w-[500px] flex flex-col relative">
+                {loading && (
+                  <div className=" absolute w-full h-full flex-1 bg-primary-foreground/70 z-50">
+                    {/* <Loader /> */}
+                  </div>
+                )}
                 <FullCalendar
                   ref={calendarRef}
                   plugins={[
@@ -313,9 +362,9 @@ const ClassCalendar = ({ classrooms, teachers, classes }: CalendarProps) => {
                   selectMirror={true}
                   dayMaxEvents={true}
                   // weekends={weekendsVisible}
-                  events={currentEvents} // alternatively, use the `events` setting to fetch from a feed
+                  events={filteredClasses as any} // alternatively, use the `events` setting to fetch from a feed
                   select={handleDateSelect}
-                  eventContent={renderEventContent} // custom render function
+                  eventContent={EventContent} // custom render function
                   eventClick={handleEventClick}
                   eventClassNames={"shadow-none border-0 rounded-sm"}
                   // dayCellContent={() => <span>1</span>}

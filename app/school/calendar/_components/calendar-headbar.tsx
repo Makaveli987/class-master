@@ -1,11 +1,13 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import useFilteredClasses from "@/hooks/use-filter-classes";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import React, { useState } from "react";
 
 type CalendarHeadbarProps = {
   calendarRef: any;
   setCurrentDate: (date: string) => void;
-  getClasses: () => void;
+  getClasses?: () => void;
   currentDateRange: string;
 };
 
@@ -16,35 +18,43 @@ const CalendarHeadbar = ({
   currentDateRange,
 }: CalendarHeadbarProps) => {
   const [activeViewIndex, setActiveViewIndex] = useState<number>(1);
+  const { updateDateRange, loading } = useFilteredClasses();
+
+  function handleDateChange(action?: "prev" | "next") {
+    // @ts-ignore
+    const calendarApi = calendarRef?.current.getApi();
+    if (action === "prev") {
+      calendarApi.prev();
+    }
+
+    if (action === "next") {
+      calendarApi.next();
+    }
+    const date = calendarApi?.currentData?.viewTitle;
+    const start = calendarApi?.view.currentStart;
+    const end = calendarApi?.view.currentEnd;
+    console.log("start :>> ", calendarApi?.view.currentStart);
+    console.log("end :>> ", calendarApi?.view.currentEnd);
+    updateDateRange(start, end);
+    setCurrentDate(date);
+  }
 
   return (
     <div className="flex flex-col gap-3 md:flex-row items-center justify-between mb-4">
       <div className="flex">
         <Button
+          disabled={loading}
           size="sm"
-          onClick={() => {
-            // @ts-ignore
-            const calendarApi = calendarRef?.current.getApi();
-            calendarApi.prev();
-            const date = calendarApi?.currentData?.viewTitle;
-            setCurrentDate(date);
-            getClasses();
-          }}
+          onClick={() => handleDateChange("prev")}
           variant="outline"
           className="rounded-r-none"
         >
           <ChevronLeftIcon className="w-4 h-4" />
         </Button>
         <Button
+          disabled={loading}
           size="sm"
-          onClick={() => {
-            // @ts-ignore
-            const calendarApi = calendarRef?.current.getApi();
-            calendarApi.next();
-            const date = calendarApi?.currentData?.viewTitle;
-            setCurrentDate(date);
-            getClasses();
-          }}
+          onClick={() => handleDateChange("next")}
           variant="outline"
           className="rounded-l-none border-l-0"
         >
@@ -60,7 +70,7 @@ const CalendarHeadbar = ({
             const date = calendarRef?.currentData?.viewTitle;
             // fix date not being shown
             setCurrentDate(date);
-            getClasses();
+            // getClasses();
           }}
           variant="outline"
           className="ml-4 text-sm"
@@ -80,9 +90,10 @@ const CalendarHeadbar = ({
             // @ts-ignore
             const calendarApi = calendarRef?.current.getApi();
             calendarApi.changeView("dayGridMonth");
-            const date = calendarApi?.currentData?.viewTitle;
-            setCurrentDate(date);
-            getClasses();
+            // const date = calendarApi?.currentData?.viewTitle;
+            // setCurrentDate(date);
+            handleDateChange();
+            // getClasses();
             setActiveViewIndex(0);
           }}
         >
@@ -97,9 +108,10 @@ const CalendarHeadbar = ({
             // @ts-ignore
             const calendarApi = calendarRef?.current.getApi();
             calendarApi.changeView("timeGridWeek");
-            const date = calendarApi?.currentData?.viewTitle;
-            setCurrentDate(date);
-            getClasses();
+            // const date = calendarApi?.currentData?.viewTitle;
+            // setCurrentDate(date);
+            handleDateChange();
+            // getClasses();
             setActiveViewIndex(1);
           }}
         >
@@ -114,9 +126,10 @@ const CalendarHeadbar = ({
             // @ts-ignore
             const calendarApi = calendarRef?.current.getApi();
             calendarApi.changeView("timeGridDay");
-            const date = calendarApi?.currentData?.viewTitle;
-            setCurrentDate(date);
-            getClasses();
+            // const date = calendarApi?.currentData?.viewTitle;
+            // setCurrentDate(date);
+            handleDateChange();
+            // getClasses();
             setActiveViewIndex(2);
           }}
         >

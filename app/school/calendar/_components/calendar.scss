@@ -79,7 +79,9 @@
 }
 
 .fc .fc-timegrid-slot-label-cushion {
-  @apply text-muted-foreground  text-base;
+  @apply text-muted-foreground;
+  padding: 0 5px !important;
+  font-size: 0.75rem !important;
 }
 
 .fc-col-header-cell-cushion {

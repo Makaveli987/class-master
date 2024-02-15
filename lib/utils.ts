@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { endOfWeek, startOfWeek } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -43,4 +44,13 @@ export function getTimeFromDate(date: Date): string {
 
 export function calcPercentage(x: number, y: number): number {
   return (x / y) * 100;
+}
+
+export function getCurrentWeekRange() {
+  // Get the start and end dates of the current week
+  const currentDate = new Date();
+  const startOfWeekDate = startOfWeek(currentDate);
+  const endOfWeekDate = endOfWeek(currentDate);
+
+  return { currentDate, startOfWeekDate, endOfWeekDate };
 }

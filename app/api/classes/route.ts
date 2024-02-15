@@ -1,12 +1,22 @@
+import { SchoolClassResponse } from "@/actions/get-classes";
 import getCurrentUser from "@/actions/get-current-user";
 import { db } from "@/lib/db";
 import { ClassStatus } from "@/lib/models/class-status";
 import { ClassType } from "@/lib/models/class-type";
 import { RepeatScheduleType } from "@/lib/models/repeat-schedule";
+import { getCurrentWeekRange } from "@/lib/utils";
 
-import { addDays, addMinutes, format, getHours, setHours } from "date-fns";
+import {
+  addDays,
+  addMinutes,
+  endOfWeek,
+  format,
+  getHours,
+  setHours,
+  startOfWeek,
+} from "date-fns";
 import { revalidatePath } from "next/cache";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
@@ -293,4 +303,117 @@ async function isClassTimeSlotAvailable(
   });
 
   return overlappingClasses.length === 0;
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const currentUser = await getCurrentUser();
+
+    // Get the start and end dates of the current week
+    // const currentDate = new Date();
+    // const startOfWeekDate = startOfWeek(currentDate);
+    // const endOfWeekDate = endOfWeek(currentDate);
+
+    const { currentDate, startOfWeekDate, endOfWeekDate } =
+      getCurrentWeekRange();
+
+    const startDateParam = req.nextUrl.searchParams.get("startDate");
+    const endDateParam = req.nextUrl.searchParams.get("endDate");
+    const teacherIdParam = req.nextUrl.searchParams.get("teacherId");
+    const classroomIdParam = req.nextUrl.searchParams.get("classroomId");
+
+    const startDate = startDateParam
+      ? new Date(startDateParam)
+      : startOfWeekDate;
+    const endDate = endDateParam ? new Date(endDateParam) : endOfWeekDate;
+    const teacherId = teacherIdParam || null;
+    const classroomId = classroomIdParam || null;
+
+    // Build the where clause based on provided parameters
+    const whereClause: Record<string, any> = {
+      schoolId: currentUser?.schoolId,
+    };
+
+    if (startDate && endDate) {
+      whereClause.start = {
+        gte: startDate,
+        lte: endDate,
+      };
+    }
+
+    if (teacherId) {
+      whereClause.originalTeacherId = teacherId;
+    }
+
+    if (classroomId) {
+      whereClause.classroomId = classroomId;
+    }
+
+    const classes = await db.schoolClass.findMany({
+      where: whereClause,
+      include: {
+        student: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        enrollment: {
+          select: {
+            id: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        originalTeacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        substituteTeacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        classroom: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return new NextResponse(JSON.stringify(classes as SchoolClassResponse[]), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    return new NextResponse(
+      JSON.stringify({ error: "Internal Server Error" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 }

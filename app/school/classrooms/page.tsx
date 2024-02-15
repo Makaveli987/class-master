@@ -16,9 +16,9 @@ export default async function ClassroomsPage() {
 
   return (
     <RoleGate allowedRole={RoleType.ADMIN}>
-      <div className="max-w-screen-2xl">
+      <div className="max-w-[900px] m-auto">
         <h3 className="pb-4 font-medium tracking-tight text-xl">Classrooms</h3>
-        <Card className="max-w-xl">
+        <Card>
           <CardHeader className="mb-3">
             <CardTitle>School classrooms</CardTitle>
             <CardDescription>List of classrooms at your school</CardDescription>

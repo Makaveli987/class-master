@@ -8,6 +8,7 @@ import {
   Student,
   User,
 } from "@prisma/client";
+import { endOfWeek, startOfWeek } from "date-fns";
 
 export interface SchoolClassResponse extends SchoolClass {
   student: Pick<Student, "id" | "firstName" | "lastName">;
@@ -21,9 +22,19 @@ export interface SchoolClassResponse extends SchoolClass {
 export const getClasses = async () => {
   try {
     const currentUser = await getCurrentUser();
+
+    // Get the start and end dates of the current week
+    const currentDate = new Date();
+    const startOfWeekDate = startOfWeek(currentDate);
+    const endOfWeekDate = endOfWeek(currentDate);
+
     const classes = await db.schoolClass.findMany({
       where: {
         schoolId: currentUser?.schoolId,
+        start: {
+          gte: startOfWeekDate,
+          lte: endOfWeekDate,
+        },
       },
       include: {
         student: {
@@ -74,12 +85,12 @@ export const getClasses = async () => {
     });
 
     return classes as SchoolClassResponse[];
-    // const classes = await db.schoolClass.deleteMany({
+    // const att = await db.attendance.deleteMany({
     //   where: {
     //     schoolId: currentUser?.schoolId,
     //   },
     // });
-    // const att = await db.attendance.deleteMany({
+    // const classes = await db.schoolClass.deleteMany({
     //   where: {
     //     schoolId: currentUser?.schoolId,
     //   },

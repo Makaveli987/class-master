@@ -89,7 +89,7 @@ export default function StudentClassForm({
       classStatus: values.classStatus as ClassStatus,
       enrollmentId: classDetailsDialog.data?.enrollmentId || "",
       userId: userId || "",
-      noteId: notes[0].id,
+      noteId: notes[0]?.id || "",
     };
 
     updateSchoolClass(payload);

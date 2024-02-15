@@ -267,6 +267,7 @@ export default function ClassDialog({
   }, [classDialog]);
 
   function createClass(values: z.infer<typeof formSchema>): void {
+    console.log("values", values);
     if (!values.substitute) {
       values.originalTeacherId = session.data?.user.id || "";
     } else {

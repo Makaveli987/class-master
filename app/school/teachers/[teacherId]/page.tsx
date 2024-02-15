@@ -11,7 +11,6 @@ import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 import { DeleteTeacherButton } from "../_components/delete-course-button";
 import TeacherDetails from "../_components/teacher-details";
-import { countEnrollmentsByMonth } from "@/actions/get-last-six-month";
 
 export default async function TeacherPage({
   params,
@@ -30,7 +29,7 @@ export default async function TeacherPage({
   ]);
 
   return (
-    <div className="max-w-screen-2xl">
+    <div className="max-w-[900px] m-auto">
       <h3 className="pb-4 font-medium tracking-tight text-xl">Teachers</h3>
 
       <Card className="flex-1">
