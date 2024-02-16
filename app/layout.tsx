@@ -5,6 +5,8 @@ import ClientSessionProvider from "./client-session-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DialogProvider } from "@/components/dialog-provider";
+import Navbar from "@/components/navbar";
+import { cn } from "@/lib/utils";
 // import ReactQueryProvider from "@/lib/react-query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,12 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        style={{
-          width: "100vw",
-          height: "100vh",
-          overflow: "hidden",
-        }}
-        className={inter.className}
+        className={cn(
+          "min-h-screen font-sans antialiased grainy",
+          inter.className
+        )}
       >
         <ThemeProvider
           attribute="class"
@@ -43,6 +43,7 @@ export default function RootLayout({
               theme="light"
               duration={3500}
             />
+            <Navbar />
             {children}
             <DialogProvider />
           </ClientSessionProvider>

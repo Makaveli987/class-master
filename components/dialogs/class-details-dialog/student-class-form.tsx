@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
+import useFilteredClasses from "@/hooks/use-filter-classes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClassStatus } from "@prisma/client";
 import axios from "axios";
@@ -68,6 +69,7 @@ export default function StudentClassForm({
         if (response.status === 200) {
           router.refresh();
           toast.success("Class successfully updated.");
+          classDetailsDialog.onSuccess();
         }
       })
       .catch((error) => {

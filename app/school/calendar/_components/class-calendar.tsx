@@ -102,7 +102,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
       end: clickInfo.event.end,
     } as SchoolClassResponse;
 
-    classDetailsDialog.open(classDetails);
+    classDetailsDialog.open(classDetails, fetchClasses);
   };
 
   function handleDateChange(args: DateChangeArgs) {
@@ -128,7 +128,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   }
 
   useEffect((): void => {
-    fetchClasses();
+    // fetchClasses();
     // @ts-ignore0
     const calendarApi = calendarRef?.current.getApi();
     const date = calendarApi.currentData.viewTitle;
