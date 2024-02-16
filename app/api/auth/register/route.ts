@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { getRandomColor, userColors } from "@/lib/user-colors";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
@@ -57,6 +58,8 @@ export async function POST(request: Request) {
       },
     });
 
+    const color = await getRandomColor();
+
     const user = await db.user.create({
       data: {
         firstName,
@@ -67,6 +70,7 @@ export async function POST(request: Request) {
         role,
         dateOfBirth,
         schoolId: school.id,
+        color,
       },
     });
 

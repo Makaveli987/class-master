@@ -1,5 +1,6 @@
 import getCurrentUser from "@/actions/get-current-user";
 import { db } from "@/lib/db";
+import { getRandomColor } from "@/lib/user-colors";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
+    const color = await getRandomColor();
 
     const user = await db.user.create({
       data: {
@@ -59,6 +61,7 @@ export async function POST(request: Request) {
         role,
         dateOfBirth,
         schoolId: currentUser.schoolId,
+        color,
       },
     });
 

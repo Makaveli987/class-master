@@ -136,7 +136,8 @@ model User {
   userPerCourses        UserPerCourse[]
   enrolments            Enrollment[]
   note                  Note[]
-  color                 UserColor?
+  color                 String
+  // UserColor             UserColor?
 
   @@index([schoolId])
 }
@@ -212,7 +213,7 @@ model School {
   courses     Course[]
   enrollments Enrollment[]
   classrooms  Classroom[]
-  colors      UserColor[]
+  // colors      UserColor[]
   attendance  Attendance[]
 }
 
@@ -256,13 +257,22 @@ model Classroom {
   @@index([schoolId])
 }
 
-model UserColor {
-  id       String @id @default(uuid())
-  value    String
-  schoolId String
-  userId   String @unique
-  user     User   @relation(fields: [userId], references: [id])
-  school   School @relation(fields: [schoolId], references: [id])
+// model UserColor {
+//   id       String @id @default(uuid())
+//   value    String
+//   schoolId String
+//   userId   String @unique
+//   user     User   @relation(fields: [userId], references: [id])
+//   // school   School @relation(fields: [schoolId], references: [id])
 
-  @@index([schoolId])
+//   @@index([schoolId])
+// }
+
+model AssignedColors {
+  id        String @id @default(uuid())
+  userId    String
+  color     String
+  schooldId String
+
+  // @@unique([userId, color])
 }

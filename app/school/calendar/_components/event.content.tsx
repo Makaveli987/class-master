@@ -1,10 +1,28 @@
+import { cn } from "@/lib/utils";
 import { EventContentArg } from "@fullcalendar/core";
 import { ClassStatus } from "@prisma/client";
 import { ClockIcon, DoorOpenIcon } from "lucide-react";
 
 export default function EventContent(eventContent: EventContentArg) {
+  const substituteColor =
+    eventContent.event.extendedProps?.substituteTeacher?.color;
+  const originalColor =
+    eventContent.event.extendedProps?.originalTeacher?.color;
+
+  // Choose a default color if both substituteColor and originalColor are undefined
+  const color = substituteColor || originalColor;
+
   return (
-    <div className="flex flex-col border p-1 pl-1.5 text-card-foreground truncate bg-teacher-purple border-purple-400 rounded-sm h-full px-1 w-full overflow-hidden leading-[0]">
+    <div
+      style={{
+        backgroundColor: color,
+        border: "1px solid",
+        // borderColor: "green",
+      }}
+      className={cn(
+        `relative text-slate-50 flex flex-col p-1 pl-1.5 truncate rounded-sm h-full px-1 w-full overflow-auto leading-[0]`
+      )}
+    >
       <div className="flex w-96 text-xs ">
         {eventContent.event.extendedProps?.studentId ? (
           <b className="min-w-[90px] mr-2">
@@ -27,7 +45,7 @@ export default function EventContent(eventContent: EventContentArg) {
         {eventContent.event.extendedProps.schoolClassStatus ===
           ClassStatus.SCHEDULED && (
           <div className="min-w-[90px]">
-            <span className="bg-info  rounded-sm text-xs px-1">
+            <span className="bg-blue-600 rounded-sm text-xs px-1">
               {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
             </span>
           </div>
@@ -43,7 +61,7 @@ export default function EventContent(eventContent: EventContentArg) {
         {eventContent.event.extendedProps.schoolClassStatus ===
           ClassStatus.HELD && (
           <div className="min-w-[90px]">
-            <span className="bg-emerald-300 border border-emerald-600 rounded-sm text-xs px-1">
+            <span className="bg-emerald-300 border border-green-600 rounded-sm text-xs px-1">
               {eventContent.event.extendedProps.schoolClassStatus.toLowerCase()}
             </span>
           </div>

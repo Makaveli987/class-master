@@ -46,7 +46,7 @@ const Navbar = () => {
                     variant: "ghost",
                     size: "sm",
                   })}
-                  href={"/#pricing"}
+                  href={"/sign-in"}
                 >
                   Sign in
                 </Link>

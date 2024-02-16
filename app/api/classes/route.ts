@@ -290,13 +290,13 @@ async function isClassTimeSlotAvailable(
       classroomId: classroomId,
       OR: [
         {
-          AND: [{ start: { lte: start } }, { end: { gte: start } }],
+          AND: [{ start: { lt: start } }, { end: { gt: start } }],
         },
         {
-          AND: [{ start: { lte: end } }, { end: { gte: end } }],
+          AND: [{ start: { lt: end } }, { end: { gt: end } }],
         },
         {
-          AND: [{ start: { gte: start } }, { end: { lte: end } }],
+          AND: [{ start: { gt: start } }, { end: { lt: end } }],
         },
       ],
     },
@@ -381,6 +381,7 @@ export async function GET(req: NextRequest) {
             id: true,
             firstName: true,
             lastName: true,
+            color: true,
           },
         },
         substituteTeacher: {
@@ -388,6 +389,7 @@ export async function GET(req: NextRequest) {
             id: true,
             firstName: true,
             lastName: true,
+            color: true,
           },
         },
         classroom: {
@@ -406,6 +408,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
+    console.log("error :>> ", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {
