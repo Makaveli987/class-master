@@ -4,13 +4,7 @@ import { ClassStatus } from "@prisma/client";
 import { ClockIcon, DoorOpenIcon } from "lucide-react";
 
 export default function EventContent(eventContent: EventContentArg) {
-  const substituteColor =
-    eventContent.event.extendedProps?.substituteTeacher?.color;
-  const originalColor =
-    eventContent.event.extendedProps?.originalTeacher?.color;
-
-  // Choose a default color if both substituteColor and originalColor are undefined
-  const color = substituteColor || originalColor;
+  const color = eventContent.event.extendedProps?.teacher?.color;
 
   return (
     <div

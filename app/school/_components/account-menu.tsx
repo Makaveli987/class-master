@@ -17,13 +17,24 @@ interface AccountMenuProps extends HTMLAttributes<HTMLDivElement> {
   initials: string | undefined;
   fullName: string | undefined;
   email: string | undefined;
+  color: string | undefined;
 }
 
-export function AccountMenu({ initials, email, fullName }: AccountMenuProps) {
+export function AccountMenu({
+  initials,
+  email,
+  fullName,
+  color,
+}: AccountMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="focus-visible:ring-0">
-        <Button className="h-9 w-9 rounded-full">{initials}</Button>
+        <Button
+          style={{ backgroundColor: color }}
+          className="h-9 w-9 rounded-full"
+        >
+          {initials}
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">

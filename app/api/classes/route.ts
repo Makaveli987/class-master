@@ -38,8 +38,8 @@ export async function POST(req: Request) {
       classroomId,
       enrollmentId,
       duration,
-      originalTeacherId,
-      substituteTeacherId,
+      teacherId,
+      substitutedTeacherId,
       repeat,
       repeatConfig,
       startDate,
@@ -92,8 +92,8 @@ export async function POST(req: Request) {
           const classData = await db.schoolClass.create({
             data: {
               enrollmentId,
-              originalTeacherId,
-              substituteTeacherId: substituteTeacherId || null,
+              teacherId: currentUser.id,
+              substitutedTeacherId: substitutedTeacherId || null,
               classroomId,
               schoolClassStatus: ClassStatus.SCHEDULED,
               studentId: type === ClassType.STUDENT ? attendeeId : null,
@@ -155,8 +155,8 @@ export async function POST(req: Request) {
           const classData = await db.schoolClass.create({
             data: {
               enrollmentId,
-              originalTeacherId,
-              substituteTeacherId: substituteTeacherId || null,
+              teacherId: currentUser.id,
+              substitutedTeacherId: substitutedTeacherId || null,
               classroomId,
               schoolClassStatus: ClassStatus.SCHEDULED,
               studentId: type === ClassType.STUDENT ? attendeeId : null,
@@ -205,8 +205,8 @@ export async function POST(req: Request) {
         const classData = await db.schoolClass.create({
           data: {
             enrollmentId,
-            originalTeacherId: originalTeacherId,
-            substituteTeacherId: substituteTeacherId || null,
+            teacherId: currentUser.id,
+            substitutedTeacherId: substitutedTeacherId || null,
             classroomId,
             schoolClassStatus: ClassStatus.SCHEDULED,
             studentId: type === ClassType.STUDENT ? attendeeId : null,
@@ -342,7 +342,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (teacherId) {
-      whereClause.originalTeacherId = teacherId;
+      whereClause.teacherId = teacherId;
     }
 
     if (classroomId) {
@@ -376,7 +376,7 @@ export async function GET(req: NextRequest) {
             },
           },
         },
-        originalTeacher: {
+        teacher: {
           select: {
             id: true,
             firstName: true,
@@ -384,7 +384,7 @@ export async function GET(req: NextRequest) {
             color: true,
           },
         },
-        substituteTeacher: {
+        substitutedTeacher: {
           select: {
             id: true,
             firstName: true,
@@ -400,6 +400,17 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+
+    // const att = await db.attendance.deleteMany({
+    //   where: {
+    //     schoolId: currentUser?.schoolId,
+    //   },
+    // });
+    // const classes = await db.schoolClass.deleteMany({
+    //   where: {
+    //     schoolId: currentUser?.schoolId,
+    //   },
+    // });
 
     return new NextResponse(JSON.stringify(classes as SchoolClassResponse[]), {
       status: 200,

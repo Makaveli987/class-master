@@ -1,4 +1,4 @@
-import { GraduationCapIcon, MenuIcon } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import { Session } from "next-auth";
 import { HTMLAttributes } from "react";
 import { AccountMenu } from "./account-menu";
@@ -16,6 +16,7 @@ export default function Header({ session }: HeaderProps) {
   const sidebar = useSidebar();
   const initials = `${session?.user.firstName[0]}${session?.user.lastName[0]}`;
   const fullName = `${session?.user.firstName} ${session?.user.lastName}`;
+  const color = session?.user?.color;
   const role = session?.user?.role === RoleType.ADMIN ? "Admin" : "Teacher";
 
   return (
@@ -43,6 +44,7 @@ export default function Header({ session }: HeaderProps) {
             initials={initials}
             fullName={fullName}
             email={session?.user?.email}
+            color={color}
           />
         </div>
       ) : (

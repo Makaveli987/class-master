@@ -49,8 +49,7 @@ const formSchema = z
     enrollmentId: z.string().min(1, "Field is required"),
     attendeeId: z.string().min(1, "Field is required"),
     classroomId: z.string().min(1, "Field is required"),
-    originalTeacherId: z.string(),
-    substituteTeacherId: z.string().optional(),
+    substitutedTeacherId: z.string().optional(),
     substitute: z.boolean(),
     repeat: z.boolean(),
     repeatConfig: z.object({
@@ -63,8 +62,8 @@ const formSchema = z
       secondWeekTime: z.date(),
     }),
   })
-  .refine((data) => !data.substitute || data.originalTeacherId, {
-    path: ["originalTeacherId"],
+  .refine((data) => !data.substitute || data.substitutedTeacherId, {
+    path: ["substitutedTeacherId"],
     message: "Fields is required",
   })
   .refine(
@@ -108,7 +107,6 @@ export default function ClassDialog({
     duration: "60",
     enrollmentId: "",
     attendeeId: "",
-    originalTeacherId: "",
     substitute: false,
     repeat: false,
     repeatConfig: {
@@ -139,7 +137,7 @@ export default function ClassDialog({
     );
     form.setValue("repeatConfig.firstWeekTime", classDialog.startDate as Date);
     form.setValue("repeatConfig.secondWeekTime", classDialog.startDate as Date);
-    form.setValue("originalTeacherId", "");
+
     filterCourseOptions();
 
     // form.reset(defaultValues);
@@ -241,16 +239,16 @@ export default function ClassDialog({
   const getAttendeesAndCourses = useCallback(() => {
     const classType = form.getValues("type");
     const isSubstitute = form.getValues("substitute");
-    const originalTeacherId = form.getValues("originalTeacherId");
+    const substitutedTeacherId = form.getValues("substitutedTeacherId");
     form.setValue("attendeeId", "");
     form.setValue("enrollmentId", "");
 
     if (classType === ClassType.STUDENT) {
-      getStudents(originalTeacherId);
-      getStudentEnrollments(originalTeacherId);
+      getStudents(substitutedTeacherId);
+      getStudentEnrollments(substitutedTeacherId);
     } else {
-      getGroups(originalTeacherId);
-      getGroupEnrollments(originalTeacherId);
+      getGroups(substitutedTeacherId);
+      getGroupEnrollments(substitutedTeacherId);
     }
     filterCourseOptions();
   }, [
@@ -268,11 +266,6 @@ export default function ClassDialog({
 
   function createClass(values: z.infer<typeof formSchema>): void {
     console.log("values", values);
-    if (!values.substitute) {
-      values.originalTeacherId = session.data?.user.id || "";
-    } else {
-      values.substituteTeacherId = session.data?.user.id || "";
-    }
 
     axios
       .post("/api/classes", {
@@ -299,6 +292,7 @@ export default function ClassDialog({
         setIsPending(false);
         classDialog.close();
       });
+    // setIsPending(false);
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -431,7 +425,7 @@ export default function ClassDialog({
                             onCheckedChange={(value) => {
                               // if substitute is false fetch students for current (logged in) teacher
                               if (!value) {
-                                form.setValue("originalTeacherId", "");
+                                form.setValue("substitutedTeacherId", "");
                                 getAttendeesAndCourses();
                               }
                               field.onChange(value);
@@ -460,7 +454,7 @@ export default function ClassDialog({
                 >
                   <FormField
                     control={form.control}
-                    name="originalTeacherId"
+                    name="substitutedTeacherId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Original Teacher</FormLabel>

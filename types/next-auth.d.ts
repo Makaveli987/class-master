@@ -4,7 +4,8 @@ import NextAuth from "next-auth";
 declare module "next-auth" {
   interface Session {
     user: {
-      archived: any;
+      color: string;
+      archived: boolean;
       id: string;
       role: Role;
       firstName: string;

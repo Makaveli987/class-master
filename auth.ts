@@ -44,6 +44,7 @@ export const {
         session.user.lastName = token.lastName;
         session.user.email = token.email;
         session.user.school = token.school;
+        session.user.color = token.color;
       }
 
       return session;
@@ -59,6 +60,7 @@ export const {
       token.email = existingUser.email;
       token.school = existingUser.school;
       token.role = existingUser.role;
+      token.color = existingUser.color;
 
       return token;
     },

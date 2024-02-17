@@ -106,10 +106,12 @@ export default function ClassDetailsDialog() {
             </div>
             <div className="flex flex-col text-sm">
               <span className="text-muted-foreground text-xs">Teacher</span>
-              {classDetailsDialog.data?.substituteTeacherId ? (
-                <span className="font-medium">{`${classDetailsDialog.data?.substituteTeacher?.firstName} ${classDetailsDialog.data?.substituteTeacher?.lastName}`}</span>
-              ) : (
-                <span className="font-medium">{`${classDetailsDialog.data?.originalTeacher?.firstName} ${classDetailsDialog.data?.originalTeacher?.lastName}`}</span>
+              <span className="font-medium">{`${classDetailsDialog.data?.teacher?.firstName} ${classDetailsDialog.data?.teacher?.lastName}`}</span>
+              {classDetailsDialog.data?.substitutedTeacherId && (
+                <span className="text-muted-foreground text-xs">
+                  Substitute for{" "}
+                  {`${classDetailsDialog.data?.substitutedTeacher?.firstName} ${classDetailsDialog.data?.substitutedTeacher?.lastName}`}
+                </span>
               )}
             </div>
           </div>

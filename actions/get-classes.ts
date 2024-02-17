@@ -14,8 +14,8 @@ export interface SchoolClassResponse extends SchoolClass {
   student: Pick<Student, "id" | "firstName" | "lastName">;
   group: Pick<Group, "id" | "name">;
   enrollment: { id: string; course: Pick<Course, "id" | "name"> };
-  originalTeacher: Pick<User, "id" | "firstName" | "lastName">;
-  substituteTeacher: Pick<User, "id" | "firstName" | "lastName">;
+  teacher: Pick<User, "id" | "firstName" | "lastName">;
+  substitutedTeacher: Pick<User, "id" | "firstName" | "lastName">;
   classroom: Pick<Classroom, "id" | "name">;
 }
 
@@ -61,14 +61,14 @@ export const getClasses = async () => {
             },
           },
         },
-        originalTeacher: {
+        teacher: {
           select: {
             id: true,
             firstName: true,
             lastName: true,
           },
         },
-        substituteTeacher: {
+        substitutedTeacher: {
           select: {
             id: true,
             firstName: true,

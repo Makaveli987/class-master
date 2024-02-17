@@ -131,13 +131,12 @@ model User {
   updatedAt             DateTime        @updatedAt
   role                  Role
   school                School          @relation(fields: [schoolId], references: [id])
-  schoolClassOriginal   SchoolClass[]   @relation("originalTeacher")
-  schoolClassSubstitute SchoolClass[]   @relation("substituteTeacher")
+  schoolClassOriginal   SchoolClass[]   @relation("teacher")
+  schoolClassSubstitute SchoolClass[]   @relation("substitutedTeacher")
   userPerCourses        UserPerCourse[]
   enrolments            Enrollment[]
   note                  Note[]
   color                 String
-  // UserColor             UserColor?
 
   @@index([schoolId])
 }
@@ -155,32 +154,32 @@ model UserPerCourse {
 }
 
 model SchoolClass {
-  id                  String       @id @default(uuid())
-  enrollmentId        String
-  originalTeacherId   String
-  substituteTeacherId String?
-  classroomId         String
-  schoolId            String
-  schoolClassStatus   ClassStatus
-  groupId             String?
-  studentId           String?
-  start               DateTime
-  end                 DateTime
-  duration            String
-  description         String?
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
-  enrollment          Enrollment   @relation(fields: [enrollmentId], references: [id])
-  student             Student?     @relation(fields: [studentId], references: [id])
-  group               Group?       @relation(fields: [groupId], references: [id])
-  classroom           Classroom    @relation(fields: [classroomId], references: [id])
-  originalTeacher     User         @relation(fields: [originalTeacherId], references: [id], name: "originalTeacher")
-  substituteTeacher   User?        @relation(fields: [substituteTeacherId], references: [id], name: "substituteTeacher")
-  attendance          Attendance[]
+  id                   String       @id @default(uuid())
+  enrollmentId         String
+  teacherId            String
+  substitutedTeacherId String?
+  classroomId          String
+  schoolId             String
+  schoolClassStatus    ClassStatus
+  groupId              String?
+  studentId            String?
+  start                DateTime
+  end                  DateTime
+  duration             String
+  description          String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  enrollment           Enrollment   @relation(fields: [enrollmentId], references: [id])
+  student              Student?     @relation(fields: [studentId], references: [id])
+  group                Group?       @relation(fields: [groupId], references: [id])
+  classroom            Classroom    @relation(fields: [classroomId], references: [id])
+  teacher              User         @relation(fields: [teacherId], references: [id], name: "teacher")
+  substitutedTeacher   User?        @relation(fields: [substitutedTeacherId], references: [id], name: "substitutedTeacher")
+  attendance           Attendance[]
 
   @@index([enrollmentId])
-  @@index([substituteTeacherId])
-  @@index([originalTeacherId])
+  @@index([substitutedTeacherId])
+  @@index([teacherId])
   @@index([classroomId])
   @@index([studentId])
   @@index([groupId])
