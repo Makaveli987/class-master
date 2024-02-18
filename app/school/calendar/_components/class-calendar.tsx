@@ -367,6 +367,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                   eventContent={EventContent} // custom render function
                   eventClick={handleEventClick}
                   eventClassNames={"shadow-none border-0 rounded-sm"}
+                  nowIndicator
                   // dayCellContent={() => <span>1</span>}
                   // eventColor="#378006"
                   // eventBorderColor="#ff0000"

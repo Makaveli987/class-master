@@ -6,7 +6,7 @@ import { CalendarCheck2Icon, CheckIcon, ClockIcon, XIcon } from "lucide-react";
 import React from "react";
 
 const calendarEventVariants = cva(
-  "relative text-slate-50 flex flex-col p-1 pl-1.5 truncate rounded-sm h-full px-1 w-full overflow-auto  border border-slate-100 dark:border-slate-400",
+  "relative text-slate-50 flex flex-col p-1 pl-1.5 truncate rounded-sm h-full px-1 w-full overflow-auto border border-white dark:border-slate-400",
   {
     variants: {
       variant: {
@@ -57,7 +57,7 @@ const CalendarEvent = React.forwardRef<HTMLButtonElement, CalendarEventProps>(
   ({ eventContent, className, variant, asChild = false, ...props }, ref) => {
     return (
       <div className={cn(calendarEventVariants({ variant, className }))}>
-        <div className="flex w-96 text-xs ">
+        <div className="flex text-xs">
           {eventContent.event.extendedProps.schoolClassStatus ===
             ClassStatus.SCHEDULED && (
             <div className="bg-blue-500 text-white rounded-md p-0.5 mr-2 flex items-center justify-center">
@@ -87,7 +87,7 @@ const CalendarEvent = React.forwardRef<HTMLButtonElement, CalendarEventProps>(
             </b>
           )}
         </div>
-        <div className="flex items-center ml-0.5">
+        <div className="flex items-center justify-start ml-0.5 min-w-min">
           <ClockIcon className="w-3 h-3 mr-2" strokeWidth={2} />
           <b className="font-normal text-xs">{eventContent.timeText}</b>
         </div>
