@@ -8,6 +8,7 @@ import Image from "next/image";
 import StudentCourses from "../_components/student-courses";
 import StudentDetails from "../_components/student-details-card";
 import { DeleteStudentButton } from "../_components/delete-student-button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function StudentPage({
   params,
@@ -52,11 +53,51 @@ export default async function StudentPage({
           <Separator className="my-1" />
           <StudentDetails student={student || undefined} />
 
-          <StudentCourses
+          {/* <StudentCourses
             enrollments={enrollments || []}
             studentId={params.studentId}
             courses={courses || []}
-          />
+          /> */}
+
+          {/* <Card className="mt-4 overflow-auto w-full"> */}
+          <div className="overflow-auto border rounded-lg mt-4">
+            <Tabs
+              defaultValue="enrolledCourses"
+              className="w-full overflow-auto flex flex-col"
+            >
+              <TabsList className="rounded-b-none justify-start flex-1 min-w-min">
+                <TabsTrigger
+                  className="min-w-min sm:min-w-20"
+                  value="enrolledCourses"
+                >
+                  Enrolled Courses
+                </TabsTrigger>
+                <TabsTrigger className="min-w-min sm:min-w-20" value="tests">
+                  Tests
+                </TabsTrigger>
+                <TabsTrigger className="min-w-min sm:min-w-20" value="classes">
+                  Classes
+                </TabsTrigger>
+                <TabsTrigger className="min-w-min sm:min-w-20" value="reports">
+                  Reports
+                </TabsTrigger>
+                <TabsTrigger className="min-w-min sm:min-w-20" value="finance">
+                  Finance
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="enrolledCourses">
+                <StudentCourses
+                  enrollments={enrollments || []}
+                  studentId={params.studentId}
+                  courses={courses || []}
+                />
+              </TabsContent>
+              <TabsContent value="tests">tests</TabsContent>
+              <TabsContent value="classes">Classes</TabsContent>
+              <TabsContent value="reports">reports</TabsContent>
+              <TabsContent value="finance">finance</TabsContent>
+            </Tabs>
+          </div>
         </CardContent>
       </Card>
     </div>

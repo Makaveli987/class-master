@@ -81,6 +81,10 @@ export async function POST(request: Request) {
       },
     });
 
+    await db.assignedColors.create({
+      data: { userId: user.id, schooldId: school.id, color },
+    });
+
     // Return the created user
     return new NextResponse(JSON.stringify(user), {
       status: 201,

@@ -49,7 +49,7 @@ export function calcPercentage(x: number, y: number): number {
 export function getCurrentWeekRange() {
   // Get the start and end dates of the current week
   const currentDate = new Date();
-  const startOfWeekDate = startOfWeek(currentDate);
+  const startOfWeekDate = startOfWeek(currentDate, { weekStartsOn: 1 });
   const endOfWeekDate = endOfWeek(currentDate);
 
   return { currentDate, startOfWeekDate, endOfWeekDate };

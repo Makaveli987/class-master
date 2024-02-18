@@ -42,11 +42,26 @@ export default function StudentCourses({
     return <p className="text-sm">The student has not attended any courses.</p>;
   }
   return (
-    <Card className="mt-6">
-      <div className="max-w-4xl">
-        <CardHeader>
-          <CardTitle>Enrolled Courses</CardTitle>
-          <CardDescription>Courses that student has attended</CardDescription>
+    <Card className="border-0 shadow-none">
+      <div className=" max-w-4xl">
+        <CardHeader className="mb-3 flex flex-row max-w-4xl">
+          <div className="space-y-1.5">
+            <CardTitle>Enrolled Courses</CardTitle>
+            <CardDescription>Courses that student has attended</CardDescription>
+          </div>
+          <Button
+            className="sm:ml-auto"
+            onClick={() =>
+              enrollDialog.open({
+                userId: studentId,
+                userType: EnrollUserType.STUDENT,
+                courses,
+                action: DialogAction.CREATE,
+              })
+            }
+          >
+            <PlusCircleIcon className="w-4 h-4 mr-2" /> Enroll Course
+          </Button>
         </CardHeader>
         <CardContent>
           <div>
@@ -93,7 +108,7 @@ export default function StudentCourses({
                       </div>
                     )}
                   </div>
-                  <div className="flex justify-end">
+                  <div className="flex justify-end ">
                     <Tooltip2 text="Add note" side="top">
                       <Button
                         onClick={(e) => {
@@ -137,20 +152,6 @@ export default function StudentCourses({
                 </div>
               </div>
             ))}
-          </div>
-          <div className="flex justify-end mt-4">
-            <Button
-              onClick={() =>
-                enrollDialog.open({
-                  userId: studentId,
-                  userType: EnrollUserType.STUDENT,
-                  courses,
-                  action: DialogAction.CREATE,
-                })
-              }
-            >
-              <PlusCircleIcon className="w-4 h-4 mr-2" /> Enroll Course
-            </Button>
           </div>
         </CardContent>
       </div>

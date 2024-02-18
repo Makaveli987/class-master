@@ -90,7 +90,7 @@ export function Sidebar({ className, session }: SidebarProps) {
   return (
     <div
       className={cn(
-        "pb-12 lg:border-r h-full bg-[#020817] overflow-hidden transition-all duration-200",
+        "pb-12 lg:border-r h-full bg-[#020817] bg-card overflow-hidden transition-all duration-200",
         className,
         sidebar.isOpen ? "w-56" : "w-0"
       )}
@@ -101,8 +101,10 @@ export function Sidebar({ className, session }: SidebarProps) {
         </Link>
       </div>
 
-      <Separator className="bg-[#1E293B]" />
-      <div className={cn("space-y-4 py-5 text-slate-400 transition-all")}>
+      <Separator />
+      <div
+        className={cn("space-y-4 py-5 text-muted-foreground transition-all")}
+      >
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
@@ -118,8 +120,7 @@ export function Sidebar({ className, session }: SidebarProps) {
                       }
                       className={cn(
                         "w-full flex justify-start items-center",
-                        !pathname.includes(link.path) &&
-                          "hover:bg-slate-700 hover:text-slate-100"
+                        !pathname.includes(link.path) && "hover:muted "
                       )}
                     >
                       {link.icon}

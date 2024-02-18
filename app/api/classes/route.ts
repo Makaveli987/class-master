@@ -309,11 +309,6 @@ export async function GET(req: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
 
-    // Get the start and end dates of the current week
-    // const currentDate = new Date();
-    // const startOfWeekDate = startOfWeek(currentDate);
-    // const endOfWeekDate = endOfWeek(currentDate);
-
     const { currentDate, startOfWeekDate, endOfWeekDate } =
       getCurrentWeekRange();
 

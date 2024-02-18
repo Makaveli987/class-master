@@ -17,7 +17,7 @@ interface AccountMenuProps extends HTMLAttributes<HTMLDivElement> {
   initials: string | undefined;
   fullName: string | undefined;
   email: string | undefined;
-  color: string | undefined;
+  color: any;
 }
 
 export function AccountMenu({
@@ -29,10 +29,7 @@ export function AccountMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="focus-visible:ring-0">
-        <Button
-          style={{ backgroundColor: color }}
-          className="h-9 w-9 rounded-full"
-        >
+        <Button variant={color} className={"h-9 w-9 rounded-full"}>
           {initials}
         </Button>
       </DropdownMenuTrigger>
