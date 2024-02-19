@@ -92,7 +92,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
    * @param {EventClickArg} clickInfo event info
    */
   const handleEventClick = (clickInfo: EventClickArg): void => {
-    console.log("clickInfo.event", clickInfo.event);
+    console.log("clickInfo.event", clickInfo);
 
     // open class details dialog
     const classDetails = {

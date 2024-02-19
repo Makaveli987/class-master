@@ -2,7 +2,7 @@ import { getCourses } from "@/actions/get-courses";
 import { EnrollmentResponse, getEnrollment } from "@/actions/get-enrolments";
 import { getNotes } from "@/actions/get-notes";
 
-import { getExams } from "@/actions/get-exams";
+import { getEnrollemntExams } from "@/actions/get-exams";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,6 +14,7 @@ import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button"
 import EnrollmentDetails from "../_components/enrollment-details";
 import Notes from "../_components/notes";
 import StudentExams from "../_components/student-exams";
+import Exams from "@/components/exams/exams";
 
 export default async function EnrollmentId({
   params,
@@ -30,7 +31,10 @@ export default async function EnrollmentId({
 
   const courses = await getCourses();
   const notes = (await getNotes(params.enrollmentId, userId)) as NoteData[];
-  const exams = await getExams(enrollment.id, enrollment.studentId || "");
+  const exams = await getEnrollemntExams(
+    enrollment.id,
+    enrollment.studentId || ""
+  );
 
   function getEnrollentUser() {
     return enrollment.studentId
@@ -109,11 +113,16 @@ export default async function EnrollmentId({
                 />
               </TabsContent>
               <TabsContent value="tests">
-                <StudentExams
+                <Exams
                   exams={exams}
                   enrollmentId={enrollment.id}
                   studentId={enrollment.studentId}
                 />
+                {/* <StudentExams
+                  exams={exams}
+                  enrollmentId={enrollment.id}
+                  studentId={enrollment.studentId}
+                /> */}
               </TabsContent>
               <TabsContent value="classes">Classes</TabsContent>
             </Tabs>

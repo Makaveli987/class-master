@@ -58,14 +58,14 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const note = await db.exam.delete({
+    const exam = await db.exam.delete({
       where: {
         id: examId,
       },
     });
 
     revalidatePath(`/school/enrollments/`);
-    return new NextResponse(JSON.stringify(note), {
+    return new NextResponse(JSON.stringify(exam), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

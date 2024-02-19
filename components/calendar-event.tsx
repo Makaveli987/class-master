@@ -1,7 +1,8 @@
-import { cn } from "@/lib/utils";
+import { cn, getTimeFromDate } from "@/lib/utils";
 import { EventContentArg } from "@fullcalendar/core";
 import { ClassStatus } from "@prisma/client";
 import { VariantProps, cva } from "class-variance-authority";
+import { addMinutes } from "date-fns";
 import { CalendarCheck2Icon, CheckIcon, ClockIcon, XIcon } from "lucide-react";
 import React from "react";
 
@@ -89,7 +90,11 @@ const CalendarEvent = React.forwardRef<HTMLButtonElement, CalendarEventProps>(
         </div>
         <div className="flex items-center justify-start ml-0.5 min-w-min">
           <ClockIcon className="w-3 h-3 mr-2" strokeWidth={2} />
-          <b className="font-normal text-xs">{eventContent.timeText}</b>
+          {/* <b className="font-normal text-xs">{eventContent.timeText}</b> */}
+          <span className="font-normal text-xs">
+            {getTimeFromDate(eventContent.event.start!)} -{" "}
+            {getTimeFromDate(addMinutes(eventContent.event.end!, 1))}
+          </span>
         </div>
       </div>
     );

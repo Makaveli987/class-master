@@ -84,7 +84,7 @@ export async function POST(req: Request) {
         const isAvailable = await isClassTimeSlotAvailable(
           classroomId,
           currentDay,
-          addMinutes(new Date(currentDay), Number(duration)),
+          addMinutes(new Date(currentDay), Number(duration - 1)),
           onlineClassroom?.id
         );
 
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
               studentId: type === ClassType.STUDENT ? attendeeId : null,
               groupId: type === ClassType.GROUP ? attendeeId : null,
               start: currentDay,
-              end: addMinutes(currentDay, Number(duration)),
+              end: addMinutes(currentDay, Number(duration - 1)),
               duration,
               schoolId: currentUser.schoolId,
             },
@@ -147,7 +147,7 @@ export async function POST(req: Request) {
         const isAvailable = await isClassTimeSlotAvailable(
           classroomId,
           currentDay,
-          addMinutes(new Date(currentDay), Number(duration)),
+          addMinutes(new Date(currentDay), Number(duration - 1)),
           onlineClassroom?.id
         );
 
@@ -162,7 +162,7 @@ export async function POST(req: Request) {
               studentId: type === ClassType.STUDENT ? attendeeId : null,
               groupId: type === ClassType.GROUP ? attendeeId : null,
               start: currentDay,
-              end: addMinutes(currentDay, Number(duration)),
+              end: addMinutes(currentDay, Number(duration - 1)),
               duration,
               schoolId: currentUser.schoolId,
             },
@@ -197,7 +197,7 @@ export async function POST(req: Request) {
       const isAvailable = await isClassTimeSlotAvailable(
         classroomId,
         startDate,
-        addMinutes(new Date(startDate), Number(duration)),
+        addMinutes(new Date(startDate), Number(duration - 1)),
         onlineClassroom?.id
       );
 
@@ -212,7 +212,7 @@ export async function POST(req: Request) {
             studentId: type === ClassType.STUDENT ? attendeeId : null,
             groupId: type === ClassType.GROUP ? attendeeId : null,
             start: startDate,
-            end: addMinutes(new Date(startDate), Number(duration)),
+            end: addMinutes(new Date(startDate), Number(duration - 1)),
             duration,
             schoolId: currentUser.schoolId,
           },
@@ -290,13 +290,13 @@ async function isClassTimeSlotAvailable(
       classroomId: classroomId,
       OR: [
         {
-          AND: [{ start: { lt: start } }, { end: { gt: start } }],
+          AND: [{ start: { lte: start } }, { end: { gte: start } }],
         },
         {
-          AND: [{ start: { lt: end } }, { end: { gt: end } }],
+          AND: [{ start: { lte: end } }, { end: { gte: end } }],
         },
         {
-          AND: [{ start: { gt: start } }, { end: { lt: end } }],
+          AND: [{ start: { gte: start } }, { end: { lte: end } }],
         },
       ],
     },

@@ -24,12 +24,14 @@ import {
 import { useState } from "react";
 import DebouncedInput from "../debounce-input";
 import { DataTablePagination } from "./data-table-pagination";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterPlaceholder: string;
   children?: React.ReactNode;
+  className?: string;
   onRowClick?: (row: any, index?: number) => void;
 }
 
@@ -50,6 +52,7 @@ export function DataTable<TData, TValue>({
   filterPlaceholder,
   children,
   onRowClick,
+  className,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -78,7 +81,7 @@ export function DataTable<TData, TValue>({
         />
         <div>{children}</div>
       </div>
-      <div className="border !rounded-md mt-6">
+      <div className={cn("border !rounded-md mt-6", className)}>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -102,7 +105,7 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className="cursor-pointer"
+                  className={onRowClick && "cursor-pointer"}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >

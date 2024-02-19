@@ -37,7 +37,7 @@ export default function StudentExams({
       .then((response: AxiosResponse<Exam>) => {
         if (response.status === 200) {
           router.refresh();
-          toast.success("Note successfully deleted.");
+          toast.success("Exam successfully deleted.");
         }
       })
       .catch((error) => {

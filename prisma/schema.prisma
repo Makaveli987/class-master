@@ -42,6 +42,7 @@ model Student {
   school        School           @relation(fields: [schoolId], references: [id])
   note          Note[]
   schoolClasses SchoolClass[]
+  Exam          Exam[]
 
   // @@index([groupId])
   @@index([schoolId])
@@ -81,6 +82,7 @@ model Enrollment {
   teacher         User          @relation(fields: [teacherId], references: [id])
   school          School        @relation(fields: [schoolId], references: [id])
   schoolClass     SchoolClass[]
+  Exam            Exam[]
 
   @@index([courseId])
   @@index([studentId])
@@ -243,6 +245,12 @@ model Exam {
   studentId    String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  student    Student    @relation(fields: [studentId], references: [id])
+
+  @@index([enrollmentId])
+  @@index([studentId])
 }
 
 model Classroom {
