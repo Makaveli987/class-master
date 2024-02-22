@@ -19,11 +19,53 @@ export const getStudent = async (studentId: string) => {
   try {
     const student = await db.student.findUnique({
       where: { id: studentId, archived: false },
+      include: {
+        group: {
+          select: {
+            group: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return student;
   } catch (error) {
     console.error("[STUDENTS] Error fetching students ", error);
+    return null;
+  }
+};
+
+export interface StudentGroupsResponse {
+  group: {
+    group: { name: string; id: string };
+  }[];
+}
+
+export const getStudentGroups = async (studentId: string) => {
+  try {
+    const groups = await db.student.findUnique({
+      where: { id: studentId, archived: false },
+      select: {
+        group: {
+          select: {
+            group: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return groups as StudentGroupsResponse;
+  } catch (error) {
+    console.error("[STUDENTS] Error fetching student groups ", error);
     return null;
   }
 };

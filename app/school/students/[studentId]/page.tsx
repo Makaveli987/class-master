@@ -1,6 +1,6 @@
 import { CourseResponse, getCourses } from "@/actions/get-courses";
 import { getEnrollmentsByStudentId } from "@/actions/get-enrolments";
-import { getStudent } from "@/actions/get-students";
+import { getStudent, getStudentGroups } from "@/actions/get-students";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/utils";
@@ -24,6 +24,7 @@ export default async function StudentPage({
   const enrollments = await getEnrollmentsByStudentId(params.studentId);
   const exams = await getStudentExams(params.studentId);
   const schoolClasses = await getClassesByStudentId(params.studentId);
+  const studentGroups = await getStudentGroups(params.studentId);
 
   return (
     <div className="max-w-[900px] m-auto">
@@ -57,7 +58,10 @@ export default async function StudentPage({
         </CardHeader>
         <CardContent>
           <Separator className="my-1" />
-          <StudentDetails student={student || undefined} />
+          <StudentDetails
+            student={student || undefined}
+            studentGroups={studentGroups || undefined}
+          />
 
           {/* <StudentCourses
             enrollments={enrollments || []}

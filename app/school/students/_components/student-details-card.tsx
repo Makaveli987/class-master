@@ -1,18 +1,32 @@
 "use client";
+import { StudentGroupsResponse } from "@/actions/get-students";
 import { Button } from "@/components/ui/button";
 import { BasicInfoItem } from "@/components/user/basic-info-item";
 import useStudentDialog from "@/hooks/use-student-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { formatDate } from "@/lib/utils";
 import { Student } from "@prisma/client";
-import { CalendarIcon, EditIcon, MailIcon, PhoneIcon } from "lucide-react";
+import { format } from "date-fns";
+import {
+  CalendarIcon,
+  EditIcon,
+  MailIcon,
+  PhoneIcon,
+  Users2Icon,
+} from "lucide-react";
+import Link from "next/link";
 
 interface StudentDetailsProps {
   student?: Student;
+  studentGroups?: StudentGroupsResponse;
 }
 
-export default function StudentDetails({ student }: StudentDetailsProps) {
+export default function StudentDetails({
+  student,
+  studentGroups,
+}: StudentDetailsProps) {
   const studentDialog = useStudentDialog();
+
   return (
     <div className="max-w-4xl pt-4 pb-6 px-6">
       <div className="flex justify-between">
@@ -41,8 +55,56 @@ export default function StudentDetails({ student }: StudentDetailsProps) {
         <BasicInfoItem
           icon={<CalendarIcon />}
           label="Date of Birth"
-          value={formatDate(student?.dateOfBirth!, false)}
+          value={format(student?.dateOfBirth as Date, "dd-MMM-yyyy")}
         />
+
+        <div className="flex items-center gap-3">
+          <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
+            <Users2Icon />
+          </div>
+          <div className="flex flex-col text-sm">
+            <span className="text-muted-foreground text-xs">Groups</span>
+            <div>
+              {studentGroups?.group.length ? (
+                studentGroups?.group?.map((item, index) => (
+                  <Button
+                    className="px-0 mr-1"
+                    key={item.group.name}
+                    asChild
+                    variant={"link"}
+                  >
+                    <Link
+                      href={`/school/groups/${item.group.id}`}
+                      className="font-medium cursor-pointer hover:underline-offset-1"
+                    >
+                      {item.group.name}
+                      {index + 1 === studentGroups.group.length ? null : ","}
+                    </Link>
+                  </Button>
+                ))
+              ) : (
+                <span className="pl-1">-</span>
+              )}
+              {/* {studentGroups?.group?.map((item) => (
+                <Button
+                  className="px-0 mr-1"
+                  key={item.group.name}
+                  asChild
+                  variant={"link"}
+                >
+                  <Link
+                    href={`/school/groups/${item.group.id}`}
+                    className="font-medium cursor-pointer hover:underline-offset-1"
+                  >
+                    {item.group.name}
+                  </Link>
+                </Button>
+              ))} */}
+            </div>
+            {/* {studentGroups?.map((item) => (
+            ))} */}
+          </div>
+        </div>
       </div>
     </div>
   );
