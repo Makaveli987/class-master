@@ -9,8 +9,10 @@ import StudentCourses from "../_components/student-courses";
 import StudentDetails from "../_components/student-details-card";
 import { DeleteStudentButton } from "../_components/delete-student-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Exams from "@/components/exams/exams";
+import ExamsTable from "@/components/exams-table/exams-table";
 import { getStudentExams } from "@/actions/get-exams";
+import SchoolClassesTable from "@/components/classes-table/classes-table";
+import { getClassesByStudentId } from "@/actions/get-classes";
 
 export default async function StudentPage({
   params,
@@ -21,6 +23,7 @@ export default async function StudentPage({
   const courses = (await getCourses()) as CourseResponse[];
   const enrollments = await getEnrollmentsByStudentId(params.studentId);
   const exams = await getStudentExams(params.studentId);
+  const schoolClasses = await getClassesByStudentId(params.studentId);
 
   return (
     <div className="max-w-[900px] m-auto">
@@ -84,9 +87,6 @@ export default async function StudentPage({
                 <TabsTrigger className="min-w-min sm:min-w-20" value="reports">
                   Reports
                 </TabsTrigger>
-                <TabsTrigger className="min-w-min sm:min-w-20" value="finance">
-                  Finance
-                </TabsTrigger>
               </TabsList>
               <TabsContent value="enrolledCourses">
                 <StudentCourses
@@ -96,15 +96,16 @@ export default async function StudentPage({
                 />
               </TabsContent>
               <TabsContent value="tests">
-                <Exams
+                <ExamsTable
                   exams={exams}
                   enrollmentId={""}
                   studentId={params.studentId}
                 />
               </TabsContent>
-              <TabsContent value="classes">Classes</TabsContent>
+              <TabsContent value="classes">
+                <SchoolClassesTable schoolClasses={schoolClasses} />
+              </TabsContent>
               <TabsContent value="reports">reports</TabsContent>
-              <TabsContent value="finance">finance</TabsContent>
             </Tabs>
           </div>
         </CardContent>

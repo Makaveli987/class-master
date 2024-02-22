@@ -22,9 +22,12 @@ interface ExamsProps {
   studentId: string | null;
 }
 
-export default function Exams({ exams, enrollmentId, studentId }: ExamsProps) {
+export default function ExamsTable({
+  exams,
+  enrollmentId,
+  studentId,
+}: ExamsProps) {
   const examDialog = useExamDialog();
-  const router = useRouter();
 
   return (
     <Card className="border-0 shadow-none">
@@ -35,6 +38,7 @@ export default function Exams({ exams, enrollmentId, studentId }: ExamsProps) {
       <CardContent className="max-w-4xl ">
         <DataTable
           className="border-0"
+          headerClassName="rounded-t-md bg-muted/50"
           columns={GetExamColumns(true)}
           data={exams || []}
           filterPlaceholder="Search exams..."

@@ -139,13 +139,13 @@ export function Sidebar({ className, session }: SidebarProps) {
 
 Sidebar.Skeleton = function SkeletonSidebar() {
   return (
-    <div className="pb-12 w-56 border-r h-full bg-slate-950">
+    <div className="pb-12 w-56 border-r h-full bg-card">
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
           <Logo />
         </Link>
       </div>
-      <Separator className="bg-[#1E293B]" />
+      <Separator />
 
       <div className="space-y-4 py-5">
         <div className="px-3 py-2">

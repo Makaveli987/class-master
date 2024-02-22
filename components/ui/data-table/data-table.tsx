@@ -32,6 +32,7 @@ interface DataTableProps<TData, TValue> {
   filterPlaceholder: string;
   children?: React.ReactNode;
   className?: string;
+  headerClassName?: string;
   onRowClick?: (row: any, index?: number) => void;
 }
 
@@ -53,6 +54,7 @@ export function DataTable<TData, TValue>({
   children,
   onRowClick,
   className,
+  headerClassName,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -83,7 +85,7 @@ export function DataTable<TData, TValue>({
       </div>
       <div className={cn("border !rounded-md mt-6", className)}>
         <Table>
-          <TableHeader>
+          <TableHeader className={headerClassName}>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

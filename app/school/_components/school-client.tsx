@@ -29,7 +29,7 @@ export default function SchoolClient({
         <Header session={session} />
         <Separator />
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-primary-foreground">
+        <main className="flex-1 overflow-x-hidden p-6 bg-primary-foreground">
           {children}
         </main>
       </div>

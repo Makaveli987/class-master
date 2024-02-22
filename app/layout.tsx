@@ -8,8 +8,10 @@ import { DialogProvider } from "@/components/dialog-provider";
 import Navbar from "@/components/navbar";
 import { cn } from "@/lib/utils";
 // import ReactQueryProvider from "@/lib/react-query-provider";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "ClassMaster",
@@ -25,8 +27,8 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen font-sans antialiased grainy",
-          inter.className
+          "font-sans antialiased grainy overflow-hidden"
+          // inter.className
         )}
       >
         <ThemeProvider

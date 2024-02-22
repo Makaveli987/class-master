@@ -3,6 +3,7 @@ import { EnrollmentResponse, getEnrollment } from "@/actions/get-enrolments";
 import { getNotes } from "@/actions/get-notes";
 
 import { getEnrollemntExams } from "@/actions/get-exams";
+import ExamsTable from "@/components/exams-table/exams-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,8 +14,8 @@ import Image from "next/image";
 import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button";
 import EnrollmentDetails from "../_components/enrollment-details";
 import Notes from "../_components/notes";
-import StudentExams from "../_components/student-exams";
-import Exams from "@/components/exams/exams";
+import SchoolClassesTable from "@/components/classes-table/classes-table";
+import { getClassesByEnrollmentId } from "@/actions/get-classes";
 
 export default async function EnrollmentId({
   params,
@@ -35,6 +36,8 @@ export default async function EnrollmentId({
     enrollment.id,
     enrollment.studentId || ""
   );
+
+  const schoolClasses = await getClassesByEnrollmentId(params.enrollmentId);
 
   function getEnrollentUser() {
     return enrollment.studentId
@@ -113,18 +116,18 @@ export default async function EnrollmentId({
                 />
               </TabsContent>
               <TabsContent value="tests">
-                <Exams
+                <ExamsTable
                   exams={exams}
                   enrollmentId={enrollment.id}
                   studentId={enrollment.studentId}
                 />
-                {/* <StudentExams
-                  exams={exams}
-                  enrollmentId={enrollment.id}
-                  studentId={enrollment.studentId}
-                /> */}
               </TabsContent>
-              <TabsContent value="classes">Classes</TabsContent>
+              <TabsContent value="classes">
+                <SchoolClassesTable
+                  schoolClasses={schoolClasses || []}
+                  excludeCourseCol
+                />
+              </TabsContent>
             </Tabs>
           </Card>
         </CardContent>

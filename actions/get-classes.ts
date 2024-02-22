@@ -100,3 +100,141 @@ export const getClasses = async () => {
     return null;
   }
 };
+
+export const getClassesByStudentId = async (studentId: string) => {
+  try {
+    const currentUser = await getCurrentUser();
+
+    // Get the start and end dates of the current week
+
+    const classes = await db.schoolClass.findMany({
+      where: {
+        schoolId: currentUser?.schoolId,
+        studentId,
+      },
+      orderBy: {
+        start: "desc",
+      },
+      include: {
+        student: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        enrollment: {
+          select: {
+            id: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        teacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        substitutedTeacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        classroom: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return classes as SchoolClassResponse[];
+  } catch (error) {
+    console.error("[CLASSES] Error fetching classes ", error);
+    return null;
+  }
+};
+
+export const getClassesByEnrollmentId = async (enrollmentId: string) => {
+  try {
+    const currentUser = await getCurrentUser();
+
+    // Get the start and end dates of the current week
+
+    const classes = await db.schoolClass.findMany({
+      where: {
+        schoolId: currentUser?.schoolId,
+        enrollmentId,
+      },
+      orderBy: {
+        start: "desc",
+      },
+      include: {
+        student: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        enrollment: {
+          select: {
+            id: true,
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        teacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        substitutedTeacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        classroom: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return classes as SchoolClassResponse[];
+  } catch (error) {
+    console.error("[CLASSES] Error fetching classes ", error);
+    return null;
+  }
+};

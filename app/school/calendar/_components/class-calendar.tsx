@@ -143,8 +143,6 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
           classrooms={classrooms?.slice(1) || []}
         />
 
-        <ClassDetailsDialog />
-
         <Card className="mt-1 flex-1">
           <CardHeader className="mb-2">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
