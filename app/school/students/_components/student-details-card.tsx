@@ -18,7 +18,7 @@ import Link from "next/link";
 
 interface StudentDetailsProps {
   student?: Student;
-  studentGroups?: StudentGroupsResponse;
+  studentGroups?: StudentGroupsResponse[];
 }
 
 export default function StudentDetails({
@@ -65,8 +65,8 @@ export default function StudentDetails({
           <div className="flex flex-col text-sm">
             <span className="text-muted-foreground text-xs">Groups</span>
             <div>
-              {studentGroups?.group.length ? (
-                studentGroups?.group?.map((item, index) => (
+              {studentGroups?.length ? (
+                studentGroups?.map((item, index) => (
                   <Button
                     className="px-0 mr-1"
                     key={item.group.name}
@@ -78,31 +78,14 @@ export default function StudentDetails({
                       className="font-medium cursor-pointer hover:underline-offset-1"
                     >
                       {item.group.name}
-                      {index + 1 === studentGroups.group.length ? null : ","}
+                      {index + 1 === studentGroups.length ? null : ","}
                     </Link>
                   </Button>
                 ))
               ) : (
                 <span className="pl-1">-</span>
               )}
-              {/* {studentGroups?.group?.map((item) => (
-                <Button
-                  className="px-0 mr-1"
-                  key={item.group.name}
-                  asChild
-                  variant={"link"}
-                >
-                  <Link
-                    href={`/school/groups/${item.group.id}`}
-                    className="font-medium cursor-pointer hover:underline-offset-1"
-                  >
-                    {item.group.name}
-                  </Link>
-                </Button>
-              ))} */}
             </div>
-            {/* {studentGroups?.map((item) => (
-            ))} */}
           </div>
         </div>
       </div>

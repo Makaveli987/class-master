@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import MultipleSelector from "@/components/ui/multi-select";
+import MultipleSelect from "@/components/ui/multiple-select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import useGroupDialog from "@/hooks/use-group-dialog";
@@ -93,36 +95,28 @@ export default function GroupDialog() {
     setOptions();
   }, [groupDialog, form]);
 
-  function handleAddStudent(studentId: string) {
-    const studentToBeAdded = studentOptions?.find(
-      (element) => element.value === studentId
+  function handleAddStudent(student: ComboboxOptions) {
+    const isStudentAlreadyAdded = selectedStudents.find(
+      (element) => element.value === student.value
     );
+    console.log("student", student);
+    console.log("selectedStudents", selectedStudents);
+    console.log("isStudentAlreadyAdded", isStudentAlreadyAdded);
 
-    if (studentToBeAdded) {
-      const updatedSelectedStudents = [...selectedStudents, studentToBeAdded];
+    if (isStudentAlreadyAdded) {
+      handleRemoveStudent(student);
+    } else {
+      const updatedSelectedStudents = [...selectedStudents, student];
       setSelectedStudents(updatedSelectedStudents);
     }
-    const filteredStudentOptions = studentOptions?.filter(
-      (option) => option.value !== studentId
-    );
-
-    setStudentOptions(filteredStudentOptions);
   }
 
-  function handleRemoveStudent(studentId: string) {
-    const studentToBeRemoved = selectedStudents?.find(
-      (element) => element.value === studentId
+  function handleRemoveStudent(student: ComboboxOptions) {
+    const students = selectedStudents?.filter(
+      (element) => element.value !== student.value
     );
 
-    if (studentToBeRemoved) {
-      const updatedSelectedStudents = [...studentOptions, studentToBeRemoved];
-      setStudentOptions(updatedSelectedStudents);
-    }
-    const filteredStudentOptions = selectedStudents?.filter(
-      (option) => option.value !== studentId
-    );
-
-    setSelectedStudents(filteredStudentOptions);
+    setSelectedStudents(students);
   }
 
   function createGroup(data: GroupPayload) {
@@ -224,6 +218,8 @@ export default function GroupDialog() {
               <Combobox
                 placeholder="Select student..."
                 disabled={pending}
+                multiple
+                values={selectedStudents}
                 options={studentOptions || []}
                 onChange={(value) => {
                   handleAddStudent(value);
@@ -243,18 +239,16 @@ export default function GroupDialog() {
                       <div
                         className="flex justify-between items-center hover:bg-muted transition-all rounded-lg p-1 group cursor-pointer"
                         key={student.value}
-                        onClick={() =>
-                          router.push(`/school/students/${student.value}`)
-                        }
                       >
                         <p className="text-sm ml-2">
                           {index + 1}. {student.label}
                         </p>
                         <Button
+                          type="button"
                           disabled={pending}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleRemoveStudent(student.value);
+                            handleRemoveStudent(student);
                           }}
                           className="w-6 h-6 p-1"
                           variant="ghost"

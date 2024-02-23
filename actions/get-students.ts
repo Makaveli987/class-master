@@ -40,9 +40,7 @@ export const getStudent = async (studentId: string) => {
 };
 
 export interface StudentGroupsResponse {
-  group: {
-    group: { name: string; id: string };
-  }[];
+  group: { name: string; id: string };
 }
 
 export const getStudentGroups = async (studentId: string) => {
@@ -56,6 +54,7 @@ export const getStudentGroups = async (studentId: string) => {
               select: {
                 name: true,
                 id: true,
+                archived: true,
               },
             },
           },
@@ -63,7 +62,10 @@ export const getStudentGroups = async (studentId: string) => {
       },
     });
 
-    return groups as StudentGroupsResponse;
+    const filteredGroups = groups?.group.filter((g) => !g.group.archived);
+    console.log("filteredGroups", filteredGroups);
+
+    return filteredGroups as StudentGroupsResponse[];
   } catch (error) {
     console.error("[STUDENTS] Error fetching student groups ", error);
     return null;

@@ -104,7 +104,9 @@ export function GetSchoolClassColumns(
         }
         return (
           // @ts-ignore
-          <Badge variant={variant}>{row.original.schoolClassStatus}</Badge>
+          <Badge variant={variant}>
+            {row.original.schoolClassStatus.toLowerCase()}
+          </Badge>
         );
       },
     },

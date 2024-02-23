@@ -1,7 +1,4 @@
 "use client";
-import React, { useLayoutEffect, useRef, useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -15,8 +12,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown, XIcon } from "lucide-react";
+import React, { useState } from "react";
 
 import "@/components/ui/combobox.scss";
+import { Badge } from "./badge";
 
 export interface ComboboxOptions {
   label: string;
@@ -26,19 +27,51 @@ export interface ComboboxOptions {
 interface ComboboxProps {
   disabled?: boolean;
   options: ComboboxOptions[];
-  value?: string;
-  onChange: (value: string) => void;
+  value?: ComboboxOptions;
+  values?: ComboboxOptions[];
+  onChange: (value: ComboboxOptions) => void;
   placeholder?: string;
+  multiple?: boolean;
 }
 
 export const Combobox = ({
   options,
   value,
+  values,
   onChange,
   disabled,
   placeholder = "Select option...",
+  multiple = false,
 }: ComboboxProps) => {
   const [open, setOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = React.useState<
+    ComboboxOptions[]
+  >([]);
+
+  function renderValue() {
+    if (multiple) {
+      if (!values?.length) {
+        return <span className="text-muted-foreground">{placeholder}</span>;
+      }
+      return (
+        <div>
+          {values.map((option) => (
+            <Badge
+              key={option.value}
+              variant={"secondary"}
+              className="mr-1 text-center"
+            >
+              {option.label}
+            </Badge>
+          ))}
+        </div>
+      );
+    } else {
+      console.log("returned value", value);
+
+      return value ? <span>{value.label}</span> : <span>{placeholder}</span>;
+    }
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -53,9 +86,7 @@ export const Combobox = ({
             !value && "text-muted-foreground"
           )}
         >
-          {value
-            ? options.find((option) => option.value === value)?.label
-            : placeholder}
+          {renderValue()}
           <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -68,22 +99,54 @@ export const Combobox = ({
               <p className="px-8 py-1.5 text-sm ">No options.</p>
             ) : (
               options.map((option) => (
-                <CommandItem
-                  className="cursor-pointer"
-                  key={option?.value}
-                  onSelect={() => {
-                    onChange(option.value === value ? "" : option.value);
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {option.label}
-                </CommandItem>
+                <>
+                  {multiple ? (
+                    <CommandItem
+                      key={option.value}
+                      value={option.value}
+                      className="cursor-pointer"
+                      onSelect={(value) => {
+                        console.log("multiple value :>> ", value);
+
+                        onChange(option);
+                        if (selectedOptions.includes(option)) {
+                          return setSelectedOptions(
+                            selectedOptions.filter(
+                              (selectedOption) => selectedOption !== option
+                            )
+                          );
+                        }
+
+                        return setSelectedOptions(
+                          [...options].filter((u) =>
+                            [...selectedOptions, option].includes(u)
+                          )
+                        );
+                      }}
+                    >
+                      {option.label}
+                      {values?.includes(option) ? (
+                        <Check className="ml-auto flex h-4 w-4 text-primary" />
+                      ) : null}
+                    </CommandItem>
+                  ) : (
+                    <CommandItem
+                      value={option.value}
+                      className="cursor-pointer"
+                      key={option.value}
+                      onSelect={(value) => {
+                        console.log("single value :>> ", value);
+                        onChange(option);
+                        setOpen(false);
+                      }}
+                    >
+                      {option.label}
+                      {/* {value === option.value ? (
+                        <Check className="ml-auto flex h-4 w-4 text-primary" />
+                      ) : null} */}
+                    </CommandItem>
+                  )}
+                </>
               ))
             )}
           </CommandGroup>
