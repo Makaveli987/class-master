@@ -233,7 +233,6 @@ export default function ClassDialog({
     );
     // @ts-ignore
     setEnrolledCoursesOptions(options?.courses);
-    console.log("options :>> ", options);
   }, [enrolledCourses, form]);
 
   const getAttendeesAndCourses = useCallback(() => {
@@ -265,8 +264,6 @@ export default function ClassDialog({
   }, [classDialog]);
 
   function createClass(values: z.infer<typeof formSchema>): void {
-    console.log("values", values);
-
     axios
       .post("/api/classes", {
         ...values,

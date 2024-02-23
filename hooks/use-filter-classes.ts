@@ -47,8 +47,6 @@ const useFilteredClasses = (): UseFilteredClasses => {
     } catch (error) {
       console.error("Error fetching filtered classes: ", error);
     } finally {
-      console.log("loading 2", loading);
-
       setLoading(false);
     }
   };

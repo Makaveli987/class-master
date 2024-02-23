@@ -21,8 +21,6 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    console.log("notes schoolClassId:>> ", schoolClassId);
-
     const notes = await db.note.findMany({
       where: {
         schoolClassId,
@@ -41,8 +39,6 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.log("error :>> ", error);
-
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

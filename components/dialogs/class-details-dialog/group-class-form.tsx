@@ -102,7 +102,6 @@ export default function GroupClassForm({
       enrollmentId: classDetailsDialog.data?.enrollmentId || "",
       userId: userId || "",
     };
-    console.log("values", payload);
 
     updateSchoolClass(payload);
   }
@@ -117,8 +116,6 @@ export default function GroupClassForm({
       noteId:
         notes.find((note) => note.userId === attendance.student.id)?.id || "",
     }));
-
-    console.log("attendees", attendees);
 
     form.setValue("attendees", attendees);
   }, [form, attendance, notes]);

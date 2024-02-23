@@ -30,6 +30,7 @@ export const getGroups = async () => {
         },
       },
     });
+
     return groups as GroupResponse[];
   } catch (error) {
     console.error("[GROUPS] Error fetching groups ", error);

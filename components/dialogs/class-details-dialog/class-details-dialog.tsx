@@ -36,7 +36,6 @@ export default function ClassDetailsDialog() {
     axios
       .get(`/api/attendance/class/${classDetailsDialog?.data?.id}`)
       .then((response: AxiosResponse<AttendanceResponse[]>) => {
-        console.log("response :>> ", response.data);
         setAttendance(response.data);
       })
       .catch((error) => {
@@ -49,7 +48,6 @@ export default function ClassDetailsDialog() {
     axios
       .get(`/api/notes/class/${classDetailsDialog?.data?.id}`)
       .then((response: AxiosResponse<NoteResponse[]>) => {
-        console.log("notes :>> ", response.data);
         setNotes(response.data);
       })
       .catch((error) => {
@@ -60,7 +58,6 @@ export default function ClassDetailsDialog() {
 
   useEffect(() => {
     if (classDetailsDialog.data?.id) {
-      console.log("classDetailsDialog.data :>> ", classDetailsDialog.data);
       if (classDetailsDialog.data.group?.id) {
         setIsLoading(true);
         getAttendance();

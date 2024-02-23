@@ -70,8 +70,6 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
    * @param {DateSelectArg} selectInfo selected time and date
    */
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
-    console.log("selectedInfo", selectInfo);
-
     classDialog.open({
       startDate: selectInfo.start,
       refreshCalendar: refreshCalendar,
@@ -92,8 +90,6 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
    * @param {EventClickArg} clickInfo event info
    */
   const handleEventClick = (clickInfo: EventClickArg): void => {
-    console.log("clickInfo.event", clickInfo);
-
     // open class details dialog
     const classDetails = {
       ...clickInfo.event.extendedProps,
@@ -115,7 +111,6 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
     if (args.action === "next") {
       calendarApi.next();
     }
-    console.log("calendarApi?.currentData :>> ", calendarApi?.currentData);
 
     const date = calendarApi?.currentData?.viewTitle;
     const start = args.startDate
@@ -219,10 +214,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                   onClick={() => {
                     // @ts-ignore
                     const calendarApi = calendarRef?.current.getApi();
-                    // @ts-ignore
-                    // const date = calendarRef?.current?.currentData?.viewTitle;
-                    // console.log("date :>> ", date);
-                    // fix date not being shown
+
                     calendarApi.today();
                     const { currentDate, startOfWeekDate, endOfWeekDate } =
                       getCurrentWeekRange();

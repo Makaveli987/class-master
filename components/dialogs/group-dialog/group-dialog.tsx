@@ -18,8 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import MultipleSelector from "@/components/ui/multi-select";
-import MultipleSelect from "@/components/ui/multiple-select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import useGroupDialog from "@/hooks/use-group-dialog";
@@ -95,25 +93,24 @@ export default function GroupDialog() {
     setOptions();
   }, [groupDialog, form]);
 
-  function handleAddStudent(student: ComboboxOptions) {
+  function handleAddStudent(studentId: string) {
     const isStudentAlreadyAdded = selectedStudents.find(
-      (element) => element.value === student.value
+      (element) => element.value === studentId
     );
-    console.log("student", student);
-    console.log("selectedStudents", selectedStudents);
-    console.log("isStudentAlreadyAdded", isStudentAlreadyAdded);
 
     if (isStudentAlreadyAdded) {
-      handleRemoveStudent(student);
+      handleRemoveStudent(studentId);
     } else {
-      const updatedSelectedStudents = [...selectedStudents, student];
+      const studentToAdd = studentOptions.find((o) => o.value === studentId);
+      const updatedSelectedStudents = [...selectedStudents, studentToAdd];
+      // @ts-ignore
       setSelectedStudents(updatedSelectedStudents);
     }
   }
 
-  function handleRemoveStudent(student: ComboboxOptions) {
+  function handleRemoveStudent(studentId: string) {
     const students = selectedStudents?.filter(
-      (element) => element.value !== student.value
+      (element) => element.value !== studentId
     );
 
     setSelectedStudents(students);
@@ -248,7 +245,7 @@ export default function GroupDialog() {
                           disabled={pending}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleRemoveStudent(student);
+                            handleRemoveStudent(student.value);
                           }}
                           className="w-6 h-6 p-1"
                           variant="ghost"

@@ -69,10 +69,6 @@ export async function PATCH(
       // Step 3: Create or update student notes
       await Promise.all(
         attendees.map((item: AttendancePayload) => {
-          console.log("CALLED");
-          console.log("notes", item.noteContent && !item.noteId);
-          console.log("notes 2", item.noteContent && item.noteId);
-
           if (item.noteContent && !item.noteId) {
             return tx.note.create({
               data: {

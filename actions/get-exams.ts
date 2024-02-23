@@ -22,7 +22,6 @@ export const getEnrollemntExams = async (
       where: { enrollmentId, studentId },
     });
 
-    console.log("exams", exams);
     return exams as ExamResponse[];
   } catch (error) {
     console.error("[EXAMS] Error fetching exams");
@@ -47,7 +46,6 @@ export const getStudentExams = async (studentId: string) => {
         },
       },
     });
-    console.log("exams", exams);
 
     return exams as ExamResponse[];
   } catch (error) {

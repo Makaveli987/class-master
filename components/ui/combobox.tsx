@@ -27,9 +27,9 @@ export interface ComboboxOptions {
 interface ComboboxProps {
   disabled?: boolean;
   options: ComboboxOptions[];
-  value?: ComboboxOptions;
+  value?: string;
   values?: ComboboxOptions[];
-  onChange: (value: ComboboxOptions) => void;
+  onChange: (value: string) => void;
   placeholder?: string;
   multiple?: boolean;
 }
@@ -55,21 +55,23 @@ export const Combobox = ({
       }
       return (
         <div>
-          {values.map((option) => (
+          {values.map((val) => (
             <Badge
-              key={option.value}
+              key={val.value}
               variant={"secondary"}
               className="mr-1 text-center"
             >
-              {option.label}
+              {val.label}
             </Badge>
           ))}
         </div>
       );
     } else {
-      console.log("returned value", value);
-
-      return value ? <span>{value.label}</span> : <span>{placeholder}</span>;
+      return value ? (
+        <span>{options.find((o) => o.value === value)?.label || value}</span>
+      ) : (
+        <span>{placeholder}</span>
+      );
     }
   }
 
@@ -91,7 +93,16 @@ export const Combobox = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className={`p-0 PopoverContent`}>
-        <Command className="w-full">
+        <Command
+          filter={(value, search) => {
+            // Custom filter function
+            const currentOption = options.find((o) => o.value === value);
+            if (currentOption?.label.toLocaleLowerCase().includes(search))
+              return 1;
+            return 0;
+          }}
+          className="w-full"
+        >
           <CommandInput disabled={disabled} placeholder="Search..." />
           <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup>
@@ -106,9 +117,7 @@ export const Combobox = ({
                       value={option.value}
                       className="cursor-pointer"
                       onSelect={(value) => {
-                        console.log("multiple value :>> ", value);
-
-                        onChange(option);
+                        onChange(value);
                         if (selectedOptions.includes(option)) {
                           return setSelectedOptions(
                             selectedOptions.filter(
@@ -125,7 +134,7 @@ export const Combobox = ({
                       }}
                     >
                       {option.label}
-                      {values?.includes(option) ? (
+                      {values?.find((val) => val.value === option.value) ? (
                         <Check className="ml-auto flex h-4 w-4 text-primary" />
                       ) : null}
                     </CommandItem>
@@ -135,15 +144,11 @@ export const Combobox = ({
                       className="cursor-pointer"
                       key={option.value}
                       onSelect={(value) => {
-                        console.log("single value :>> ", value);
-                        onChange(option);
+                        onChange(value);
                         setOpen(false);
                       }}
                     >
                       {option.label}
-                      {/* {value === option.value ? (
-                        <Check className="ml-auto flex h-4 w-4 text-primary" />
-                      ) : null} */}
                     </CommandItem>
                   )}
                 </>

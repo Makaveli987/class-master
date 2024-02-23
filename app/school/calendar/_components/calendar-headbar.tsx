@@ -33,8 +33,7 @@ const CalendarHeadbar = ({
     const date = calendarApi?.currentData?.viewTitle;
     const start = calendarApi?.view.currentStart;
     const end = calendarApi?.view.currentEnd;
-    console.log("start :>> ", calendarApi?.view.currentStart);
-    console.log("end :>> ", calendarApi?.view.currentEnd);
+
     updateDateRange(start, end);
     setCurrentDate(date);
   }

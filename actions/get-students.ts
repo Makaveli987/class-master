@@ -63,7 +63,6 @@ export const getStudentGroups = async (studentId: string) => {
     });
 
     const filteredGroups = groups?.group.filter((g) => !g.group.archived);
-    console.log("filteredGroups", filteredGroups);
 
     return filteredGroups as StudentGroupsResponse[];
   } catch (error) {
