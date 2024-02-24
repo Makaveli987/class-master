@@ -71,6 +71,7 @@ export async function GET(req: NextRequest) {
         teacherId: substituteTeacher ? substituteTeacher : currentUser?.id,
         studentId: { not: null },
         groupId: null,
+        archived: false,
       },
       include: {
         student: {

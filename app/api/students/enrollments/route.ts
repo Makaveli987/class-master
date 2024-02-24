@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
       where: {
         schoolId: currentUser?.schoolId,
         teacherId: substituteTeacher ? substituteTeacher : currentUser?.id,
+        archived: false,
       },
       include: {
         student: {

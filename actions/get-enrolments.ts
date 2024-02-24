@@ -13,7 +13,11 @@ export const getStudentsEnrollments = async () => {
   try {
     const currentUser = await getCurrentUser();
     const enrollments = await db.enrollment.findMany({
-      where: { schoolId: currentUser?.schoolId, groupId: null },
+      where: {
+        schoolId: currentUser?.schoolId,
+        groupId: null,
+        archived: false,
+      },
       include: {
         teacher: true,
         course: true,
@@ -31,7 +35,11 @@ export const getGroupsEnrollments = async () => {
   try {
     const currentUser = await getCurrentUser();
     const enrollments = await db.enrollment.findMany({
-      where: { schoolId: currentUser?.schoolId, studentId: null },
+      where: {
+        schoolId: currentUser?.schoolId,
+        studentId: null,
+        archived: false,
+      },
       include: {
         teacher: true,
         course: true,
@@ -48,7 +56,7 @@ export const getGroupsEnrollments = async () => {
 export const getEnrollmentsByStudentId = async (studentId: string) => {
   try {
     const enrollments = await db.enrollment.findMany({
-      where: { studentId },
+      where: { studentId, archived: false },
       include: {
         teacher: true,
         course: true,
@@ -64,7 +72,7 @@ export const getEnrollmentsByStudentId = async (studentId: string) => {
 export const getEnrollmentsByGroupId = async (groupId: string) => {
   try {
     const enrollments = await db.enrollment.findMany({
-      where: { groupId },
+      where: { groupId, archived: false },
       include: {
         teacher: true,
         course: true,
@@ -80,7 +88,7 @@ export const getEnrollmentsByGroupId = async (groupId: string) => {
 export const getEnrollment = async (enrollmentId: string) => {
   try {
     const enrollments = await db.enrollment.findUnique({
-      where: { id: enrollmentId },
+      where: { id: enrollmentId, archived: false },
       include: {
         teacher: true,
         course: true,
@@ -113,6 +121,7 @@ export const getGroupEnrollmentsByStudentId = async (studentId: string) => {
         groupId: {
           in: groupIds,
         },
+        archived: false,
       },
       include: {
         teacher: true,

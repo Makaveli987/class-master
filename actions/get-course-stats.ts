@@ -6,7 +6,7 @@ export const getCourseStats = async (courseId: string) => {
     const course = await getCourse(courseId);
 
     const totalEnrollments = await db.enrollment.count({
-      where: { courseId },
+      where: { courseId, archived: false },
     });
 
     const activeEnrollments = await db.enrollment.count({
@@ -15,6 +15,7 @@ export const getCourseStats = async (courseId: string) => {
         attendedClasses: {
           lt: course?.totalClasses,
         },
+        archived: false,
       },
     });
 

@@ -1,4 +1,5 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
     }
 
     let enrollment = null;
-    if (userType === "GROUP") {
+    if (userType === EnrollUserType.GROUP) {
       enrollment = await db.enrollment.create({
         data: {
           courseId,

@@ -16,6 +16,12 @@ import ExamsTable from "@/components/exams-table/exams-table";
 import { getStudentExams } from "@/actions/get-exams";
 import SchoolClassesTable from "@/components/classes-table/classes-table";
 import { getClassesByStudentId } from "@/actions/get-classes";
+import {
+  BookAIcon,
+  CalendarCheckIcon,
+  FileIcon,
+  FileImageIcon,
+} from "lucide-react";
 
 export default async function StudentPage({
   params,
@@ -83,18 +89,31 @@ export default async function StudentPage({
             >
               <TabsList className="rounded-b-none justify-start flex-1 min-w-min">
                 <TabsTrigger
-                  className="min-w-min sm:min-w-20"
+                  className="min-w-min sm:min-w-20 px-4"
                   value="enrolledCourses"
                 >
+                  <BookAIcon className="w-4 h-4 mr-1" />
                   Enrolled Courses
                 </TabsTrigger>
-                <TabsTrigger className="min-w-min sm:min-w-20" value="tests">
+                <TabsTrigger
+                  className="min-w-min sm:min-w-20 px-4 "
+                  value="tests"
+                >
+                  <FileIcon className="w-4 h-4 mr-1" />
                   Tests
                 </TabsTrigger>
-                <TabsTrigger className="min-w-min sm:min-w-20" value="classes">
+                <TabsTrigger
+                  className="min-w-min sm:min-w-20 px-4"
+                  value="classes"
+                >
+                  <CalendarCheckIcon className="w-4 h-4 mr-1" />
                   Classes
                 </TabsTrigger>
-                <TabsTrigger className="min-w-min sm:min-w-20" value="reports">
+                <TabsTrigger
+                  className="min-w-min sm:min-w-20 px-4"
+                  value="reports"
+                >
+                  <FileImageIcon className="w-4 h-4 mr-1" />
                   Reports
                 </TabsTrigger>
               </TabsList>

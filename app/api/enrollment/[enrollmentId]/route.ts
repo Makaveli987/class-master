@@ -1,4 +1,5 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
@@ -31,7 +32,7 @@ export async function PATCH(
     }
 
     let enrollment = null;
-    if (userType === "GROUP") {
+    if (userType === EnrollUserType.GROUP) {
       enrollment = await db.enrollment.update({
         where: {
           id: enrollmentId,
@@ -70,6 +71,48 @@ export async function PATCH(
       },
     });
   } catch (error) {
+    return new NextResponse(
+      JSON.stringify({ error: "Internal Server Error" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { enrollmentId: string } }
+) {
+  try {
+    const currentUser = await getCurrentUser();
+    const { enrollmentId } = params;
+
+    if (!currentUser) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const deletedEnrollment = await db.enrollment.update({
+      where: {
+        id: enrollmentId,
+      },
+      data: {
+        archived: true,
+      },
+    });
+
+    revalidatePath(`/school/enrollment/${enrollmentId}`);
+    return new NextResponse(JSON.stringify(deletedEnrollment), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.log("error", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

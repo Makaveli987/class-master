@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
     const enrollments = await db.enrollment.findMany({
       where: {
         schoolId: currentUser?.schoolId,
+        archived: false,
         teacherId: substituteTeacher ? substituteTeacher : currentUser?.id,
       },
       include: {

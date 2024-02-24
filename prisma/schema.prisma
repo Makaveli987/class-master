@@ -67,6 +67,7 @@ model Course {
 
 model Enrollment {
   id              String        @id @default(uuid())
+  archived        Boolean       @default(false)
   courseId        String
   studentId       String?
   groupId         String?

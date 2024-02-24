@@ -110,10 +110,9 @@ export const Combobox = ({
               <p className="px-8 py-1.5 text-sm ">No options.</p>
             ) : (
               options.map((option) => (
-                <>
+                <div key={option.value}>
                   {multiple ? (
                     <CommandItem
-                      key={option.value}
                       value={option.value}
                       className="cursor-pointer"
                       onSelect={(value) => {
@@ -142,16 +141,18 @@ export const Combobox = ({
                     <CommandItem
                       value={option.value}
                       className="cursor-pointer"
-                      key={option.value}
                       onSelect={(value) => {
                         onChange(value);
                         setOpen(false);
                       }}
                     >
                       {option.label}
+                      {value === option.value ? (
+                        <Check className="ml-auto flex h-4 w-4 text-primary" />
+                      ) : null}
                     </CommandItem>
                   )}
-                </>
+                </div>
               ))
             )}
           </CommandGroup>
