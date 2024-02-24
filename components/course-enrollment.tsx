@@ -98,7 +98,13 @@ export default function CourseEnrollment({
         <div className="flex justify-end py-6">
           {showGroupEnrollmentsForStudent && (
             <Tooltip2 text="Add note" side="top">
-              <Button variant="ghost" className="h-8 w-8 p-0 group ">
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 group"
+                onClick={() =>
+                  router.push(`/school/enrollments/${enrollment.id}`)
+                }
+              >
                 <EyeIcon className="w-[18px] h-[18px] text-muted-foreground group-hover:text-blue-500" />
               </Button>
             </Tooltip2>
