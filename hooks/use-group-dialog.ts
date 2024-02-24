@@ -32,13 +32,18 @@ const useGroupDialog = create<GroupDialogStore>((set) => ({
       students: params.students,
     });
   },
-  close: () =>
+  close: () => {
     set({
       isOpen: false,
-      data: null,
       action: DialogAction.CREATE,
-      students: [],
-    }),
+    });
+    setTimeout(() => {
+      set({
+        data: null,
+        students: [],
+      });
+    }, 200);
+  },
 }));
 
 export default useGroupDialog;

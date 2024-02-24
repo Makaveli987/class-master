@@ -3,21 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { cn, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { EditIcon, Trash2Icon } from "lucide-react";
+import { EditIcon } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { toast } from "sonner";
-import { RoleType } from "@/lib/models/role";
+import { MerakiBadge } from "@/components/ui/meraki-badge";
 import Image from "next/image";
 import { DeleteTeacherButton } from "./delete-course-button";
+// import MerakiBadge from "@/components/ui/meraki-badge";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -99,18 +94,8 @@ export const columns: ColumnDef<User>[] = [
     ),
     cell: ({ row }) => {
       const role = row.original.role;
-      return (
-        <Badge
-          variant="default"
-          className={cn(
-            role === RoleType.ADMIN
-              ? "bg-violet-500 hover:bg-violet-500"
-              : "bg-emerald-500 hover:bg-emerald-500"
-          )}
-        >
-          {role === RoleType.ADMIN ? "Admin" : "Teacher"}
-        </Badge>
-      );
+      const variant = role === "ADMIN" ? "purple" : "emerald";
+      return <MerakiBadge variant={variant}>Teacher</MerakiBadge>;
     },
   },
   {

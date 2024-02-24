@@ -1,5 +1,8 @@
 import { CourseResponse, getCourses } from "@/actions/get-courses";
-import { getEnrollmentsByStudentId } from "@/actions/get-enrolments";
+import {
+  getEnrollmentsByStudentId,
+  getGroupEnrollmentsByStudentId,
+} from "@/actions/get-enrolments";
 import { getStudent, getStudentGroups } from "@/actions/get-students";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -22,6 +25,9 @@ export default async function StudentPage({
   const student = await getStudent(params.studentId);
   const courses = (await getCourses()) as CourseResponse[];
   const enrollments = await getEnrollmentsByStudentId(params.studentId);
+  const groupEnrollments = await getGroupEnrollmentsByStudentId(
+    params.studentId
+  );
   const exams = await getStudentExams(params.studentId);
   const schoolClasses = await getClassesByStudentId(params.studentId);
   const studentGroups = await getStudentGroups(params.studentId);
@@ -95,6 +101,7 @@ export default async function StudentPage({
               <TabsContent value="enrolledCourses">
                 <StudentCourses
                   enrollments={enrollments || []}
+                  groupEnrollments={groupEnrollments || []}
                   studentId={params.studentId}
                   courses={courses || []}
                 />

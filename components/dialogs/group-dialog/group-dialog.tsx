@@ -70,15 +70,7 @@ export default function GroupDialog() {
       })
     );
 
-    const options = stdOptions?.filter(
-      (studentOption) =>
-        !assignedStudentsOptions?.some(
-          (assignedStudent: ComboboxOptions) =>
-            studentOption.value === assignedStudent.value
-        )
-    );
-
-    setStudentOptions(options || []);
+    setStudentOptions(stdOptions || []);
     setSelectedStudents(assignedStudentsOptions || []);
   }
 

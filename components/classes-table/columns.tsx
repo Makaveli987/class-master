@@ -1,22 +1,26 @@
 "use client";
 
-import { ExamResponse } from "@/actions/get-exams";
+import { SchoolClassResponse } from "@/actions/get-classes";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { useExamDialog } from "@/hooks/use-exam-dialog";
+import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
+import { getTimeFromDate } from "@/lib/utils";
+import { ClassStatus } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 import { format } from "date-fns";
-import { EditIcon, Trash2Icon } from "lucide-react";
+import {
+  CalendarCheckIcon,
+  CheckIcon,
+  EditIcon,
+  Trash2Icon,
+  XIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../ui/confirm-dialog";
-import { SchoolClassResponse } from "@/actions/get-classes";
-import { getTimeFromDate } from "@/lib/utils";
-import { Badge, BadgeProps, badgeVariants } from "../ui/badge";
-import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
-import { useClassDialog } from "@/hooks/use-class-dialog";
+import { MerakiBadge } from "../ui/meraki-badge";
 
 export function GetSchoolClassColumns(
   excludeCourseCol: boolean
@@ -34,6 +38,24 @@ export function GetSchoolClassColumns(
       .catch(() =>
         toast.error("Something bad happend. Class has not been archived!")
       );
+  }
+
+  function getClassVariant(
+    classStatus: ClassStatus
+  ): "blue" | "pink" | "emerald" {
+    if (classStatus === ClassStatus.SCHEDULED) return "blue";
+    if (classStatus === ClassStatus.CANCELED) return "pink";
+    if (classStatus === ClassStatus.HELD) return "emerald";
+    return "blue";
+  }
+  function getClassIcon(classStatus: ClassStatus): React.ReactNode {
+    if (classStatus === ClassStatus.SCHEDULED)
+      return <CalendarCheckIcon className="w-4 h-4 mr-1" />;
+    if (classStatus === ClassStatus.CANCELED)
+      return <XIcon className="w-4 h-4 mr-1" />;
+    if (classStatus === ClassStatus.HELD)
+      return <CheckIcon className="w-4 h-4 mr-1" />;
+    return <CalendarCheckIcon className="w-4 h-4 mr-1" />;
   }
 
   const columns: ColumnDef<SchoolClassResponse>[] = [
@@ -85,28 +107,13 @@ export function GetSchoolClassColumns(
         <DataTableColumnHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
-        let variant;
-        switch (row.original.schoolClassStatus) {
-          case "SCHEDULED":
-            variant = "info";
-            break;
+        const status = row.original.schoolClassStatus;
+        const variant = getClassVariant(status);
 
-          case "HELD":
-            variant = "success";
-            break;
-
-          case "CANCELED":
-            variant = "destructive";
-            break;
-
-          default:
-            break;
-        }
         return (
-          // @ts-ignore
-          <Badge variant={variant}>
-            {row.original.schoolClassStatus.toLowerCase()}
-          </Badge>
+          <MerakiBadge variant={variant}>
+            {getClassIcon(status)} {status.toLowerCase()}
+          </MerakiBadge>
         );
       },
     },

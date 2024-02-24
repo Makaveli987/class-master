@@ -94,3 +94,37 @@ export const getEnrollment = async (enrollmentId: string) => {
     return null;
   }
 };
+
+export const getGroupEnrollmentsByStudentId = async (studentId: string) => {
+  try {
+    const groups = await db.studentToGroup.findMany({
+      where: {
+        studentId,
+      },
+      select: {
+        groupId: true,
+      },
+    });
+
+    const groupIds = groups.map((group) => group.groupId); // Replace with your actual group IDs
+
+    const enrollmentsForGroups = await db.enrollment.findMany({
+      where: {
+        groupId: {
+          in: groupIds,
+        },
+      },
+      include: {
+        teacher: true,
+        course: true,
+        student: true,
+        group: true,
+      },
+    });
+
+    return enrollmentsForGroups as EnrollmentResponse[];
+  } catch (error) {
+    console.error("[ENROLLMENTS] Error fetching enrollments");
+    return null;
+  }
+};
