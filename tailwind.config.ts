@@ -72,6 +72,28 @@ module.exports = {
           "40%": { transform: "translateX(0) scaleX(0.4)" },
           "100%": { transform: "translateX(100%) scaleX(0.5)" },
         },
+        fadeOutLeft: {
+          "0%": {
+            opacity: 1,
+            transform: "translateX(0)",
+          },
+
+          "100%": {
+            opacity: 0,
+            transform: "translateX(-100%)",
+          },
+        },
+        fadeInRight: {
+          "0%": {
+            opacity: 0,
+            transform: "translateX(-100%)",
+          },
+
+          "100%": {
+            opacity: 1,
+            transform: "translateX(0)",
+          },
+        },
       },
       transformOrigin: {
         "left-right": "0% 50%",
@@ -80,6 +102,8 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         progress: "progress 1s infinite linear",
+        "fade-out-left": "fadeOutLeft 400ms ease-out",
+        "fade-in-right": "fadeInRight 300ms ease-out",
       },
     },
   },

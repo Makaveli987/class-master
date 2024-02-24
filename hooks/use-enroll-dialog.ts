@@ -41,7 +41,7 @@ interface EnrollDialogStore {
   action: DialogAction;
 }
 
-const emptyData = {
+const emptyData: EnrollmentResponse = {
   courseId: "",
   teacherId: "",
   courseGoals: null,
@@ -52,6 +52,7 @@ const emptyData = {
   createdAt: new Date(),
   updatedAt: new Date(),
   attendedClasses: 0,
+  archived: false,
 };
 
 const useEnrollDialog = create<EnrollDialogStore>((set) => ({

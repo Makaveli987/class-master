@@ -90,9 +90,9 @@ export function Sidebar({ className, session }: SidebarProps) {
   return (
     <div
       className={cn(
-        "pb-12 lg:border-r h-full bg-[#020817] bg-card overflow-hidden transition-all duration-200",
+        "pb-12 lg:border-r h-full bg-[#020817] bg-card overflow-hidden transition-all duration-200 ",
         className,
-        sidebar.isOpen ? "w-56" : "w-0"
+        sidebar.isOpen ? "w-56 -translate-x-0" : "w-0 -translate-x-full"
       )}
     >
       <div className="h-14 ml-5 flex items-center">
@@ -103,7 +103,10 @@ export function Sidebar({ className, session }: SidebarProps) {
 
       <Separator />
       <div
-        className={cn("space-y-4 py-5 text-muted-foreground transition-all")}
+        className={cn(
+          "space-y-4 py-5 text-muted-foreground transition-all",
+          sidebar.isOpen ? "animate-fade-in-right" : "animate-fade-out-left"
+        )}
       >
         <div className="px-3 py-2">
           <div className="flex flex-col gap-1">
