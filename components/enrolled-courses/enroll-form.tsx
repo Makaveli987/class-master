@@ -22,10 +22,14 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
+import { DefaultConfigResponse } from "@/app/api/courses/default-config/[course-id]/route";
+import { Input } from "../ui/input";
 
 const formSchema = z.object({
   courseId: z.string().min(1, "Field is required"),
   teacherId: z.string().min(1, "Field is required"),
+  price: z.string().min(1, "Field is required"),
+  totalClasses: z.string().min(1, "Field is required"),
   courseGoals: z.string(),
 });
 
@@ -43,6 +47,8 @@ export default function EnrollForm() {
       courseId: enrollDialog.data.courseId,
       teacherId: enrollDialog.data.teacherId,
       courseGoals: enrollDialog.data.courseGoals || "",
+      price: "",
+      totalClasses: "",
     },
   });
 
@@ -73,6 +79,8 @@ export default function EnrollForm() {
         ...values,
         userType: enrollDialog.userType,
         userId: enrollDialog.userId,
+        price: parseInt(values.price),
+        totalClasses: parseInt(values.totalClasses),
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {
@@ -95,6 +103,8 @@ export default function EnrollForm() {
         ...values,
         userType: enrollDialog.userType,
         userId: enrollDialog.userId,
+        price: parseInt(values.price),
+        totalClasses: parseInt(values.totalClasses),
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 200) {
@@ -109,6 +119,20 @@ export default function EnrollForm() {
         setIsPending(false);
         enrollDialog.close();
       });
+  }
+
+  function getDefaultPriceAndClasses(courseId: string) {
+    axios
+      .get("/api/courses/default-config/" + courseId)
+      .then((response: AxiosResponse<DefaultConfigResponse>) => {
+        form.setValue("price", response.data.defaultPrice.toString());
+        form.setValue(
+          "totalClasses",
+          response.data.defaultTotalClasses.toString()
+        );
+      })
+      .catch(() => {})
+      .finally(() => {});
   }
 
   function onSubmit(values: z.infer<typeof formSchema>): void {
@@ -144,6 +168,7 @@ export default function EnrollForm() {
                     onChange={(value) => {
                       form.setValue("teacherId", "");
                       filterTeachersOptions(value);
+                      getDefaultPriceAndClasses(value);
                       field.onChange(value);
                     }}
                     value={field.value}
@@ -156,6 +181,7 @@ export default function EnrollForm() {
 
           <FormField
             control={form.control}
+            disabled={!form.getValues().courseId || isPending}
             name="teacherId"
             render={({ field }) => (
               <FormItem>
@@ -175,7 +201,48 @@ export default function EnrollForm() {
 
           <FormField
             control={form.control}
+            name="price"
+            disabled={isPending}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={isPending}
+                    type="number"
+                    placeholder="Enter price"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="totalClasses"
+            disabled={isPending}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Number Of Classes</FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={isPending}
+                    type="number"
+                    placeholder="Enter number of classes"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="courseGoals"
+            disabled={isPending}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Goals</FormLabel>

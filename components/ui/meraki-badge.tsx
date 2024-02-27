@@ -23,8 +23,6 @@ const merakiBadgeVariants = cva(
   }
 );
 
-console.log("merakiBadgeVariants", merakiBadgeVariants);
-
 export interface MerakiBadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof merakiBadgeVariants> {}

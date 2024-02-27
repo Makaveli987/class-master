@@ -73,7 +73,7 @@ export default function StudentDialog() {
   function createStudent(values: z.infer<typeof formSchema>) {
     axios
       .post("/api/students", { ...values })
-      .then((response: AxiosResponse<Student[]>) => {
+      .then((response: AxiosResponse<Student>) => {
         if (response.status === 201) {
           toast.success("Student has been created", {
             description: `${values.firstName} ${values.lastName}`,
@@ -81,6 +81,7 @@ export default function StudentDialog() {
           form.reset();
           studentDialog.close();
           router.refresh();
+          router.push(`students/${response.data.id}`);
         }
       })
       .catch((error) => {
@@ -143,15 +144,12 @@ export default function StudentDialog() {
             <FormField
               control={form.control}
               name="firstName"
+              disabled={pending}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>First name</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={pending}
-                      placeholder="First name"
-                      {...field}
-                    />
+                    <Input placeholder="First name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -161,15 +159,12 @@ export default function StudentDialog() {
             <FormField
               control={form.control}
               name="lastName"
+              disabled={pending}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Last name</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={pending}
-                      placeholder="Last name"
-                      {...field}
-                    />
+                    <Input placeholder="Last name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -179,15 +174,12 @@ export default function StudentDialog() {
             <FormField
               control={form.control}
               name="dateOfBirth"
+              disabled={pending}
               render={({ field }) => (
                 <FormItem className="">
                   <FormLabel>Date of Birth</FormLabel>
                   <FormControl>
-                    <DatePicker
-                      date={field.value}
-                      disabled={pending}
-                      setDate={field.onChange}
-                    />
+                    <DatePicker date={field.value} setDate={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -197,16 +189,12 @@ export default function StudentDialog() {
             <FormField
               control={form.control}
               name="email"
+              disabled={pending}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={pending}
-                      type="email"
-                      placeholder="Email"
-                      {...field}
-                    />
+                    <Input type="email" placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -216,6 +204,7 @@ export default function StudentDialog() {
             <FormField
               control={form.control}
               name="phone"
+              disabled={pending}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>

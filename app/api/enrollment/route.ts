@@ -12,8 +12,15 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { courseId, teacherId, userId, courseGoals, userType } =
-      await req.json();
+    const {
+      courseId,
+      teacherId,
+      userId,
+      courseGoals,
+      userType,
+      price,
+      totalClasses,
+    } = await req.json();
 
     if (!courseId || !teacherId || !userId) {
       return new NextResponse(
@@ -37,6 +44,8 @@ export async function POST(req: Request) {
           attendedClasses: 0,
           groupId: userId,
           schoolId: currentUser.schoolId,
+          price,
+          totalClasses,
         },
       });
       revalidatePath(`/school/groups/${userId}`);
@@ -49,6 +58,8 @@ export async function POST(req: Request) {
           attendedClasses: 0,
           studentId: userId,
           schoolId: currentUser.schoolId,
+          price,
+          totalClasses,
         },
       });
       revalidatePath(`/school/students/${userId}`);

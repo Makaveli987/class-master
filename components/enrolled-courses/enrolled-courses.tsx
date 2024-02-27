@@ -1,4 +1,5 @@
-"use client";
+// "use client";
+import { EnrollmentResponse } from "@/actions/get-enrolments";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -9,7 +10,7 @@ import { formatDate } from "@/lib/utils";
 import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
 
 interface EnrolledCoursesProps {
-  enrollments: any[] | null;
+  enrollments: EnrollmentResponse[] | null;
 }
 
 function calcPercentage(x: number, y: number) {
@@ -17,7 +18,7 @@ function calcPercentage(x: number, y: number) {
 }
 
 export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
-  const enrollDialog = useEnrollDialog();
+  // const enrollDialog = useEnrollDialog();
 
   if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
@@ -30,7 +31,7 @@ export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
           <div className="grid grid-cols-7 gap-4">
             <div className="flex flex-col col-span-2 space-y-1 text-left">
               <p className="text-sm font-semibold leading-none">
-                {enrollment.course.name}
+                {enrollment?.course?.name}
               </p>
               <p className="text-xs leading-none text-muted-foreground">
                 <span className="font-medium">started:</span>{" "}
@@ -39,24 +40,27 @@ export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
             </div>
             <div className="flex flex-col col-span-2 mr-4 space-y-1 text-right">
               <p className="text-sm leading-none">
-                {enrollment.teacher.firstName} {enrollment.teacher.lastName}
+                {enrollment?.teacher?.firstName} {enrollment?.teacher?.lastName}
               </p>
               <p className="text-xs leading-none text-muted-foreground">
                 Teacher
               </p>
             </div>
             <div className="w-[180px] ml-auto col-span-2 flex justify-end gap-4">
-              {enrollment.attendedClasses === 40 ? (
+              {enrollment.attendedClasses === enrollment.attendedClasses ? (
                 <Badge className="bg-green-600 hover:bg-green-600">
                   Completed
                 </Badge>
               ) : (
                 <div className="w-[180px] flex flex-col gap-2">
                   <p className="text-sm text-right font-semibold leading-none">
-                    {enrollment.attendedClasses}/40
+                    {enrollment.attendedClasses}/{enrollment.totalClasses}
                   </p>
                   <Progress
-                    value={calcPercentage(enrollment.attendedClasses, 40)}
+                    value={calcPercentage(
+                      enrollment.attendedClasses,
+                      enrollment.totalClasses
+                    )}
                   />
                 </div>
               )}

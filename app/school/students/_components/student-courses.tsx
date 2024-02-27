@@ -55,7 +55,7 @@ export default function StudentCourses({
         </CardHeader>
         <CardContent>
           <div>
-            {enrollments.map((enrollment) => (
+            {enrollments?.map((enrollment) => (
               <CourseEnrollment
                 key={enrollment.id}
                 enrollment={enrollment}
@@ -64,7 +64,7 @@ export default function StudentCourses({
               />
             ))}
 
-            {groupEnrollments.map((enrollment) => (
+            {groupEnrollments?.map((enrollment) => (
               <CourseEnrollment
                 key={enrollment.id}
                 enrollment={enrollment}

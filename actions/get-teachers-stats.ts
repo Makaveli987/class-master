@@ -15,7 +15,7 @@ export const getTeachersStats = async (teacherId: string) => {
         teacherId,
         archived: false,
         attendedClasses: {
-          lt: course?.totalClasses,
+          lt: course?.defaultTotalClasses,
         },
       },
     });

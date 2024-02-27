@@ -112,7 +112,6 @@ export async function DELETE(
       },
     });
   } catch (error) {
-    console.log("error", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

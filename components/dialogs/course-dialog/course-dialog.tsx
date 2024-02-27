@@ -3,6 +3,7 @@ import useCourseDialog from "@/hooks/use-course-dialog";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,8 +34,8 @@ const formSchema = z.object({
     message: "Name is too short",
   }),
   description: z.string(),
-  pricePerClass: z.string().min(1, "Field is required"),
-  totalClasses: z.string().min(1, "Field is required"),
+  defaultPrice: z.string().min(1, "Field is required"),
+  defaultTotalClasses: z.string().min(1, "Field is required"),
 });
 
 export default function CourseDialog() {
@@ -52,14 +53,14 @@ export default function CourseDialog() {
       ? {
           name: courseDialog.data.name,
           description: courseDialog.data.description,
-          pricePerClass: courseDialog.data.pricePerClass.toString(),
-          totalClasses: courseDialog.data.totalClasses.toString(),
+          defaultPrice: courseDialog.data.defaultPrice.toString(),
+          defaultTotalClasses: courseDialog.data.defaultTotalClasses.toString(),
         }
       : {
           name: "",
           description: "",
-          pricePerClass: "",
-          totalClasses: "",
+          defaultPrice: "",
+          defaultTotalClasses: "",
         };
     form.reset(defValues);
   }, [courseDialog.data, form]);
@@ -67,8 +68,8 @@ export default function CourseDialog() {
   function createCourse(values: z.infer<typeof formSchema>) {
     const payload = {
       ...values,
-      pricePerClass: parseInt(values.pricePerClass),
-      totalClasses: parseInt(values.totalClasses),
+      defaultPrice: parseInt(values.defaultPrice),
+      defaultTotalClasses: parseInt(values.defaultTotalClasses),
     };
 
     axios
@@ -95,8 +96,8 @@ export default function CourseDialog() {
   function updateCourse(values: z.infer<typeof formSchema>) {
     const payload = {
       ...values,
-      pricePerClass: parseInt(values.pricePerClass),
-      totalClasses: parseInt(values.totalClasses),
+      defaultPrice: parseInt(values.defaultPrice),
+      defaultTotalClasses: parseInt(values.defaultTotalClasses),
     };
 
     axios
@@ -149,7 +150,7 @@ export default function CourseDialog() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input disabled={pending} placeholder="Name" {...field} />
+                    <Input disabled={pending} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -163,11 +164,7 @@ export default function CourseDialog() {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={pending}
-                      placeholder="Description"
-                      {...field}
-                    />
+                    <Input disabled={pending} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -176,18 +173,16 @@ export default function CourseDialog() {
 
             <FormField
               control={form.control}
-              name="pricePerClass"
+              name="defaultPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price per Class</FormLabel>
+                  <FormLabel>Default Price</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={pending}
-                      type="number"
-                      placeholder="Price per Class"
-                      {...field}
-                    />
+                    <Input disabled={pending} type="number" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Can be changed for each enrollment.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -195,19 +190,17 @@ export default function CourseDialog() {
 
             <FormField
               control={form.control}
-              name="totalClasses"
+              name="defaultTotalClasses"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Total Classes</FormLabel>
+                  <FormLabel>Default Number Of Classes</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={pending}
-                      type="number"
-                      placeholder="Total Clases"
-                      {...field}
-                    />
+                    <Input disabled={pending} type="number" {...field} />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>
+                    Can be changed for each enrollment.
+                  </FormDescription>
                 </FormItem>
               )}
             />

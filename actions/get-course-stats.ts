@@ -13,7 +13,7 @@ export const getCourseStats = async (courseId: string) => {
       where: {
         courseId,
         attendedClasses: {
-          lt: course?.totalClasses,
+          lt: course?.defaultTotalClasses,
         },
         archived: false,
       },

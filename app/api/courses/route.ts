@@ -48,9 +48,10 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { name, description, pricePerClass, totalClasses } = await req.json();
+    const { name, description, defaultPrice, defaultTotalClasses } =
+      await req.json();
 
-    if (!name || !description || !pricePerClass || !totalClasses) {
+    if (!name || !description || !defaultPrice || !defaultTotalClasses) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -66,8 +67,8 @@ export async function POST(req: Request) {
       data: {
         name,
         description,
-        pricePerClass,
-        totalClasses,
+        defaultPrice,
+        defaultTotalClasses,
         schoolId: currentUser.schoolId,
       },
     });

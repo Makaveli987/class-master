@@ -24,6 +24,58 @@ enum ClassType {
   GROUP
 }
 
+model User {
+  id                    String          @id @default(uuid())
+  firstName             String
+  lastName              String
+  email                 String          @unique
+  hashedPassword        String
+  phone                 String
+  dateOfBirth           DateTime
+  schoolId              String
+  archived              Boolean         @default(false)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  role                  Role
+  school                School          @relation(fields: [schoolId], references: [id])
+  schoolClassOriginal   SchoolClass[]   @relation("teacher")
+  schoolClassSubstitute SchoolClass[]   @relation("substitutedTeacher")
+  userPerCourses        UserPerCourse[]
+  enrolments            Enrollment[]
+  note                  Note[]
+  color                 String
+
+  @@index([schoolId])
+}
+
+model Course {
+  id                  String          @id @default(uuid())
+  name                String
+  description         String
+  defaultPrice        Float
+  defaultTotalClasses Int
+  schoolId            String
+  archived            Boolean         @default(false)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  enrolments          Enrollment[]
+  userPerCourses      UserPerCourse[]
+  school              School          @relation(fields: [schoolId], references: [id])
+
+  @@index([schoolId])
+}
+
+model UserPerCourse {
+  id       String  @id @default(uuid())
+  courseId String
+  userId   String
+  course   Course? @relation(fields: [courseId], references: [id])
+  user     User?   @relation(fields: [userId], references: [id])
+
+  @@index([courseId])
+  @@index([userId])
+}
+
 model Student {
   id            String           @id @default(uuid())
   firstName     String
@@ -31,7 +83,6 @@ model Student {
   email         String
   phone         String
   dateOfBirth   DateTime
-  // groupId     String?
   schoolId      String
   archived      Boolean          @default(false)
   createdAt     DateTime         @default(now())
@@ -44,51 +95,6 @@ model Student {
   schoolClasses SchoolClass[]
   Exam          Exam[]
 
-  // @@index([groupId])
-  @@index([schoolId])
-}
-
-model Course {
-  id             String          @id @default(uuid())
-  name           String
-  description    String
-  pricePerClass  Float
-  totalClasses   Int
-  schoolId       String
-  archived       Boolean         @default(false)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  enrolments     Enrollment[]
-  userPerCourses UserPerCourse[]
-  school         School          @relation(fields: [schoolId], references: [id])
-
-  @@index([schoolId])
-}
-
-model Enrollment {
-  id              String        @id @default(uuid())
-  archived        Boolean       @default(false)
-  courseId        String
-  studentId       String?
-  groupId         String?
-  teacherId       String
-  schoolId        String
-  courseGoals     String?       @db.Text
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  attendedClasses Int
-  course          Course        @relation(fields: [courseId], references: [id])
-  student         Student?      @relation(fields: [studentId], references: [id])
-  group           Group?        @relation(fields: [groupId], references: [id])
-  teacher         User          @relation(fields: [teacherId], references: [id])
-  school          School        @relation(fields: [schoolId], references: [id])
-  schoolClass     SchoolClass[]
-  Exam            Exam[]
-
-  @@index([courseId])
-  @@index([studentId])
-  @@index([teacherId])
-  @@index([groupId])
   @@index([schoolId])
 }
 
@@ -120,40 +126,59 @@ model StudentToGroup {
   @@index([studentId])
 }
 
-model User {
-  id                    String          @id @default(uuid())
-  firstName             String
-  lastName              String
-  email                 String          @unique
-  hashedPassword        String
-  phone                 String
-  dateOfBirth           DateTime
-  schoolId              String
-  archived              Boolean         @default(false)
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
-  role                  Role
-  school                School          @relation(fields: [schoolId], references: [id])
-  schoolClassOriginal   SchoolClass[]   @relation("teacher")
-  schoolClassSubstitute SchoolClass[]   @relation("substitutedTeacher")
-  userPerCourses        UserPerCourse[]
-  enrolments            Enrollment[]
-  note                  Note[]
-  color                 String
+model Enrollment {
+  id              String   @id @default(uuid())
+  archived        Boolean  @default(false)
+  courseId        String
+  studentId       String?
+  groupId         String?
+  teacherId       String
+  schoolId        String
+  courseGoals     String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  attendedClasses Int
+  // this will be in EnrollmentFinancials
+  price           Int
+  totalClasses    Int
 
+  course               Course                 @relation(fields: [courseId], references: [id])
+  student              Student?               @relation(fields: [studentId], references: [id])
+  group                Group?                 @relation(fields: [groupId], references: [id])
+  teacher              User                   @relation(fields: [teacherId], references: [id])
+  school               School                 @relation(fields: [schoolId], references: [id])
+  schoolClass          SchoolClass[]
+  Exam                 Exam[]
+  enrollmentFinancials EnrollmentFinancials[]
+
+  @@index([courseId])
+  @@index([studentId])
+  @@index([teacherId])
+  @@index([groupId])
   @@index([schoolId])
 }
 
-// implicit many to many ?!
-model UserPerCourse {
-  id       String  @id @default(uuid())
-  courseId String
-  userId   String
-  course   Course? @relation(fields: [courseId], references: [id])
-  user     User?   @relation(fields: [userId], references: [id])
+model EnrollmentFinancials {
+  id           String     @id @default(uuid())
+  enrollmentId String
+  studentId    String?
+  groupId      String?
+  payments     Payments[]
 
-  @@index([courseId])
-  @@index([userId])
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+
+  @@index([enrollmentId])
+}
+
+model Payments {
+  id                     String               @id @default(uuid())
+  enrollmentFinancialsId String
+  amount                 Float
+  // Student or Group ID
+  userId                 String
+  EnrollmentFinancials   EnrollmentFinancials @relation(fields: [enrollmentFinancialsId], references: [id])
+
+  @@index([enrollmentFinancialsId])
 }
 
 model SchoolClass {
@@ -204,21 +229,6 @@ model Attendance {
   @@index([schoolId])
 }
 
-model School {
-  id          String       @id @default(uuid())
-  name        String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  groups      Group[]
-  students    Student[]
-  users       User[]
-  courses     Course[]
-  enrollments Enrollment[]
-  classrooms  Classroom[]
-  // colors      UserColor[]
-  attendance  Attendance[]
-}
-
 model Note {
   id            String   @id @default(uuid())
   enrollmentId  String
@@ -254,6 +264,21 @@ model Exam {
   @@index([studentId])
 }
 
+model School {
+  id          String       @id @default(uuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  groups      Group[]
+  students    Student[]
+  users       User[]
+  courses     Course[]
+  enrollments Enrollment[]
+  classrooms  Classroom[]
+  // colors      UserColor[]
+  attendance  Attendance[]
+}
+
 model Classroom {
   id            String        @id @default(uuid())
   name          String
@@ -264,17 +289,6 @@ model Classroom {
 
   @@index([schoolId])
 }
-
-// model UserColor {
-//   id       String @id @default(uuid())
-//   value    String
-//   schoolId String
-//   userId   String @unique
-//   user     User   @relation(fields: [userId], references: [id])
-//   // school   School @relation(fields: [schoolId], references: [id])
-
-//   @@index([schoolId])
-// }
 
 model AssignedColors {
   id        String @id @default(uuid())

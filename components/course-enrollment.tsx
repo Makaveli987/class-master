@@ -87,10 +87,13 @@ export default function CourseEnrollment({
           ) : (
             <div className="w-[180px] flex flex-col gap-2">
               <p className="text-sm text-right font-semibold leading-none">
-                {enrollment.attendedClasses}/40
+                {enrollment.attendedClasses}/{enrollment.totalClasses}
               </p>
               <Progress
-                value={calcPercentage(enrollment.attendedClasses, 40)}
+                value={calcPercentage(
+                  enrollment.attendedClasses,
+                  enrollment.totalClasses
+                )}
               />
             </div>
           )}

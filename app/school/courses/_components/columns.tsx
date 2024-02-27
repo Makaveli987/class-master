@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { formatDate } from "@/lib/utils";
+
 import { Course } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon } from "lucide-react";
@@ -31,24 +31,28 @@ export const columns: ColumnDef<Course>[] = [
     accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader
-        className="pl-2 text-xs"
+        className="pl-2 text-xs max-w-48"
         column={column}
         title="Description"
       />
     ),
     enableSorting: false,
+    cell: ({ row }) => {
+      return (
+        <Tooltip2 text={row.original.description}>
+          <div className="truncate max-w-64">{row.original.description}</div>
+        </Tooltip2>
+      );
+    },
   },
   {
-    accessorKey: "pricePerClass",
+    accessorKey: "defaultPrice",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Price Per Class" />
-    ),
-    cell: ({ row }) => (
-      <span className="font-medium">{row.original.pricePerClass} RSD</span>
+      <DataTableColumnHeader column={column} title="Default Price" />
     ),
   },
   {
-    accessorKey: "totalClasses",
+    accessorKey: "defaultTotalClasses",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Total Classes" />
     ),

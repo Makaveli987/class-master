@@ -55,14 +55,15 @@ export const getGroupsEnrollments = async () => {
 
 export const getEnrollmentsByStudentId = async (studentId: string) => {
   try {
-    const enrollments = await db.enrollment.findMany({
+    const enrollments: EnrollmentResponse[] = await db.enrollment.findMany({
       where: { studentId, archived: false },
       include: {
         teacher: true,
         course: true,
       },
     });
-    return enrollments as EnrollmentResponse[];
+
+    return enrollments;
   } catch (error) {
     console.error("[ENROLLMENTS] Error fetching enrollments by student id");
     return null;

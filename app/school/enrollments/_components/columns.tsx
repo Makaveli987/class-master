@@ -99,7 +99,7 @@ export function getEnrollmentColumns(
             ) : (
               <div className="flex flex-col gap-2">
                 <p className="text-sm text-right font-semibold leading-none">
-                  {row.original.attendedClasses}/40
+                  {row.original.attendedClasses}/{row.original.attendedClasses}
                 </p>
                 <Progress
                   value={calcPercentage(row.original.attendedClasses, 40)}
