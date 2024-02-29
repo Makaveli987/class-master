@@ -47,8 +47,8 @@ export default function EnrollForm() {
       courseId: enrollDialog.data.courseId,
       teacherId: enrollDialog.data.teacherId,
       courseGoals: enrollDialog.data.courseGoals || "",
-      price: "",
-      totalClasses: "",
+      price: enrollDialog.data.price.toString(),
+      totalClasses: enrollDialog.data.totalClasses.toString(),
     },
   });
 

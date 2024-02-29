@@ -6,14 +6,14 @@ type SchoolClassDetailsDialogStore = {
   open: (data?: SchoolClassResponse, onSuccess?: any) => void;
   close: () => void;
   data: SchoolClassResponse | null;
-  onSuccess: any;
+  onSuccess?: () => void;
 };
 
 export const useClassDetailsDialog = create<SchoolClassDetailsDialogStore>(
   (set) => ({
     isOpen: false,
     data: null,
-    onSuccess: null,
+    onSuccess: undefined,
     open: (data?: SchoolClassResponse, onSuccess?: any) => {
       set({
         isOpen: true,
@@ -24,7 +24,7 @@ export const useClassDetailsDialog = create<SchoolClassDetailsDialogStore>(
     close: () => {
       set({
         isOpen: false,
-        onSuccess: null,
+        onSuccess: undefined,
       });
       setTimeout(() => {
         set({

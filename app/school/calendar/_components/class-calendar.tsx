@@ -74,6 +74,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
       startDate: selectInfo.start,
       refreshCalendar: refreshCalendar,
       classroom: classroomId && classroomId !== "all" ? classroomId : "",
+      onSuccess: fetchClasses,
     });
   };
 
@@ -173,6 +174,7 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
                 onClick={() => {
                   const params = {
                     refreshCalendar: refreshCalendar,
+                    onSuccess: fetchClasses,
                     classroom:
                       classroomId && classroomId !== "all" ? classroomId : "",
                   };

@@ -1,10 +1,10 @@
-import { SchoolClass } from "@prisma/client";
 import { create } from "zustand";
 
 interface OpenParams {
   classroom?: string;
   startDate?: Date;
   refreshCalendar?: () => void;
+  onSuccess?: () => void;
 }
 
 type ClassDialogStore = {
@@ -14,6 +14,7 @@ type ClassDialogStore = {
   classroom: string;
   startDate: Date | null;
   refreshCalendar?: () => void;
+  onSuccess?: () => void;
 };
 
 export const useClassDialog = create<ClassDialogStore>((set) => ({
@@ -21,17 +22,20 @@ export const useClassDialog = create<ClassDialogStore>((set) => ({
   classroom: "",
   startDate: null,
   refreshCalendar: undefined,
+  onSuccess: undefined,
   open: (params?: OpenParams) =>
     set({
       isOpen: true,
       classroom: params?.classroom,
       startDate: params?.startDate,
       refreshCalendar: params?.refreshCalendar,
+      onSuccess: params?.onSuccess,
     }),
   // close: () => set({ isOpen: false, classroom: "", startDate: null }),
   close: () => {
     set({
       isOpen: false,
+      onSuccess: undefined,
     });
     setTimeout(() => {
       set({

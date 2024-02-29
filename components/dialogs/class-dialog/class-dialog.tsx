@@ -278,6 +278,7 @@ export default function ClassDialog({
           // router.refresh();
           classDialog?.refreshCalendar?.();
           toast.success("Class added successfully.");
+          classDialog.onSuccess?.();
         }
       })
       .catch((error) => {
