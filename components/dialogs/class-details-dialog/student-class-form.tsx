@@ -69,7 +69,7 @@ export default function StudentClassForm({
         if (response.status === 200) {
           router.refresh();
           toast.success("Class successfully updated.");
-          classDetailsDialog.onSuccess();
+          classDetailsDialog.onSuccess?.();
         }
       })
       .catch((error) => {
