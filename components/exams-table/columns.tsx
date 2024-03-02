@@ -54,16 +54,17 @@ export function GetExamColumns(
     },
     {
       accessorKey: "enrollment",
-      header: ({ column }) =>
-        isEnrollmentExams && (
-          <DataTableColumnHeader column={column} title="Course" />
-        ),
+      header: ({ column }) => (
+        // isEnrollmentExams && (
+        <DataTableColumnHeader column={column} title="Course" />
+      ),
       cell: ({ row }) => {
+        console.log("row :>> ", row);
         const enrollmentCourse = row.original.enrollment?.course;
 
-        return !isEnrollmentExams ? null : (
-          <span>{enrollmentCourse?.name}</span>
-        );
+        // return !isEnrollmentExams ? null : (
+        return <span>{enrollmentCourse?.name}</span>;
+        // );
       },
     },
     {

@@ -11,9 +11,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { NoteData, useNoteDialog } from "@/hooks/use-note-dialog";
-import { formatDate } from "@/lib/utils";
 import { Enrollment } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
+import { format } from "date-fns";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -92,7 +92,7 @@ export default function Notes({
                     onClick={() => noteDialog.open({ note })}
                   >
                     <p className="text-sm text-muted-foreground font-medium">
-                      {formatDate(note.createdAt, false)}
+                      {format(note?.createdAt as Date, "dd-MMM-yyyy")}
                     </p>
                     <div className="flex flex-col">
                       <p className="text-sm font-medium">

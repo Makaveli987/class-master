@@ -3,13 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { formatDate, formatPhoneNumber } from "@/lib/utils";
+import { formatPhoneNumber } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon } from "lucide-react";
 import Link from "next/link";
 
 import { MerakiBadge } from "@/components/ui/meraki-badge";
+import { format } from "date-fns";
 import Image from "next/image";
 import { DeleteTeacherButton } from "./delete-course-button";
 
@@ -68,7 +69,7 @@ export const columns: ColumnDef<User>[] = [
       />
     ),
     cell: ({ row }) => {
-      const dateOfBirth = formatDate(row.original.dateOfBirth, false);
+      const dateOfBirth = format(row.original.dateOfBirth, "dd-MMM-yyyy");
       return <span>{dateOfBirth}</span>;
     },
     enableSorting: false,
@@ -79,7 +80,7 @@ export const columns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Created" />
     ),
     cell: ({ row }) => {
-      const created = formatDate(row.original.createdAt);
+      const created = format(row.original.createdAt, "dd-MMM-yyyy HH:mm");
       return <span>{created}</span>;
     },
   },
@@ -95,7 +96,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const role = row.original.role;
       const variant = role === "ADMIN" ? "purple" : "emerald";
-      return <MerakiBadge variant={variant}>Teacher</MerakiBadge>;
+      return <MerakiBadge variant={variant}>{role.toLowerCase()}</MerakiBadge>;
     },
   },
   {

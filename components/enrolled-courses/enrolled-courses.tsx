@@ -1,12 +1,9 @@
 // "use client";
 import { EnrollmentResponse } from "@/actions/get-enrolments";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
-import { formatDate } from "@/lib/utils";
+import { format } from "date-fns";
 import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
 import CourseProgress from "../course-progress";
 
@@ -14,13 +11,7 @@ interface EnrolledCoursesProps {
   enrollments: EnrollmentResponse[] | null;
 }
 
-function calcPercentage(x: number, y: number) {
-  return (x / y) * 100;
-}
-
 export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
-  // const enrollDialog = useEnrollDialog();
-
   if (!enrollments) {
     return <p className="text-sm">The student has not attended any courses.</p>;
   }
@@ -36,7 +27,7 @@ export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
               </p>
               <p className="text-xs leading-none text-muted-foreground">
                 <span className="font-medium">started:</span>{" "}
-                {formatDate(enrollment.createdAt, true)}
+                {format(enrollment?.createdAt as Date, "dd-MMM-yyyy HH:mm")}
               </p>
             </div>
             <div className="flex flex-col col-span-2 mr-4 space-y-1 text-right">

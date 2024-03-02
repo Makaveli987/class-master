@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import AssignedCoursesCard from "../_components/assigned-courses-card";
 
 import { Separator } from "@/components/ui/separator";
-import { formatDate } from "@/lib/utils";
+import { format } from "date-fns";
 import Image from "next/image";
 import { DeleteTeacherButton } from "../_components/delete-course-button";
 import TeacherDetails from "../_components/teacher-details";
@@ -48,7 +48,7 @@ export default async function TeacherPage({
                 {teacher?.firstName + " " + teacher?.lastName}
               </h2>
               <p className="text-muted-foreground text-sm">
-                Created: {formatDate(teacher?.createdAt!, false)}
+                Created: {format(teacher?.createdAt as Date, "dd-MMM-yyyy")}
               </p>
             </div>
             <div className="ml-auto">

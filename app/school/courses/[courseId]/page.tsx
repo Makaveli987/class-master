@@ -1,14 +1,11 @@
 import { getAssignedTeachers } from "@/actions/get-assigned-teachers";
-import { getCourseStats } from "@/actions/get-course-stats";
 import { getCourse } from "@/actions/get-courses";
 import { getTeachers } from "@/actions/get-teachers";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDate } from "@/lib/utils";
-import Image from "next/image";
 import CourseDetails from "../_components/course-details";
-import CourseTeachersCard from "../_components/course-teachers-card";
 import CourseDetailsHeader from "../_components/course-details-header";
+import CourseTeachersCard from "../_components/course-teachers-card";
 
 export default async function CoursePage({
   params,

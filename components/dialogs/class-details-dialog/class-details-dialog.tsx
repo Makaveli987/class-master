@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 import { getTimeFromDate } from "@/lib/utils";
 import axios, { AxiosResponse } from "axios";
-import { format } from "date-fns";
+import { addMinutes, format } from "date-fns";
 import {
   BookAIcon,
   CalendarCheck2Icon,
@@ -131,7 +131,9 @@ export default function ClassDetailsDialog() {
                 </span>
                 <span className="font-medium">
                   {getTimeFromDate(classDetailsDialog.data?.start as Date)} -{" "}
-                  {getTimeFromDate(classDetailsDialog.data?.end as Date)}
+                  {getTimeFromDate(
+                    addMinutes(classDetailsDialog.data?.end as Date, 1)
+                  )}
                 </span>
               </div>
             </div>

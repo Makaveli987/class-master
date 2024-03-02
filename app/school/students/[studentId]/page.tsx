@@ -1,27 +1,27 @@
+import { getClassesByStudentId } from "@/actions/get-classes";
 import { CourseResponse, getCourses } from "@/actions/get-courses";
 import {
   getEnrollmentsByStudentId,
   getGroupEnrollmentsByStudentId,
 } from "@/actions/get-enrolments";
+import { getStudentExams } from "@/actions/get-exams";
 import { getStudent, getStudentGroups } from "@/actions/get-students";
+import SchoolClassesTable from "@/components/classes-table/classes-table";
+import ExamsTable from "@/components/exams-table/exams-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDate } from "@/lib/utils";
-import Image from "next/image";
-import StudentCourses from "../_components/student-courses";
-import StudentDetails from "../_components/student-details-card";
-import { DeleteStudentButton } from "../_components/delete-student-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ExamsTable from "@/components/exams-table/exams-table";
-import { getStudentExams } from "@/actions/get-exams";
-import SchoolClassesTable from "@/components/classes-table/classes-table";
-import { getClassesByStudentId } from "@/actions/get-classes";
+import { format } from "date-fns";
 import {
   BookAIcon,
   CalendarCheckIcon,
   FileIcon,
   FileImageIcon,
 } from "lucide-react";
+import Image from "next/image";
+import { DeleteStudentButton } from "../_components/delete-student-button";
+import StudentCourses from "../_components/student-courses";
+import StudentDetails from "../_components/student-details-card";
 
 export default async function StudentPage({
   params,
@@ -57,7 +57,7 @@ export default async function StudentPage({
                 {student?.firstName + " " + student?.lastName}
               </h2>
               <p className="text-muted-foreground text-sm">
-                Created: {formatDate(student?.createdAt!, false)}
+                Created: {format(student?.createdAt as Date, "dd-MMM-yyyy")}
               </p>
             </div>
             <div className="ml-auto">
@@ -87,32 +87,20 @@ export default async function StudentPage({
               defaultValue="enrolledCourses"
               className="w-full overflow-auto flex flex-col"
             >
-              <TabsList className="rounded-b-none justify-start flex-1 min-w-min">
-                <TabsTrigger
-                  className="min-w-min sm:min-w-20 px-4"
-                  value="enrolledCourses"
-                >
+              <TabsList className="rounded-b-none justify-start flex-1">
+                <TabsTrigger className="min-w-28 px-4" value="enrolledCourses">
                   <BookAIcon className="w-4 h-4 mr-1" />
                   Enrolled Courses
                 </TabsTrigger>
-                <TabsTrigger
-                  className="min-w-min sm:min-w-20 px-4 "
-                  value="tests"
-                >
+                <TabsTrigger className="min-w-28 px-4 " value="tests">
                   <FileIcon className="w-4 h-4 mr-1" />
                   Tests
                 </TabsTrigger>
-                <TabsTrigger
-                  className="min-w-min sm:min-w-20 px-4"
-                  value="classes"
-                >
+                <TabsTrigger className="min-w-28 px-4" value="classes">
                   <CalendarCheckIcon className="w-4 h-4 mr-1" />
                   Classes
                 </TabsTrigger>
-                <TabsTrigger
-                  className="min-w-min sm:min-w-20 px-4"
-                  value="reports"
-                >
+                <TabsTrigger className="min-w-28 px-4" value="reports">
                   <FileImageIcon className="w-4 h-4 mr-1" />
                   Reports
                 </TabsTrigger>

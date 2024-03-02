@@ -9,7 +9,7 @@ import { getTimeFromDate } from "@/lib/utils";
 import { ClassStatus } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { format } from "date-fns";
+import { addMinutes, format } from "date-fns";
 import {
   CalendarCheckIcon,
   CheckIcon,
@@ -72,7 +72,7 @@ export function GetSchoolClassColumns(
           <div className="flex gap-4 text-sm">
             <span>{format(start, "dd-MMM-yyyy")}</span>
             <span>
-              {getTimeFromDate(start)}-{getTimeFromDate(end)}
+              {getTimeFromDate(start)}-{getTimeFromDate(addMinutes(end, 1))}
             </span>
           </div>
         );

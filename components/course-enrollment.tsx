@@ -3,12 +3,12 @@ import { EnrollmentResponse } from "@/actions/get-enrolments";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { useNoteDialog } from "@/hooks/use-note-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { formatDate } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Separator } from "./ui/separator";
 
 import { CourseResponse } from "@/actions/get-courses";
 import axios from "axios";
+import { format } from "date-fns";
 import {
   EditIcon,
   EyeIcon,
@@ -64,7 +64,7 @@ export default function CourseEnrollment({
           </p>
           <p className="text-xs leading-none text-muted-foreground">
             <span className="font-medium">Enrolled:</span>{" "}
-            {formatDate(enrollment.createdAt).slice(0, -6)}
+            {format(enrollment?.createdAt as Date, "dd-MMM-yyyy")}
           </p>
         </div>
         <div

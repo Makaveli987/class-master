@@ -18,11 +18,23 @@ export const getEnrollemntExams = async (
 ) => {
   try {
     // const currentUser = await getCurrentUser();
-    const exams = await db.exam.findMany({
+    const exams: ExamResponse[] = await db.exam.findMany({
       where: { enrollmentId, studentId },
+      include: {
+        enrollment: {
+          select: {
+            course: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
-    return exams as ExamResponse[];
+    return exams;
   } catch (error) {
     console.error("[EXAMS] Error fetching exams");
     return null;
@@ -31,7 +43,7 @@ export const getEnrollemntExams = async (
 
 export const getStudentExams = async (studentId: string) => {
   try {
-    const exams = await db.exam.findMany({
+    const exams: ExamResponse[] = await db.exam.findMany({
       where: { studentId },
       include: {
         enrollment: {
@@ -47,7 +59,7 @@ export const getStudentExams = async (studentId: string) => {
       },
     });
 
-    return exams as ExamResponse[];
+    return exams;
   } catch (error) {
     console.error("[EXAMS] Error fetching exams");
     return null;

@@ -12,6 +12,7 @@ import Image from "next/image";
 import React from "react";
 import { DeleteStudentButton } from "./delete-student-button";
 import { formatPhoneNumber } from "@/lib/utils";
+import { format } from "date-fns";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -65,6 +66,22 @@ export const columns: ColumnDef<Student>[] = [
       const student = row.original;
 
       return <span>{formatPhoneNumber(student.phone)}</span>;
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Created"
+      />
+    ),
+    cell: ({ row }) => {
+      const created = format(row.original.createdAt, "dd-MMM-yyyy HH:mm");
+
+      return <span>{created}</span>;
     },
     enableSorting: false,
   },

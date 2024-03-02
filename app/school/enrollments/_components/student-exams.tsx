@@ -10,9 +10,9 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { useExamDialog } from "@/hooks/use-exam-dialog";
-import { formatDate } from "@/lib/utils";
 import { Exam } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
+import { format } from "date-fns";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -88,7 +88,7 @@ export default function StudentExams({
               onClick={() => examDialog.open({ exam })}
             >
               <p className="text-sm text-muted-foreground font-medium col-span-1">
-                {formatDate(exam.createdAt, false)}
+                {format(exam?.createdAt as Date, "dd-MMM-yyyy")}
               </p>
 
               <p className="text-sm font-medium col-span-3">{exam.name}</p>

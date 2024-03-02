@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BasicInfoItem } from "@/components/user/basic-info-item";
 import useStudentDialog from "@/hooks/use-student-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { formatDate, formatPhoneNumber } from "@/lib/utils";
+import { formatPhoneNumber } from "@/lib/utils";
 import { Student } from "@prisma/client";
 import { format } from "date-fns";
 import {

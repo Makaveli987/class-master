@@ -1,13 +1,9 @@
 "use client";
-import React from "react";
-import Image from "next/image";
-import { formatDate } from "@/lib/utils";
-import { Course } from "@prisma/client";
-import { DeleteCourseButton } from "./delete-course-button";
-import { Button } from "@/components/ui/button";
-import { EditIcon, Trash2Icon } from "lucide-react";
 import useCourseDialog from "@/hooks/use-course-dialog";
-import { DialogAction } from "@/lib/models/dialog-actions";
+import { Course } from "@prisma/client";
+import { format } from "date-fns";
+import Image from "next/image";
+import { DeleteCourseButton } from "./delete-course-button";
 
 interface CourseDetailsHeaderProps {
   course?: Course;
@@ -26,7 +22,7 @@ export default function CourseDetailsHeader({
       <div className="flex flex-col justify-center">
         <h2 className="text-xl font-bold tracking-tight">{course?.name}</h2>
         <p className="text-muted-foreground text-sm">
-          Created: {formatDate(course?.createdAt!, false)}
+          Created: {format(course?.createdAt as Date, "dd-MMM-yyyy")}
         </p>
       </div>
       <div className="ml-auto">

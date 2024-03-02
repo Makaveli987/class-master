@@ -1,15 +1,15 @@
 "use client";
 
+import { GroupResponse } from "@/actions/get-groups";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 import { EditIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { DeleteGroupButton } from "./delete-group-button";
-import { GroupResponse } from "@/actions/get-groups";
-import Image from "next/image";
 
 export const columns: ColumnDef<GroupResponse>[] = [
   {
@@ -47,7 +47,10 @@ export const columns: ColumnDef<GroupResponse>[] = [
       <DataTableColumnHeader column={column} title="Created" />
     ),
     cell: ({ row }) => {
-      const created = formatDate(row.original.createdAt);
+      const created = format(
+        row.original.createdAt as Date,
+        "dd-MMM-yyyy HH:mm"
+      );
 
       return <span>{created}</span>;
     },
@@ -58,7 +61,10 @@ export const columns: ColumnDef<GroupResponse>[] = [
       <DataTableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => {
-      const updated = formatDate(row.original.updatedAt);
+      const updated = format(
+        row.original.updatedAt as Date,
+        "dd-MMM-yyyy HH:mm"
+      );
 
       return <span>{updated}</span>;
     },

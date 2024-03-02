@@ -4,7 +4,7 @@ import { getGroup } from "@/actions/get-groups";
 import { getStudents } from "@/actions/get-students";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatDate } from "@/lib/utils";
+import { format } from "date-fns";
 import Image from "next/image";
 import { DeleteGroupButton } from "../_components/delete-group-button";
 import GroupCourses from "../_components/group-courses";
@@ -34,7 +34,7 @@ export default async function GroupPage({
                 {group?.name}
               </h2>
               <p className="text-muted-foreground text-sm">
-                Created: {formatDate(group?.createdAt!, false)}
+                Created: {format(group?.createdAt as Date, "dd-MMM-yyyy")}
               </p>
             </div>
             <div className="ml-auto">

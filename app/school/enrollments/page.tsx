@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import EnrollmentTable from "./_components/enrollment-table";
+import { UserIcon, UsersIcon } from "lucide-react";
 
 export default async function EnrollmentsPage() {
   const studentsEnrollments =
@@ -20,8 +21,14 @@ export default async function EnrollmentsPage() {
         <CardContent>
           <Tabs defaultValue="students">
             <TabsList className="mb-3">
-              <TabsTrigger value="students">Students</TabsTrigger>
-              <TabsTrigger value="groups">Groups</TabsTrigger>
+              <TabsTrigger className="min-w-28" value="students">
+                <UserIcon className="w-4 h-4 mr-1" />
+                Students
+              </TabsTrigger>
+              <TabsTrigger className="min-w-28" value="groups">
+                <UsersIcon className="w-4 h-4 mr-1" />
+                Groups
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="students">

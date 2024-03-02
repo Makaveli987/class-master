@@ -16,6 +16,12 @@ import EnrollmentDetails from "../_components/enrollment-details";
 import Notes from "../_components/notes";
 import SchoolClassesTable from "@/components/classes-table/classes-table";
 import { getClassesByEnrollmentId } from "@/actions/get-classes";
+import {
+  CalendarCheckIcon,
+  FileIcon,
+  MessageCirclePlusIcon,
+  MessageSquareTextIcon,
+} from "lucide-react";
 
 export default async function EnrollmentId({
   params,
@@ -93,11 +99,22 @@ export default async function EnrollmentId({
           <EnrollmentDetails enrollment={enrollment} courses={courses || []} />
 
           <Card className="mt-4">
-            <Tabs defaultValue="notes">
-              <TabsList className="grid grid-cols-12 rounded-b-none">
-                <TabsTrigger value="notes">Notes</TabsTrigger>
-                <TabsTrigger value="tests">Tests</TabsTrigger>
-                <TabsTrigger value="classes">Classes</TabsTrigger>
+            <Tabs
+              defaultValue="notes"
+              className="w-full overflow-auto flex flex-col"
+            >
+              <TabsList className="justify-start flex-1 min-w-min rounded-b-none">
+                <TabsTrigger className="min-w-28" value="notes">
+                  <MessageSquareTextIcon className="w-4 h-4 mr-1" /> Notes
+                </TabsTrigger>
+                <TabsTrigger className="min-w-28" value="tests">
+                  <FileIcon className="w-4 h-4 mr-1" />
+                  Tests
+                </TabsTrigger>
+                <TabsTrigger className="min-w-28" value="classes">
+                  <CalendarCheckIcon className="w-4 h-4 mr-1" />
+                  Classes
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="notes">
                 <Notes

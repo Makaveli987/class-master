@@ -9,14 +9,14 @@ import {
 import { BasicInfoItem } from "@/components/user/basic-info-item";
 import useTeacherDialog from "@/hooks/use-teacher-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { formatDate, formatPhoneNumber } from "@/lib/utils";
+import { formatPhoneNumber } from "@/lib/utils";
 import { User } from "@prisma/client";
 import axios from "axios";
+import { format } from "date-fns";
 import {
   CalendarIcon,
   CircleUserIcon,
   EditIcon,
-  Loader2Icon,
   MailIcon,
   PhoneIcon,
 } from "lucide-react";
@@ -90,7 +90,7 @@ export default function TeacherDetails({ teacher }: TeacherDetailsProps) {
         <BasicInfoItem
           icon={<CalendarIcon />}
           label="Date of Birth"
-          value={formatDate(teacher?.dateOfBirth!, false)}
+          value={format(teacher?.dateOfBirth as Date, "dd-MMM-yyyy")}
         />
         <BasicInfoItem
           icon={<CircleUserIcon />}
