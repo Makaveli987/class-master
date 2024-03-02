@@ -12,6 +12,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon } from "lucide-react";
 import Link from "next/link";
 import { DeleteEnrollmentButton } from "./delete-enrollment-button";
+import CourseProgress from "@/components/course-progress";
 
 export function getEnrollmentColumns(
   userType: EnrollUserType
@@ -92,23 +93,11 @@ export function getEnrollmentColumns(
       cell: ({ row }) => {
         return (
           <div className="max-w-[220px]">
-            {row.original.attendedClasses === row.original.totalClasses ? (
-              <Badge className="bg-green-600 hover:bg-green-600">
-                Completed
-              </Badge>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <p className="text-sm text-right font-semibold leading-none">
-                  {row.original.attendedClasses}/{row.original.attendedClasses}
-                </p>
-                <Progress
-                  value={calcPercentage(
-                    row.original.attendedClasses,
-                    row.original.totalClasses
-                  )}
-                />
-              </div>
-            )}
+            <CourseProgress
+              attendedClasses={row.original?.attendedClasses || 0}
+              totalClasses={row.original?.totalClasses || 0}
+              labelPosition="right"
+            />
           </div>
         );
       },

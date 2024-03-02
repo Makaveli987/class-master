@@ -1,7 +1,7 @@
 import getCurrentUser from "@/actions/get-current-user";
 import { updateAttendedClass } from "@/actions/update-attended-classes";
 import { db } from "@/lib/db";
-import { ClassStatus } from "@prisma/client";
+import { ClassStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
@@ -34,6 +34,10 @@ export async function PATCH(
       enrollmentId,
       userId,
     }: UpdateClassPayload = await req.json();
+
+    if (currentUser.id !== userId && currentUser.role === Role.TEACHER) {
+      return new NextResponse("Forbidden", { status: 403 });
+    }
 
     const result = await db.$transaction(async (tx) => {
       await updateAttendedClass(schoolClassId, enrollmentId, classStatus);

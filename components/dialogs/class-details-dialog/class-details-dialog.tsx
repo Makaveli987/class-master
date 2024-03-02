@@ -14,6 +14,7 @@ import {
   BookAIcon,
   CalendarCheck2Icon,
   GraduationCap,
+  InfoIcon,
   UserIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -23,6 +24,8 @@ import GroupClassForm from "./group-class-form";
 import StudentClassForm from "./student-class-form";
 import { AttendanceResponse } from "@/app/api/attendance/class/[schoolClassId]/route";
 import { NoteResponse } from "@/app/api/notes/class/[schoolClassId]/route";
+import { useSession } from "next-auth/react";
+import { Role } from "@prisma/client";
 
 export default function ClassDetailsDialog() {
   const [attendance, setAttendance] = useState<AttendanceResponse[]>([]);
@@ -30,7 +33,7 @@ export default function ClassDetailsDialog() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
-  const router = useRouter();
+  const session = useSession();
 
   const getAttendance = useCallback(() => {
     axios
@@ -81,7 +84,7 @@ export default function ClassDetailsDialog() {
         </DialogHeader>
 
         {/* <div className=" max-h-96 overflow-auto"> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-3 gap-4">
           <div className="flex items-center gap-3">
             <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
               <UserIcon />
@@ -158,18 +161,30 @@ export default function ClassDetailsDialog() {
           </div>
         </div>
 
-        <Separator className="mt-2 mb-1" />
-
-        {classDetailsDialog.data?.studentId ? (
-          <StudentClassForm notes={notes} />
+        {session.data?.user.id === classDetailsDialog.data?.teacherId ||
+        session.data?.user.role === Role.ADMIN ? (
+          <Separator className="mt-2 mb-1" />
         ) : (
-          <GroupClassForm
-            attendance={attendance}
-            notes={notes}
-            isLoading={isLoading}
-          />
+          <p className="text-sm text-muted-foreground flex items-center gap-1">
+            <InfoIcon className="w-4 h-4" />
+            You cannot edit another teacher&apos;s classes
+          </p>
         )}
-        {/* </div> */}
+
+        {session.data?.user.id === classDetailsDialog.data?.teacherId ||
+        session.data?.user.role === Role.ADMIN ? (
+          <div>
+            {classDetailsDialog.data?.studentId ? (
+              <StudentClassForm notes={notes} />
+            ) : (
+              <GroupClassForm
+                attendance={attendance}
+                notes={notes}
+                isLoading={isLoading}
+              />
+            )}
+          </div>
+        ) : null}
       </DialogContent>
     </Dialog>
   );

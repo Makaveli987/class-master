@@ -8,6 +8,7 @@ import { Tooltip2 } from "@/components/ui/tooltip2";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { formatDate } from "@/lib/utils";
 import { EditIcon, MessageCirclePlusIcon, Trash2Icon } from "lucide-react";
+import CourseProgress from "../course-progress";
 
 interface EnrolledCoursesProps {
   enrollments: EnrollmentResponse[] | null;
@@ -47,23 +48,12 @@ export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
               </p>
             </div>
             <div className="w-[180px] ml-auto col-span-2 flex justify-end gap-4">
-              {enrollment.attendedClasses === enrollment.attendedClasses ? (
-                <Badge className="bg-green-600 hover:bg-green-600">
-                  Completed
-                </Badge>
-              ) : (
-                <div className="w-[180px] flex flex-col gap-2">
-                  <p className="text-sm text-right font-semibold leading-none">
-                    {enrollment.attendedClasses}/{enrollment.totalClasses}
-                  </p>
-                  <Progress
-                    value={calcPercentage(
-                      enrollment.attendedClasses,
-                      enrollment.totalClasses
-                    )}
-                  />
-                </div>
-              )}
+              <CourseProgress
+                attendedClasses={enrollment?.attendedClasses || 0}
+                totalClasses={enrollment?.totalClasses || 0}
+                className="mt-2"
+                labelPosition="right"
+              />
             </div>
             <div className="flex justify-end">
               <Tooltip2 text="Add note" side="top">

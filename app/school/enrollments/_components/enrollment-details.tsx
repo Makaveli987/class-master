@@ -11,6 +11,7 @@ import { formatPrice } from "@/lib/utils";
 import {
   BarChart3Icon,
   BookAIcon,
+  CoinsIcon,
   EditIcon,
   EuroIcon,
   ListChecksIcon,
@@ -83,20 +84,32 @@ export default function EnrollmentDetails({
               value={formatPrice(enrollment?.price as number)}
             />
           </div>
-          <div className="flex flex-1 items-start gap-3">
-            <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
-              <BarChart3Icon />
-            </div>
-            <div className="flex flex-col justify-start items-start text-sm mt-1.5">
-              <span className="text-muted-foreground text-xs">Classes</span>
-              <CourseProgress
-                attendedClasses={enrollment?.attendedClasses || 0}
-                totalClasses={enrollment?.totalClasses || 0}
-                className="mt-1.5"
-                labelPosition="left"
+          {enrollment?.pricePerStudent && (
+            <div className="flex-1">
+              <BasicInfoItem
+                icon={<CoinsIcon />}
+                label="Price Per Student"
+                value={formatPrice(enrollment?.pricePerStudent as number)}
               />
             </div>
-          </div>
+          )}
+
+          {!enrollment?.pricePerStudent && (
+            <div className="flex flex-1 items-start gap-3">
+              <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
+                <BarChart3Icon />
+              </div>
+              <div className="flex flex-col justify-start items-start text-sm mt-1.5">
+                <span className="text-muted-foreground text-xs">Classes</span>
+                <CourseProgress
+                  attendedClasses={enrollment?.attendedClasses || 0}
+                  totalClasses={enrollment?.totalClasses || 0}
+                  className="mt-1.5"
+                  labelPosition="left"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex">
@@ -111,6 +124,23 @@ export default function EnrollmentDetails({
               </span>
             </div>
           </div>
+
+          {enrollment?.pricePerStudent && (
+            <div className="flex flex-1 items-start gap-3">
+              <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
+                <BarChart3Icon />
+              </div>
+              <div className="flex flex-col justify-start items-start text-sm mt-1.5">
+                <span className="text-muted-foreground text-xs">Classes</span>
+                <CourseProgress
+                  attendedClasses={enrollment?.attendedClasses || 0}
+                  totalClasses={enrollment?.totalClasses || 0}
+                  className="mt-1.5"
+                  labelPosition="left"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

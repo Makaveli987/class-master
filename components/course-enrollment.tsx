@@ -1,27 +1,25 @@
 "use client";
 import { EnrollmentResponse } from "@/actions/get-enrolments";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
-import React from "react";
-import { Separator } from "./ui/separator";
-import { useRouter } from "next/navigation";
 import { useNoteDialog } from "@/hooks/use-note-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { formatDate, calcPercentage } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { Separator } from "./ui/separator";
 
+import { CourseResponse } from "@/actions/get-courses";
+import axios from "axios";
 import {
-  Badge,
-  MessageCirclePlusIcon,
   EditIcon,
-  Trash2Icon,
   EyeIcon,
+  MessageCirclePlusIcon,
+  Trash2Icon,
 } from "lucide-react";
+import { toast } from "sonner";
+import CourseProgress from "./course-progress";
+import { Button } from "./ui/button";
 import { ConfirmDialog } from "./ui/confirm-dialog";
 import { Tooltip2 } from "./ui/tooltip2";
-import { Button } from "./ui/button";
-import axios from "axios";
-import { toast } from "sonner";
-import { CourseResponse } from "@/actions/get-courses";
-import { Progress } from "./ui/progress";
 
 interface CourseEnrollmentProps {
   enrollment: EnrollmentResponse;
@@ -82,21 +80,12 @@ export default function CourseEnrollment({
           className="w-[180px] ml-auto col-span-2 flex justify-end gap-4 py-6"
           onClick={() => router.push(`/school/enrollments/${enrollment.id}`)}
         >
-          {enrollment.attendedClasses === enrollment.totalClasses ? (
-            <Badge className="bg-green-600 hover:bg-green-600">Completed</Badge>
-          ) : (
-            <div className="w-[180px] flex flex-col gap-2">
-              <p className="text-sm text-right font-semibold leading-none">
-                {enrollment.attendedClasses}/{enrollment.totalClasses}
-              </p>
-              <Progress
-                value={calcPercentage(
-                  enrollment.attendedClasses,
-                  enrollment.totalClasses
-                )}
-              />
-            </div>
-          )}
+          <CourseProgress
+            attendedClasses={enrollment?.attendedClasses || 0}
+            totalClasses={enrollment?.totalClasses || 0}
+            className="mt-2"
+            labelPosition="right"
+          />
         </div>
         <div className="flex justify-end py-6">
           {showGroupEnrollmentsForStudent && (
