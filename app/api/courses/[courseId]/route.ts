@@ -15,8 +15,14 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { name, description, defaultPrice, defaultTotalClasses } =
-      await req.json();
+    const {
+      name,
+      description,
+      defaultPrice,
+      defaultGroupPrice,
+      defaultPricePerStudent,
+      defaultTotalClasses,
+    } = await req.json();
     const s = await db.course.update({
       where: {
         id: courseId,
@@ -25,6 +31,8 @@ export async function PATCH(
         name,
         description,
         defaultPrice,
+        defaultGroupPrice,
+        defaultPricePerStudent,
         defaultTotalClasses,
       },
     });

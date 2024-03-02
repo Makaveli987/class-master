@@ -54,3 +54,11 @@ export function getCurrentWeekRange() {
 
   return { currentDate, startOfWeekDate, endOfWeekDate };
 }
+
+export function formatPrice(price: number) {
+  const formattedPrice = new Intl.NumberFormat("sr-RS", {
+    minimumFractionDigits: 2,
+  }).format(price);
+
+  return formattedPrice;
+}

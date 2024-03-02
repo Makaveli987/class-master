@@ -82,7 +82,7 @@ export default function CourseEnrollment({
           className="w-[180px] ml-auto col-span-2 flex justify-end gap-4 py-6"
           onClick={() => router.push(`/school/enrollments/${enrollment.id}`)}
         >
-          {enrollment.attendedClasses === 40 ? (
+          {enrollment.attendedClasses === enrollment.totalClasses ? (
             <Badge className="bg-green-600 hover:bg-green-600">Completed</Badge>
           ) : (
             <div className="w-[180px] flex flex-col gap-2">
@@ -140,10 +140,12 @@ export default function CourseEnrollment({
                 className="h-8 w-8 p-0 group"
                 onClick={(e) => {
                   e.stopPropagation();
-
+                  console.log("enrollment", enrollment);
                   enrollDialog.open({
                     data: enrollment,
-                    userType: EnrollUserType.GROUP,
+                    userType: enrollment.groupId
+                      ? EnrollUserType.GROUP
+                      : EnrollUserType.STUDENT,
                     userId:
                       userType === EnrollUserType.GROUP
                         ? (enrollment.groupId as string)

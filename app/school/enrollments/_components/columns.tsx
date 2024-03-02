@@ -92,7 +92,7 @@ export function getEnrollmentColumns(
       cell: ({ row }) => {
         return (
           <div className="max-w-[220px]">
-            {row.original.attendedClasses === 40 ? (
+            {row.original.attendedClasses === row.original.totalClasses ? (
               <Badge className="bg-green-600 hover:bg-green-600">
                 Completed
               </Badge>
@@ -102,7 +102,10 @@ export function getEnrollmentColumns(
                   {row.original.attendedClasses}/{row.original.attendedClasses}
                 </p>
                 <Progress
-                  value={calcPercentage(row.original.attendedClasses, 40)}
+                  value={calcPercentage(
+                    row.original.attendedClasses,
+                    row.original.totalClasses
+                  )}
                 />
               </div>
             )}

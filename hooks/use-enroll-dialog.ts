@@ -55,6 +55,7 @@ const emptyData: EnrollmentResponse = {
   archived: false,
   price: 0,
   totalClasses: 0,
+  pricePerStudent: 0,
 };
 
 const useEnrollDialog = create<EnrollDialogStore>((set) => ({

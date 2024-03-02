@@ -1,11 +1,12 @@
 import getCurrentUser from "@/actions/get-current-user";
 import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export interface DefaultConfigResponse {
   defaultPrice: number;
   defaultTotalClasses: number;
+  defaultGroupPrice?: number | null;
+  defaultPricePerStudent?: number | null;
 }
 
 export async function GET(
@@ -28,6 +29,8 @@ export async function GET(
         select: {
           defaultPrice: true,
           defaultTotalClasses: true,
+          defaultGroupPrice: true,
+          defaultPricePerStudent: true,
         },
       });
 

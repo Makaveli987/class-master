@@ -16,8 +16,15 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { courseId, teacherId, userId, courseGoals, userType } =
-      await req.json();
+    const {
+      courseId,
+      teacherId,
+      userId,
+      courseGoals,
+      userType,
+      price,
+      totalClasses,
+    } = await req.json();
 
     if (!courseId || !teacherId || !userId || !userType) {
       return new NextResponse(
@@ -30,21 +37,55 @@ export async function PATCH(
         }
       );
     }
+    const group = await db.group.findUnique({
+      where: { id: userId },
+      select: { isCompanyGroup: true, students: true },
+    });
 
     let enrollment = null;
+
     if (userType === EnrollUserType.GROUP) {
-      enrollment = await db.enrollment.update({
-        where: {
-          id: enrollmentId,
-        },
-        data: {
-          courseId,
-          teacherId,
-          courseGoals,
-          attendedClasses: 0,
-          groupId: userId,
-        },
-      });
+      // Calculate total price and add price per group for individual groups
+      if (group?.isCompanyGroup) {
+        console.log("isCompany :>> ");
+        enrollment = await db.enrollment.update({
+          where: {
+            id: enrollmentId,
+          },
+          data: {
+            courseId,
+            teacherId,
+            courseGoals,
+            groupId: userId,
+            price,
+            totalClasses,
+          },
+        });
+      } else {
+        let totalPrice = 0;
+
+        console.log("group.students :>> ", group?.students);
+
+        if (group?.students?.length) {
+          // Price here is represented as Price Per Student because group is not Company
+          totalPrice = price * group.students.length;
+        }
+        enrollment = await db.enrollment.update({
+          where: {
+            id: enrollmentId,
+          },
+          data: {
+            courseId,
+            teacherId,
+            courseGoals,
+            groupId: userId,
+            price: totalPrice,
+            pricePerStudent: price,
+            totalClasses,
+          },
+        });
+      }
+
       revalidatePath(`/school/groups/${userId}`);
     } else {
       enrollment = await db.enrollment.update({
@@ -55,8 +96,9 @@ export async function PATCH(
           courseId,
           teacherId,
           courseGoals,
-          attendedClasses: 0,
           studentId: userId,
+          price,
+          totalClasses,
         },
       });
       revalidatePath(`/school/students/${userId}`);
@@ -71,6 +113,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
+    console.log("error :>> ", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

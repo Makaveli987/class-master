@@ -77,6 +77,7 @@ export const getEnrollmentsByGroupId = async (groupId: string) => {
       include: {
         teacher: true,
         course: true,
+        group: true,
       },
     });
     return enrollments as EnrollmentResponse[];

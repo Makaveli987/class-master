@@ -39,6 +39,7 @@ const buttonVariants = cva(
         fuchsia: "bg-fuchsia-500 text-fuchsia-50 dark:bg-fuchsia-700",
         pink: "bg-pink-500 text-pink-50 dark:bg-pink-700",
         rose: "bg-rose-500 text-rose-50 dark:bg-rose-700",
+        "sidebar-active": "bg-blue-50 text-blue-500",
       },
       size: {
         default: "h-9 px-4 py-2",

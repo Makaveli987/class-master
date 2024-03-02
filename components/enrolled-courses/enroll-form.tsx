@@ -1,8 +1,9 @@
 "use client";
-import useEnrollDialog from "@/hooks/use-enroll-dialog";
+import { DefaultConfigResponse } from "@/app/api/courses/default-config/[course-id]/route";
+import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Course, Enrollment, User, UserPerCourse } from "@prisma/client";
+import { Course, Enrollment } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import { ComboboxOptions } from "../ui/combobox";
+import { CustomCurrencyInput } from "../ui/currency-input";
 import { DropdownSelect } from "../ui/dropdown-select";
 import {
   Form,
@@ -21,14 +23,13 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Textarea } from "../ui/textarea";
-import { DefaultConfigResponse } from "@/app/api/courses/default-config/[course-id]/route";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
   courseId: z.string().min(1, "Field is required"),
   teacherId: z.string().min(1, "Field is required"),
-  price: z.string().min(1, "Field is required"),
+  price: z.number().min(1, "Field is required"),
   totalClasses: z.string().min(1, "Field is required"),
   courseGoals: z.string(),
 });
@@ -37,9 +38,24 @@ export default function EnrollForm() {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [courseOptions, setCoursesOptions] = useState<ComboboxOptions[]>([]);
   const [teachersOptions, setTeachersOptions] = useState<ComboboxOptions[]>([]);
+  const [priceLabel, setPriceLabel] = useState<string>("Price");
 
   const router = useRouter();
   const enrollDialog = useEnrollDialog();
+
+  function setPriceInitValue() {
+    let initPrice = 0;
+
+    if (enrollDialog.data.groupId) {
+      initPrice = enrollDialog.data.group?.isCompanyGroup
+        ? enrollDialog.data.price
+        : (enrollDialog.data.pricePerStudent as number);
+    } else {
+      initPrice = enrollDialog.data.price;
+    }
+
+    return initPrice;
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,7 +63,7 @@ export default function EnrollForm() {
       courseId: enrollDialog.data.courseId,
       teacherId: enrollDialog.data.teacherId,
       courseGoals: enrollDialog.data.courseGoals || "",
-      price: enrollDialog.data.price.toString(),
+      price: setPriceInitValue(),
       totalClasses: enrollDialog.data.totalClasses.toString(),
     },
   });
@@ -59,7 +75,14 @@ export default function EnrollForm() {
     }));
     setCoursesOptions(cOptions || []);
     filterTeachersOptions(enrollDialog.data?.courseId);
-  }, [enrollDialog]);
+
+    if (
+      enrollDialog.userType === EnrollUserType.GROUP &&
+      !enrollDialog.data.group?.isCompanyGroup
+    ) {
+      setPriceLabel("Price Per Student");
+    }
+  }, [enrollDialog.data]);
 
   function filterTeachersOptions(courseId: string) {
     const selectedCourse = enrollDialog.courses?.find(
@@ -79,7 +102,9 @@ export default function EnrollForm() {
         ...values,
         userType: enrollDialog.userType,
         userId: enrollDialog.userId,
-        price: parseInt(values.price),
+        // Price here can be represented as Price Per Student is group is not Company
+        // Logic is handled on server
+        price: values.price,
         totalClasses: parseInt(values.totalClasses),
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
@@ -98,22 +123,40 @@ export default function EnrollForm() {
   }
 
   function updateEnrollment(values: z.infer<typeof formSchema>): void {
+    const payload = {
+      ...values,
+      userType: enrollDialog.userType,
+      userId: enrollDialog.userId,
+      // Price here can be represented as Price Per Student is group is not Company
+      // Logic is handled on server
+      price: values.price,
+      totalClasses: parseInt(values.totalClasses),
+    };
+
     axios
       .patch("/api/enrollment/" + enrollDialog.data.id, {
-        ...values,
-        userType: enrollDialog.userType,
-        userId: enrollDialog.userId,
-        price: parseInt(values.price),
-        totalClasses: parseInt(values.totalClasses),
+        ...payload,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 200) {
           router.refresh();
-          toast.success("Student enrollment successfully updated.");
+          toast.success(
+            `${
+              enrollDialog.userType === EnrollUserType.STUDENT
+                ? "Student"
+                : "Group"
+            } enrollment successfully updated.`
+          );
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Student enrollment wasn't updated!");
+        toast.error(
+          `Something went wrong. ${
+            enrollDialog.userType === EnrollUserType.STUDENT
+              ? "Student"
+              : "Group"
+          } enrollment wasn't updated!`
+        );
       })
       .finally(() => {
         setIsPending(false);
@@ -125,7 +168,18 @@ export default function EnrollForm() {
     axios
       .get("/api/courses/default-config/" + courseId)
       .then((response: AxiosResponse<DefaultConfigResponse>) => {
-        form.setValue("price", response.data.defaultPrice.toString());
+        if (enrollDialog.userType === EnrollUserType.GROUP) {
+          if (enrollDialog.data.group?.isCompanyGroup) {
+            form.setValue("price", response.data?.defaultGroupPrice || 0);
+            setPriceLabel("Price");
+          } else {
+            form.setValue("price", response.data?.defaultPricePerStudent || 0);
+          }
+          setPriceLabel("Price Per Student");
+        } else {
+          form.setValue("price", response.data.defaultPrice);
+          setPriceLabel("Price");
+        }
         form.setValue(
           "totalClasses",
           response.data.defaultTotalClasses.toString()
@@ -153,7 +207,7 @@ export default function EnrollForm() {
   return (
     <div className="flex flex-col gap-3">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             disabled={isPending}
             control={form.control}
@@ -205,13 +259,15 @@ export default function EnrollForm() {
             disabled={isPending}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price</FormLabel>
+                <FormLabel>{priceLabel}</FormLabel>
                 <FormControl>
-                  <Input
+                  <CustomCurrencyInput
                     disabled={isPending}
-                    type="number"
-                    placeholder="Enter price"
-                    {...field}
+                    allowNegativeValue={false}
+                    value={field.value}
+                    onValueChange={(value, name, values) => {
+                      field.onChange(values?.float);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

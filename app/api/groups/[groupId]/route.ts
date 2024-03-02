@@ -14,7 +14,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { name, studentIds } = await req.json();
+    const { name, studentIds, isCompanyGroup } = await req.json();
 
     if (!name) {
       return new NextResponse(
@@ -35,6 +35,7 @@ export async function PATCH(
         },
         data: {
           name,
+          isCompanyGroup,
         },
       });
 

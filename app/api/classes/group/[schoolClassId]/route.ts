@@ -1,4 +1,5 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { updateAttendedClass } from "@/actions/update-attended-classes";
 import { db } from "@/lib/db";
 import { ClassStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -41,8 +42,9 @@ export async function PATCH(
     }: UpdateClassGroupPayload = await req.json();
 
     const result = await db.$transaction(async (tx) => {
-      // Step 1: Update the class
-      const schoolClass = await db.schoolClass.update({
+      await updateAttendedClass(schoolClassId, enrollmentId, classStatus);
+
+      const updatedClass = await db.schoolClass.update({
         where: {
           id: schoolClassId,
         },
@@ -92,7 +94,7 @@ export async function PATCH(
         })
       );
 
-      return schoolClass; // return the created group
+      return updatedClass; // return the created group
     });
 
     revalidatePath("/school/calendar");

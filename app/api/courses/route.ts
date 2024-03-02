@@ -48,8 +48,14 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { name, description, defaultPrice, defaultTotalClasses } =
-      await req.json();
+    const {
+      name,
+      description,
+      defaultPrice,
+      defaultGroupPrice,
+      defaultPricePerStudent,
+      defaultTotalClasses,
+    } = await req.json();
 
     if (!name || !description || !defaultPrice || !defaultTotalClasses) {
       return new NextResponse(
@@ -68,6 +74,8 @@ export async function POST(req: Request) {
         name,
         description,
         defaultPrice,
+        defaultGroupPrice,
+        defaultPricePerStudent,
         defaultTotalClasses,
         schoolId: currentUser.schoolId,
       },

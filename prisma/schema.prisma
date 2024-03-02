@@ -49,18 +49,20 @@ model User {
 }
 
 model Course {
-  id                  String          @id @default(uuid())
-  name                String
-  description         String
-  defaultPrice        Float
-  defaultTotalClasses Int
-  schoolId            String
-  archived            Boolean         @default(false)
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
-  enrolments          Enrollment[]
-  userPerCourses      UserPerCourse[]
-  school              School          @relation(fields: [schoolId], references: [id])
+  id                     String          @id @default(uuid())
+  name                   String
+  description            String
+  defaultPrice           Int
+  defaultGroupPrice      Int?
+  defaultPricePerStudent Int?
+  defaultTotalClasses    Int
+  schoolId               String
+  archived               Boolean         @default(false)
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  enrolments             Enrollment[]
+  userPerCourses         UserPerCourse[]
+  school                 School          @relation(fields: [schoolId], references: [id])
 
   @@index([schoolId])
 }
@@ -99,17 +101,18 @@ model Student {
 }
 
 model Group {
-  id            String           @id @default(uuid())
-  name          String
-  schoolId      String
-  archived      Boolean          @default(false)
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  students      StudentToGroup[]
-  school        School           @relation(fields: [schoolId], references: [id])
-  enrolments    Enrollment[]
-  note          Note[]
-  schoolClasses SchoolClass[]
+  id             String           @id @default(uuid())
+  name           String
+  schoolId       String
+  archived       Boolean          @default(false)
+  isCompanyGroup Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  students       StudentToGroup[]
+  school         School           @relation(fields: [schoolId], references: [id])
+  enrolments     Enrollment[]
+  note           Note[]
+  schoolClasses  SchoolClass[]
 
   @@index([schoolId])
 }
@@ -137,9 +140,10 @@ model Enrollment {
   courseGoals     String?  @db.Text
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  attendedClasses Int
+  attendedClasses Int      @default(0)
   // this will be in EnrollmentFinancials
   price           Int
+  pricePerStudent Int?
   totalClasses    Int
 
   course               Course                 @relation(fields: [courseId], references: [id])

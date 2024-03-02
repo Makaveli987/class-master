@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { DeleteCourseButton } from "./delete-course-button";
 import { format } from "date-fns";
+import { formatPrice } from "@/lib/utils";
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -50,11 +51,14 @@ export const columns: ColumnDef<Course>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Default Price" />
     ),
+    cell: ({ row }) => {
+      return <span>{formatPrice(row.original.defaultPrice)}</span>;
+    },
   },
   {
     accessorKey: "defaultTotalClasses",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Total Classes" />
+      <DataTableColumnHeader column={column} title="Default No. of Classes" />
     ),
   },
   {

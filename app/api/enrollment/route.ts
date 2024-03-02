@@ -34,20 +34,47 @@ export async function POST(req: Request) {
       );
     }
 
+    const group = await db.group.findUnique({
+      where: { id: userId },
+      select: { isCompanyGroup: true, students: true },
+    });
+
     let enrollment = null;
+
     if (userType === EnrollUserType.GROUP) {
-      enrollment = await db.enrollment.create({
-        data: {
-          courseId,
-          teacherId,
-          courseGoals,
-          attendedClasses: 0,
-          groupId: userId,
-          schoolId: currentUser.schoolId,
-          price,
-          totalClasses,
-        },
-      });
+      if (group?.isCompanyGroup) {
+        enrollment = await db.enrollment.create({
+          data: {
+            courseId,
+            teacherId,
+            courseGoals,
+            groupId: userId,
+            schoolId: currentUser.schoolId,
+            price,
+            totalClasses,
+          },
+        });
+      } else {
+        let totalPrice = 0;
+
+        if (group?.students?.length) {
+          // Price here is represented as Price Per Student because group is not Company
+          totalPrice = price * group?.students?.length;
+        }
+        enrollment = await db.enrollment.create({
+          data: {
+            courseId,
+            teacherId,
+            courseGoals,
+            groupId: userId,
+            schoolId: currentUser.schoolId,
+            price: totalPrice,
+            pricePerStudent: price,
+            totalClasses,
+          },
+        });
+      }
+
       revalidatePath(`/school/groups/${userId}`);
     } else {
       enrollment = await db.enrollment.create({
@@ -55,7 +82,6 @@ export async function POST(req: Request) {
           courseId,
           teacherId,
           courseGoals,
-          attendedClasses: 0,
           studentId: userId,
           schoolId: currentUser.schoolId,
           price,

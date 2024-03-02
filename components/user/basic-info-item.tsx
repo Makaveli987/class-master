@@ -1,7 +1,7 @@
 interface BasicInfoItemProps {
   icon: React.ReactNode;
   label: string;
-  value?: string;
+  value?: string | number;
 }
 
 export function BasicInfoItem({ icon, label, value }: BasicInfoItemProps) {

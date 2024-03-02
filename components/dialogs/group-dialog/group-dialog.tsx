@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
 import {
   Dialog,
@@ -11,6 +12,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,11 +22,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip2 } from "@/components/ui/tooltip2";
 import useGroupDialog from "@/hooks/use-group-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Loader2Icon, XIcon } from "lucide-react";
+import { InfoIcon, Loader2Icon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -34,6 +37,7 @@ import { z } from "zod";
 interface GroupPayload {
   id?: string;
   name: string;
+  isCompanyGroup: boolean;
   studentIds: string[];
 }
 
@@ -41,6 +45,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Field is required").min(3, {
     message: "Name is too short",
   }),
+  isCompanyGroup: z.boolean().default(false),
 });
 
 export default function GroupDialog() {
@@ -78,8 +83,9 @@ export default function GroupDialog() {
     const defValues = groupDialog?.data
       ? {
           name: groupDialog?.data?.name,
+          isCompanyGroup: groupDialog?.data?.isCompanyGroup,
         }
-      : { name: "" };
+      : { name: "", isCompanyGroup: false };
 
     form.reset(defValues);
     setOptions();
@@ -109,6 +115,7 @@ export default function GroupDialog() {
   }
 
   function createGroup(data: GroupPayload) {
+    console.log("data", data);
     axios
       .post("/api/groups", { ...data })
       .then((response) => {
@@ -133,6 +140,8 @@ export default function GroupDialog() {
   }
 
   function updateGroup(data: GroupPayload) {
+    console.log("data", data);
+
     axios
       .patch("/api/groups/" + groupDialog?.data?.id, { ...data })
       .then((response) => {
@@ -215,6 +224,36 @@ export default function GroupDialog() {
                 }}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              disabled={pending}
+              name="isCompanyGroup"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center gap-2">
+                    <FormControl>
+                      <Checkbox
+                        disabled={pending}
+                        checked={field.value}
+                        onCheckedChange={(value) => {
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="cursor-pointer">
+                      <div className="flex gap-2 items-center">
+                        Company
+                        <Tooltip2 text="Select this checkbox if the created group consists exclusively of employees from a single company, and payments for the group will be centrally regulated from one designated source within that company. If left unselected, each student in the group will pay individually. ">
+                          <InfoIcon className="text-muted-foreground w-4 h-4" />
+                        </Tooltip2>
+                      </div>
+                    </FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div>
               <p className="mb-2 text-sm font-medium">Assigned students</p>

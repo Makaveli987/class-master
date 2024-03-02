@@ -1,4 +1,5 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { updateAttendedClass } from "@/actions/update-attended-classes";
 import { db } from "@/lib/db";
 import { ClassStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -34,39 +35,43 @@ export async function PATCH(
       userId,
     }: UpdateClassPayload = await req.json();
 
-    const schoolClass = await db.schoolClass.update({
-      where: {
-        id: schoolClassId,
-      },
-      data: {
-        description,
-        schoolClassStatus: classStatus,
-      },
+    const result = await db.$transaction(async (tx) => {
+      await updateAttendedClass(schoolClassId, enrollmentId, classStatus);
+
+      await db.schoolClass.update({
+        where: {
+          id: schoolClassId,
+        },
+        data: {
+          description,
+          schoolClassStatus: classStatus,
+        },
+      });
+
+      if (note && !noteId) {
+        await db.note.create({
+          data: {
+            enrollmentId,
+            teacherId: currentUser.id,
+            text: note,
+            userId,
+            schoolClassId,
+          },
+        });
+      }
+
+      if (note && noteId) {
+        await db.note.update({
+          where: { id: noteId },
+          data: {
+            text: note,
+          },
+        });
+      }
     });
 
-    if (note && !noteId) {
-      await db.note.create({
-        data: {
-          enrollmentId,
-          teacherId: currentUser.id,
-          text: note,
-          userId,
-          schoolClassId,
-        },
-      });
-    }
-
-    if (note && noteId) {
-      await db.note.update({
-        where: { id: noteId },
-        data: {
-          text: note,
-        },
-      });
-    }
-
     revalidatePath("/school/calendar");
-    return new NextResponse(JSON.stringify(schoolClass), {
+    return new NextResponse(JSON.stringify(result), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
