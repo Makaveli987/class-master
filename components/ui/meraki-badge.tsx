@@ -14,7 +14,7 @@ const merakiBadgeVariants = cva(
         purple: "bg-purple-100/60 text-purple-500 dark:bg-primary-foreground",
         orange: "bg-orange-100/60 text-orange-500 dark:bg-primary-foreground",
         blue: "bg-blue-100/60 text-blue-500 dark:bg-primary-foreground",
-        pink: "bg-pink-100/60 text-pink-500 dark:bg-primary-foreground",
+        rose: "bg-rose-100/60 text-rose-500 dark:bg-primary-foreground",
       },
     },
     defaultVariants: {

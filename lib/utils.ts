@@ -62,3 +62,11 @@ export function formatPrice(price: number) {
 
   return formattedPrice;
 }
+
+export function formatPhoneNumber(phoneNumber: string) {
+  const countryCode = phoneNumber.slice(0, 4);
+  const operatorCode = phoneNumber.slice(4, 6);
+  const restOfNumber = phoneNumber.slice(6);
+
+  return `${countryCode} ${operatorCode} ${restOfNumber}`;
+}

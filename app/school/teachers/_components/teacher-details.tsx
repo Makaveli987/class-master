@@ -9,7 +9,7 @@ import {
 import { BasicInfoItem } from "@/components/user/basic-info-item";
 import useTeacherDialog from "@/hooks/use-teacher-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatPhoneNumber } from "@/lib/utils";
 import { User } from "@prisma/client";
 import axios from "axios";
 import {
@@ -85,7 +85,7 @@ export default function TeacherDetails({ teacher }: TeacherDetailsProps) {
         <BasicInfoItem
           icon={<PhoneIcon />}
           label="Phone"
-          value={teacher?.phone}
+          value={formatPhoneNumber(teacher?.phone as string)}
         />
         <BasicInfoItem
           icon={<CalendarIcon />}

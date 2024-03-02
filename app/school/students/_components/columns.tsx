@@ -11,6 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { DeleteStudentButton } from "./delete-student-button";
+import { formatPhoneNumber } from "@/lib/utils";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -63,7 +64,7 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
 
-      return <span>{student.phone}</span>;
+      return <span>{formatPhoneNumber(student.phone)}</span>;
     },
     enableSorting: false,
   },

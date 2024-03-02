@@ -42,9 +42,9 @@ export function GetSchoolClassColumns(
 
   function getClassVariant(
     classStatus: ClassStatus
-  ): "blue" | "pink" | "emerald" {
+  ): "blue" | "rose" | "emerald" {
     if (classStatus === ClassStatus.SCHEDULED) return "blue";
-    if (classStatus === ClassStatus.CANCELED) return "pink";
+    if (classStatus === ClassStatus.CANCELED) return "rose";
     if (classStatus === ClassStatus.HELD) return "emerald";
     return "blue";
   }

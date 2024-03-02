@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatPhoneNumber } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon } from "lucide-react";
@@ -12,7 +12,6 @@ import Link from "next/link";
 import { MerakiBadge } from "@/components/ui/meraki-badge";
 import Image from "next/image";
 import { DeleteTeacherButton } from "./delete-course-button";
-// import MerakiBadge from "@/components/ui/meraki-badge";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -56,6 +55,7 @@ export const columns: ColumnDef<User>[] = [
         title="Phone"
       />
     ),
+    cell: ({ row }) => <span>{formatPhoneNumber(row.original.phone)}</span>,
     enableSorting: false,
   },
   {
