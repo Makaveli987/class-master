@@ -13,8 +13,13 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ConfirmDialog } from "../ui/confirm-dialog";
 
+interface ExamColumnsPops {
+  isEnrolmentExam?: boolean;
+  isGroupExam?: boolean;
+}
+
 export function GetExamColumns(
-  isEnrollmentExams: boolean
+  props: ExamColumnsPops
 ): ColumnDef<ExamResponse>[] {
   const examDialog = useExamDialog();
   const router = useRouter();
@@ -55,16 +60,12 @@ export function GetExamColumns(
     {
       accessorKey: "enrollment",
       header: ({ column }) => (
-        // isEnrollmentExams && (
         <DataTableColumnHeader column={column} title="Course" />
       ),
       cell: ({ row }) => {
         console.log("row :>> ", row);
         const enrollmentCourse = row.original.enrollment?.course;
-
-        // return !isEnrollmentExams ? null : (
         return <span>{enrollmentCourse?.name}</span>;
-        // );
       },
     },
     {
@@ -115,6 +116,24 @@ export function GetExamColumns(
       },
     },
   ];
+
+  if (props.isGroupExam) {
+    columns.splice(2, 0, {
+      accessorKey: "student.firstName",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Student" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <span>
+            {row.original.student?.firstName +
+              " " +
+              row.original.student?.lastName}
+          </span>
+        );
+      },
+    });
+  }
 
   return columns;
 }

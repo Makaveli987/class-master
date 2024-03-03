@@ -7,7 +7,7 @@ import { CalendarCheck2Icon, CheckIcon, ClockIcon, XIcon } from "lucide-react";
 import React from "react";
 
 const calendarEventVariants = cva(
-  "relative text-slate-50 flex flex-col p-1 pl-1.5 truncate rounded-sm h-full px-1 w-full overflow-auto border border-white dark:border-slate-400",
+  "relative text-slate-50 flex flex-col p-1 pl-1.5 truncate rounded-sm h-full px-1 w-full overflow-auto border border-white dark:border-slate-400 rounded-md",
   {
     variants: {
       variant: {

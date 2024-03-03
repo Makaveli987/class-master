@@ -14,6 +14,7 @@ import {
   CoinsIcon,
   EditIcon,
   EuroIcon,
+  GraduationCapIcon,
   ListChecksIcon,
   MailIcon,
 } from "lucide-react";
@@ -58,7 +59,7 @@ export default function EnrollmentDetails({
         <div className="flex">
           <div className="flex-1">
             <BasicInfoItem
-              icon={<MailIcon />}
+              icon={<GraduationCapIcon />}
               label="Teacher"
               value={
                 enrollment?.teacher?.firstName +

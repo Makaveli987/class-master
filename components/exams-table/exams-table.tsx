@@ -19,15 +19,19 @@ import { Button } from "../ui/button";
 interface ExamsProps {
   exams: ExamResponse[] | null;
   enrollmentId: string;
-  studentId: string | null;
+  studentId?: string | null;
+  groupId?: string;
 }
 
 export default function ExamsTable({
   exams,
   enrollmentId,
   studentId,
+  groupId,
 }: ExamsProps) {
   const examDialog = useExamDialog();
+
+  console.log("exams :>> ", exams);
 
   return (
     <Card className="border-0 shadow-none">
@@ -39,14 +43,17 @@ export default function ExamsTable({
         <DataTable
           className="border-0"
           headerClassName="rounded-t-md bg-muted/50"
-          columns={GetExamColumns(true)}
+          columns={GetExamColumns({
+            isEnrolmentExam: true,
+            isGroupExam: !!groupId,
+          })}
           data={exams || []}
           filterPlaceholder="Search exams..."
         >
           <Button
             className="ml-auto"
             onClick={() => {
-              examDialog.open({ enrollmentId, studentId });
+              examDialog.open({ enrollmentId, studentId, groupId });
             }}
           >
             <PlusCircleIcon className="w-5 h-5 mr-2" />

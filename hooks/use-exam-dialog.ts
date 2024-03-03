@@ -1,27 +1,11 @@
 import { Exam } from "@prisma/client";
 import { create } from "zustand";
 
-// export interface ExamData extends Exam {
-//   teacher: {
-//     id: string;
-//     firstName: string;
-//     lastName: string;
-//   };
-//   student?: {
-//     id: string;
-//     firstName: string;
-//     lastName: string;
-//   };
-//   group?: {
-//     id: string;
-//     name: string;
-//   };
-// }
-
 interface OpenParams {
   exam?: Exam;
   enrollmentId?: string;
   studentId?: string | null;
+  groupId?: string;
 }
 
 type ExamDialogStore = {
@@ -31,20 +15,29 @@ type ExamDialogStore = {
   data: Exam | null;
   enrollmentId?: string;
   studentId?: string;
+  groupId?: string;
 };
 
 export const useExamDialog = create<ExamDialogStore>((set) => ({
   isOpen: false,
   data: null,
   enrollmentId: "",
+  groupId: "",
   open: (params: OpenParams) => {
     set({
       isOpen: true,
       data: params?.exam,
       enrollmentId: params.enrollmentId,
       studentId: params.studentId || "",
+      groupId: params.groupId || "",
     });
   },
   close: () =>
-    set({ isOpen: false, data: null, enrollmentId: "", studentId: "" }),
+    set({
+      isOpen: false,
+      data: null,
+      enrollmentId: "",
+      studentId: "",
+      groupId: "",
+    }),
 }));

@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "font-sans antialiased grainy overflow-hidden"
+          "font-sans antialiased grainy"
           // inter.className
         )}
       >

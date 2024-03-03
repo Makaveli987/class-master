@@ -68,7 +68,7 @@ export default function StudentDetails({
               {studentGroups?.length ? (
                 studentGroups?.map((item, index) => (
                   <Button
-                    className="px-0 mr-1"
+                    className="px-0 mr-1 py-0 h-4"
                     key={item.group.name}
                     asChild
                     variant={"link"}

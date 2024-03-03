@@ -1,7 +1,5 @@
 import { db } from "@/lib/db";
-import { Enrollment, Exam } from "@prisma/client";
-import { Pick } from "@prisma/client/runtime/library";
-// import getCurrentUser from "./get-current-user";
+import { Exam } from "@prisma/client";
 
 export interface ExamResponse extends Exam {
   enrollment?: {
@@ -10,16 +8,18 @@ export interface ExamResponse extends Exam {
       name: string;
     };
   };
+  student?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
 }
 
-export const getEnrollemntExams = async (
-  enrollmentId: string,
-  studentId: string
-) => {
+export const getEnrollemntExams = async (enrollmentId: string) => {
   try {
     // const currentUser = await getCurrentUser();
     const exams: ExamResponse[] = await db.exam.findMany({
-      where: { enrollmentId, studentId },
+      where: { enrollmentId },
       include: {
         enrollment: {
           select: {
@@ -29,6 +29,13 @@ export const getEnrollemntExams = async (
                 name: true,
               },
             },
+          },
+        },
+        student: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
           },
         },
       },

@@ -26,15 +26,21 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { Input } from "../../ui/input";
+import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
+import { GroupStudentsResponse } from "@/app/api/groups/[groupId]/students/route";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   name: z.string().min(1, "Field is required"),
+  studentId: z.string().min(1, "Field is required"),
+  enrollmentId: z.string().min(1, "Field is required"),
   result: z.string().min(1, "Field is required"),
   comment: z.string(),
 });
 
 export default function ExamDialog() {
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [groupStudents, setGroupStudents] = useState<ComboboxOptions[]>([]);
 
   const examDialog = useExamDialog();
   const router = useRouter();
@@ -44,7 +50,31 @@ export default function ExamDialog() {
     defaultValues: { name: "", result: "", comment: "" },
   });
 
+  function getGroupStudents() {
+    axios
+      .get(`/api/groups/${examDialog.groupId}/students`)
+      .then((res: AxiosResponse<GroupStudentsResponse[]>) => {
+        const options = res.data.map((student) => ({
+          value: student.id,
+          label: student.firstName + " " + student.lastName,
+        }));
+
+        setGroupStudents(options);
+      })
+      .catch(() => {
+        toast.error("Failed to fetch group members");
+      });
+  }
+
   useEffect(() => {
+    if (examDialog.groupId) {
+      getGroupStudents();
+    } else {
+      form.setValue("studentId", examDialog?.studentId || "");
+    }
+
+    form.setValue("enrollmentId", examDialog?.enrollmentId || "");
+
     if (!!examDialog.data) {
       form.setValue("name", examDialog.data.name || "");
       form.setValue("result", examDialog.data.result || "");
@@ -56,14 +86,12 @@ export default function ExamDialog() {
     }
 
     form.clearErrors();
-  }, [form, examDialog.data]);
+  }, [form, examDialog]);
 
   function createExam(values: z.infer<typeof formSchema>): void {
     axios
       .post("/api/exams", {
         ...values,
-        enrollmentId: examDialog?.enrollmentId,
-        studentId: examDialog?.studentId,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {
@@ -120,9 +148,6 @@ export default function ExamDialog() {
           <DialogTitle>
             {!!examDialog.data ? "Edit Exam" : "Add Exam"}
           </DialogTitle>
-          <DialogDescription>
-            Teacher note for this course enrollment
-          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -144,6 +169,31 @@ export default function ExamDialog() {
               )}
             />
 
+            {examDialog.groupId && (
+              <FormField
+                control={form.control}
+                name="studentId"
+                disabled={isPending}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-col space-y-2">
+                      <FormLabel>Students</FormLabel>
+                      <FormControl>
+                        <Combobox
+                          disabled={isPending}
+                          placeholder="Select student..."
+                          value={field.value}
+                          options={groupStudents}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="result"
@@ -162,7 +212,7 @@ export default function ExamDialog() {
               )}
             />
 
-            {/* <FormField
+            <FormField
               control={form.control}
               name="comment"
               render={({ field }) => (
@@ -171,7 +221,7 @@ export default function ExamDialog() {
                   <FormControl>
                     <Textarea
                       disabled={isPending}
-                      className="h-32"
+                      className="h-24"
                       placeholder="Comment"
                       {...field}
                     />
@@ -179,7 +229,7 @@ export default function ExamDialog() {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
 
             <div className="flex gap-2 justify-end">
               <Button

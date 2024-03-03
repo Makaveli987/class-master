@@ -38,10 +38,7 @@ export default async function EnrollmentId({
 
   const courses = await getCourses();
   const notes = (await getNotes(params.enrollmentId, userId)) as NoteData[];
-  const exams = await getEnrollemntExams(
-    enrollment.id,
-    enrollment.studentId || ""
-  );
+  const exams = await getEnrollemntExams(enrollment.id);
 
   const schoolClasses = await getClassesByEnrollmentId(params.enrollmentId);
 
@@ -137,6 +134,7 @@ export default async function EnrollmentId({
                   exams={exams}
                   enrollmentId={enrollment.id}
                   studentId={enrollment.studentId}
+                  groupId={enrollment.groupId || undefined}
                 />
               </TabsContent>
               <TabsContent value="classes">

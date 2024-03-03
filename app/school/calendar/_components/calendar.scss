@@ -127,6 +127,10 @@
   // @apply shadow-sm shadow-slate-200;
 }
 
+.fc-timegrid-event-harness-inset .fc-timegrid-event {
+  @apply bg-transparent rounded-md;
+}
+
 .fc .fc-timegrid-now-indicator-arrow {
 }
 
