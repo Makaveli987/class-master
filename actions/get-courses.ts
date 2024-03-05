@@ -3,7 +3,7 @@ import getCurrentUser from "./get-current-user";
 import { Course, User, UserPerCourse } from "@prisma/client";
 
 interface Teacher extends UserPerCourse {
-  user: Pick<User, "id" | "firstName" | "lastName">;
+  user: Pick<User, "id" | "firstName" | "lastName" | "active">;
 }
 
 export interface CourseResponse extends Course {
@@ -27,11 +27,13 @@ export const getCourses = async () => {
                 id: true,
                 firstName: true,
                 lastName: true,
+                active: true,
               },
             },
           },
         },
       },
+      orderBy: { active: "desc" },
     });
     return courses as unknown as CourseResponse[];
   } catch (error) {

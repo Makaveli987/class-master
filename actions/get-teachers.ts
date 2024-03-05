@@ -10,6 +10,7 @@ export const getTeachers = async () => {
         schoolId: currentUser?.schoolId,
         archived: false,
       },
+      orderBy: { active: "desc" },
     });
 
     return teachers;
@@ -39,6 +40,7 @@ export const getTeachersOptions = async () => {
       where: {
         schoolId: currentUser?.schoolId,
         archived: false,
+        active: true,
       },
     });
 

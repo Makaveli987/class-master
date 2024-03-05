@@ -4,7 +4,11 @@ import { EnrollmentResponse } from "@/actions/get-enrolments";
 import CourseProgress from "@/components/course-progress";
 
 import { Button } from "@/components/ui/button";
-import { BasicInfoItem } from "@/components/user/basic-info-item";
+import {
+  BasicInfoIcon,
+  BasicInfoItem,
+  BasicInfoLabel,
+} from "@/components/user/basic-info-item";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { formatPrice } from "@/lib/utils";
@@ -58,40 +62,51 @@ export default function EnrollmentDetails({
       <div className="flex flex-col gap-5 mt-4">
         <div className="flex">
           <div className="flex-1">
-            <BasicInfoItem
-              icon={<GraduationCapIcon />}
-              label="Teacher"
-              value={
-                enrollment?.teacher?.firstName +
-                " " +
-                enrollment?.teacher?.lastName
-              }
-            />
+            <BasicInfoItem>
+              <BasicInfoIcon>
+                <GraduationCapIcon />
+              </BasicInfoIcon>
+              <BasicInfoLabel label="Teacher">
+                {" "}
+                {enrollment?.teacher?.firstName +
+                  " " +
+                  enrollment?.teacher?.lastName}
+              </BasicInfoLabel>
+            </BasicInfoItem>
           </div>
           <div className="flex-1">
-            <BasicInfoItem
-              icon={<BookAIcon />}
-              label="Course"
-              value={enrollment?.course?.name}
-            />
+            <BasicInfoItem>
+              <BasicInfoIcon>
+                <BookAIcon />
+              </BasicInfoIcon>
+              <BasicInfoLabel label="Course">
+                {enrollment?.course?.name}
+              </BasicInfoLabel>
+            </BasicInfoItem>
           </div>
         </div>
 
         <div className="flex">
           <div className="flex-1">
-            <BasicInfoItem
-              icon={<EuroIcon />}
-              label="Price"
-              value={formatPrice(enrollment?.price as number)}
-            />
+            <BasicInfoItem>
+              <BasicInfoIcon>
+                <EuroIcon />
+              </BasicInfoIcon>
+              <BasicInfoLabel label="Price">
+                {formatPrice(enrollment?.price as number)}
+              </BasicInfoLabel>
+            </BasicInfoItem>
           </div>
           {enrollment?.pricePerStudent && (
             <div className="flex-1">
-              <BasicInfoItem
-                icon={<CoinsIcon />}
-                label="Price Per Student"
-                value={formatPrice(enrollment?.pricePerStudent as number)}
-              />
+              <BasicInfoItem>
+                <BasicInfoIcon>
+                  <CoinsIcon />
+                </BasicInfoIcon>
+                <BasicInfoLabel label="Price">
+                  {formatPrice(enrollment?.pricePerStudent as number)}
+                </BasicInfoLabel>
+              </BasicInfoItem>
             </div>
           )}
 

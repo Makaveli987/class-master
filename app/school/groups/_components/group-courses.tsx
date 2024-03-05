@@ -18,12 +18,14 @@ interface GroupCoursesProps {
   groupId: string;
   enrollments: EnrollmentResponse[];
   courses: CourseResponse[];
+  isGroupActive?: boolean;
 }
 
 export default function GroupCourses({
   groupId,
   enrollments,
   courses,
+  isGroupActive = true,
 }: GroupCoursesProps) {
   const enrollDialog = useEnrollDialog();
 
@@ -50,6 +52,7 @@ export default function GroupCourses({
           </div>
           <div className="flex justify-end mt-6">
             <Button
+              disabled={!isGroupActive}
               onClick={() =>
                 enrollDialog.open({
                   userId: groupId,

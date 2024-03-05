@@ -34,6 +34,7 @@ model User {
   dateOfBirth           DateTime
   schoolId              String
   archived              Boolean         @default(false)
+  active                Boolean         @default(true)
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
   role                  Role
@@ -58,6 +59,7 @@ model Course {
   defaultTotalClasses    Int
   schoolId               String
   archived               Boolean         @default(false)
+  active                 Boolean         @default(true)
   createdAt              DateTime        @default(now())
   updatedAt              DateTime        @updatedAt
   enrolments             Enrollment[]
@@ -87,6 +89,7 @@ model Student {
   dateOfBirth   DateTime
   schoolId      String
   archived      Boolean          @default(false)
+  active        Boolean          @default(true)
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   enrolments    Enrollment[]
@@ -105,6 +108,7 @@ model Group {
   name           String
   schoolId       String
   archived       Boolean          @default(false)
+  active         Boolean          @default(true)
   isCompanyGroup Boolean          @default(false)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt

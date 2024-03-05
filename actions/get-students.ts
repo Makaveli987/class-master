@@ -7,6 +7,7 @@ export const getStudents = async () => {
 
     const students = await db.student.findMany({
       where: { schoolId: currentUser?.schoolId, archived: false },
+      orderBy: { active: "desc" },
     });
     return students;
   } catch (error) {

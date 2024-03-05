@@ -29,6 +29,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -38,9 +40,9 @@ const formSchema = z.object({
     message: "Last name is too short",
   }),
   dateOfBirth: z.date({ required_error: "Field is required" }),
-
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
   phone: z.string().min(5, "Field is required"),
+  active: z.boolean().default(true),
 });
 
 export default function StudentDialog() {
@@ -60,6 +62,7 @@ export default function StudentDialog() {
           email: studentDialog.data.email,
           phone: studentDialog.data.phone,
           dateOfBirth: studentDialog.data.dateOfBirth,
+          active: studentDialog.data.active,
         }
       : {
           firstName: "",
@@ -132,7 +135,7 @@ export default function StudentDialog() {
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="mb-6">
+          <DialogTitle className="mb-2">
             {studentDialog.action === DialogAction.CREATE
               ? "Add Student"
               : "Edit Student"}
@@ -219,6 +222,31 @@ export default function StudentDialog() {
                 </FormItem>
               )}
             />
+
+            {studentDialog.data && (
+              <FormField
+                control={form.control}
+                name="active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-2">
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <div className="flex gap-2 items-center">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={pending}
+                          aria-readonly
+                        />
+                        <Label className="font-normal">
+                          {field.value ? "Active" : "Inactive"}
+                        </Label>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter className="pt-2">
               <Button

@@ -36,6 +36,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function TeacherDialog() {
   const [pending, setPending] = useState(false);
@@ -54,25 +56,8 @@ export default function TeacherDialog() {
     dateOfBirth: z.date({ required_error: "Field is required" }),
     phone: z.string().min(5, "Field is required"),
     role: z.string().min(1, "Field is required"),
+    active: z.boolean().default(true),
   });
-
-  const defValues = teacherDialog?.data
-    ? {
-        firstName: teacherDialog.data.firstName,
-        lastName: teacherDialog.data.lastName,
-        email: teacherDialog.data.email,
-        phone: teacherDialog.data.phone,
-        role: teacherDialog.data.role,
-        dateOfBirth: teacherDialog.data.dateOfBirth,
-      }
-    : {
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        phone: "",
-        role: "",
-      };
 
   const makeFieldOptional = (schema: any, fieldName: string) => {
     return schema.extend({
@@ -96,6 +81,7 @@ export default function TeacherDialog() {
           phone: teacherDialog.data.phone,
           role: teacherDialog.data.role,
           dateOfBirth: teacherDialog.data.dateOfBirth,
+          active: teacherDialog.data.active,
         }
       : {
           firstName: "",
@@ -173,7 +159,7 @@ export default function TeacherDialog() {
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="mb-6">
+          <DialogTitle className="mb-2">
             {teacherDialog.action === DialogAction.CREATE
               ? "Add Teacher"
               : "Edit Teacher"}
@@ -312,6 +298,31 @@ export default function TeacherDialog() {
                 </FormItem>
               )}
             />
+
+            {teacherDialog.data && (
+              <FormField
+                control={form.control}
+                name="active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-2">
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <div className="flex gap-2 items-center">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={pending}
+                          aria-readonly
+                        />
+                        <Label className="font-normal">
+                          {field.value ? "Active" : "Inactive"}
+                        </Label>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter className="pb-2">
               <Button

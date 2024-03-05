@@ -17,6 +17,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import useCourseDialog from "@/hooks/use-course-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,10 +36,11 @@ const formSchema = z.object({
   name: z.string().min(1, "Field is required").min(3, {
     message: "Name is too short",
   }),
+  active: z.boolean().default(true),
   description: z.string(),
-  defaultPrice: z.string(),
-  defaultGroupPrice: z.string(),
-  defaultPricePerStudent: z.string(),
+  defaultPrice: z.number().positive(),
+  defaultGroupPrice: z.number().positive(),
+  defaultPricePerStudent: z.number().positive(),
   defaultTotalClasses: z.string().min(1, "Field is required"),
 });
 
@@ -51,34 +55,36 @@ export default function CourseDialog() {
   });
 
   useEffect(() => {
-    const defValues = courseDialog.data
+    const defValues: z.infer<typeof formSchema> = courseDialog.data
       ? {
           name: courseDialog.data.name,
+          active: courseDialog.data.active,
           description: courseDialog.data.description,
-          defaultPrice: courseDialog.data.defaultPrice.toString(),
-          defaultGroupPrice: courseDialog.data.defaultGroupPrice?.toString(),
-          defaultPricePerStudent:
-            courseDialog.data.defaultPricePerStudent?.toString(),
+          defaultPrice: courseDialog.data.defaultPrice || 0,
+          defaultGroupPrice: courseDialog.data.defaultGroupPrice || 0,
+          defaultPricePerStudent: courseDialog.data.defaultPricePerStudent || 0,
           defaultTotalClasses: courseDialog.data.defaultTotalClasses.toString(),
         }
       : {
           name: "",
+          active: true,
           description: "",
-          defaultPrice: "",
-          defaultGroupPrice: "",
-          defaultPricePerStudent: "",
+          defaultPrice: 0,
+          defaultGroupPrice: 0,
+          defaultPricePerStudent: 0,
           defaultTotalClasses: "",
         };
+
     form.reset(defValues);
   }, [courseDialog.data, form]);
 
   function createCourse(values: z.infer<typeof formSchema>) {
     const payload = {
       ...values,
-      defaultPrice: parseInt(values.defaultPrice),
-      defaultGroupPrice: parseInt(values.defaultGroupPrice),
-      defaultPricePerStudent: parseInt(values.defaultPricePerStudent),
-      defaultTotalClasses: parseInt(values.defaultTotalClasses),
+      defaultPrice: values.defaultPrice,
+      defaultGroupPrice: values.defaultGroupPrice,
+      defaultPricePerStudent: values.defaultPricePerStudent,
+      defaultTotalClasses: parseInt(values.defaultTotalClasses.toString()),
     };
 
     axios
@@ -105,10 +111,10 @@ export default function CourseDialog() {
   function updateCourse(values: z.infer<typeof formSchema>) {
     const payload = {
       ...values,
-      defaultPrice: parseInt(values.defaultPrice),
-      defaultGroupPrice: parseInt(values.defaultGroupPrice),
-      defaultPricePerStudent: parseInt(values.defaultPricePerStudent),
-      defaultTotalClasses: parseInt(values.defaultTotalClasses),
+      defaultPrice: values.defaultPrice,
+      defaultGroupPrice: values.defaultGroupPrice,
+      defaultPricePerStudent: values.defaultPricePerStudent,
+      defaultTotalClasses: parseInt(values.defaultTotalClasses.toString()),
     };
 
     axios
@@ -161,7 +167,11 @@ export default function CourseDialog() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input disabled={pending} {...field} />
+                    <Input
+                      placeholder="Enter course name"
+                      disabled={pending}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,7 +185,12 @@ export default function CourseDialog() {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input disabled={pending} {...field} />
+                    <Textarea
+                      placeholder="Enter course description"
+                      className="h-20"
+                      disabled={pending}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -189,15 +204,46 @@ export default function CourseDialog() {
                 <FormItem>
                   <FormLabel>Default Number Of Classes</FormLabel>
                   <FormControl>
-                    <Input disabled={pending} type="number" {...field} />
+                    <Input
+                      placeholder="Enter default number of classes"
+                      disabled={pending}
+                      type="number"
+                      min={0}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {courseDialog.data && (
+              <FormField
+                control={form.control}
+                name="active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-2 flex-1">
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <div className="flex gap-2 items-center">
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={pending}
+                          aria-readonly
+                        />
+                        <Label className="font-normal">
+                          {field.value ? "Active" : "Inactive"}
+                        </Label>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
+
             <div className="space-y-4">
-              <div className="flex flex-col space-y-1.5 pt-2">
+              <div className="flex flex-col space-y-1.5 pt-6">
                 <h3 className="font-semibold leading-none tracking-tight">
                   Course Pricing Overview
                 </h3>

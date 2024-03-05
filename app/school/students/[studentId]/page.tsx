@@ -111,6 +111,7 @@ export default async function StudentPage({
                   groupEnrollments={groupEnrollments || []}
                   studentId={params.studentId}
                   courses={courses || []}
+                  isStudentActive={student?.active}
                 />
               </TabsContent>
               <TabsContent value="tests">

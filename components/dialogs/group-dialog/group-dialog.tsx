@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import useGroupDialog from "@/hooks/use-group-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
@@ -46,6 +47,7 @@ const formSchema = z.object({
     message: "Name is too short",
   }),
   isCompanyGroup: z.boolean().default(false),
+  active: z.boolean().default(true),
 });
 
 export default function GroupDialog() {
@@ -84,6 +86,7 @@ export default function GroupDialog() {
       ? {
           name: groupDialog?.data?.name,
           isCompanyGroup: groupDialog?.data?.isCompanyGroup,
+          active: groupDialog?.data?.active,
         }
       : { name: "", isCompanyGroup: false };
 
@@ -115,7 +118,6 @@ export default function GroupDialog() {
   }
 
   function createGroup(data: GroupPayload) {
-    console.log("data", data);
     axios
       .post("/api/groups", { ...data })
       .then((response) => {
@@ -225,35 +227,62 @@ export default function GroupDialog() {
               />
             </div>
 
-            <FormField
-              control={form.control}
-              disabled={pending}
-              name="isCompanyGroup"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center gap-2">
-                    <FormControl>
-                      <Checkbox
-                        disabled={pending}
-                        checked={field.value}
-                        onCheckedChange={(value) => {
-                          field.onChange(value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormLabel className="cursor-pointer">
-                      <div className="flex gap-2 items-center">
-                        Company
-                        <Tooltip2 text="Select this checkbox if the created group consists exclusively of employees from a single company, and payments for the group will be centrally regulated from one designated source within that company. If left unselected, each student in the group will pay individually. ">
-                          <InfoIcon className="text-muted-foreground w-4 h-4" />
-                        </Tooltip2>
-                      </div>
-                    </FormLabel>
-                  </div>
-                  <FormMessage />
-                </FormItem>
+            <div className="flex gap-4 items-end">
+              {groupDialog.data && (
+                <FormField
+                  control={form.control}
+                  name="active"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col gap-2 flex-1">
+                      <FormLabel>Status</FormLabel>
+                      <FormControl>
+                        <div className="flex gap-2 items-center">
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={pending}
+                            aria-readonly
+                          />
+                          <Label className="font-normal">
+                            {field.value ? "Active" : "Inactive"}
+                          </Label>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               )}
-            />
+
+              <FormField
+                control={form.control}
+                disabled={pending}
+                name="isCompanyGroup"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col flex-1">
+                    <div className="flex items-center gap-2">
+                      <FormControl>
+                        <Checkbox
+                          disabled={pending}
+                          checked={field.value}
+                          onCheckedChange={(value) => {
+                            field.onChange(value);
+                          }}
+                        />
+                      </FormControl>
+                      <FormLabel className="cursor-pointer">
+                        <div className="flex gap-2 items-center">
+                          Company
+                          <Tooltip2 text="Select this checkbox if the created group consists exclusively of employees from a single company, and payments for the group will be centrally regulated from one designated source within that company. If left unselected, each student in the group will pay individually. ">
+                            <InfoIcon className="text-muted-foreground w-4 h-4" />
+                          </Tooltip2>
+                        </div>
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div>
               <p className="mb-2 text-sm font-medium">Assigned students</p>

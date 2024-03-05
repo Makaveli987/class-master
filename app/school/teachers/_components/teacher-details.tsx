@@ -6,7 +6,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { BasicInfoItem } from "@/components/user/basic-info-item";
+import StatusBadge from "@/components/ui/status-badge";
+import {
+  BasicInfoIcon,
+  BasicInfoItem,
+  BasicInfoLabel,
+} from "@/components/user/basic-info-item";
 import useTeacherDialog from "@/hooks/use-teacher-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { formatPhoneNumber } from "@/lib/utils";
@@ -19,6 +24,7 @@ import {
   EditIcon,
   MailIcon,
   PhoneIcon,
+  UserRoundCheckIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -77,26 +83,49 @@ export default function TeacherDetails({ teacher }: TeacherDetailsProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-5 mt-4">
-        <BasicInfoItem
-          icon={<MailIcon />}
-          label="Email"
-          value={teacher?.email}
-        />
-        <BasicInfoItem
-          icon={<PhoneIcon />}
-          label="Phone"
-          value={formatPhoneNumber(teacher?.phone as string)}
-        />
-        <BasicInfoItem
-          icon={<CalendarIcon />}
-          label="Date of Birth"
-          value={format(teacher?.dateOfBirth as Date, "dd-MMM-yyyy")}
-        />
-        <BasicInfoItem
-          icon={<CircleUserIcon />}
-          label="Role"
-          value={teacher?.role}
-        />
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <MailIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Email"> {teacher?.email}</BasicInfoLabel>
+        </BasicInfoItem>
+
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <PhoneIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Phone">
+            {formatPhoneNumber(teacher?.phone as string)}
+          </BasicInfoLabel>
+        </BasicInfoItem>
+
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <CalendarIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Date of Birth">
+            {format(teacher?.dateOfBirth as Date, "dd-MMM-yyyy")}
+          </BasicInfoLabel>
+        </BasicInfoItem>
+
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <CircleUserIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Role">{teacher?.role}</BasicInfoLabel>
+        </BasicInfoItem>
+
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <UserRoundCheckIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Status">
+            <StatusBadge
+              className="mt-1 py-0 rounded-md"
+              active={teacher?.active || false}
+            />
+          </BasicInfoLabel>
+        </BasicInfoItem>
       </div>
       <Popover
         open={isPopoverOpen}

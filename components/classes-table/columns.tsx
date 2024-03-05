@@ -48,6 +48,7 @@ export function GetSchoolClassColumns(
     if (classStatus === ClassStatus.HELD) return "emerald";
     return "blue";
   }
+
   function getClassIcon(classStatus: ClassStatus): React.ReactNode {
     if (classStatus === ClassStatus.SCHEDULED)
       return <CalendarCheckIcon className="w-4 h-4 mr-1" />;
@@ -111,7 +112,7 @@ export function GetSchoolClassColumns(
         const variant = getClassVariant(status);
 
         return (
-          <MerakiBadge variant={variant}>
+          <MerakiBadge variant={variant} className="border-0">
             {getClassIcon(status)} {status.toLowerCase()}
           </MerakiBadge>
         );

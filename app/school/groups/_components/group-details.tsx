@@ -3,6 +3,11 @@ import { GroupResponse } from "@/actions/get-groups";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import StatusBadge from "@/components/ui/status-badge";
+import {
+  BasicInfoItem,
+  BasicInfoLabel,
+} from "@/components/user/basic-info-item";
 import useGroupDialog from "@/hooks/use-group-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { Student } from "@prisma/client";
@@ -23,10 +28,22 @@ export default function GroupDetails({ group, students }: GroupDetailsProps) {
       <div className="flex gap-16 justify-between">
         <div className="flex flex-col gap-2">
           <h3 className="font-semibold">Description</h3>
+          {/* TODO Add description to group */}
           <p className="text-sm text-muted-foreground">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. At quos
             doloribus dolor?
           </p>
+          <BasicInfoItem className="mt-2">
+            <BasicInfoLabel
+              labelClassName="font-semibold text-base text-card-foreground"
+              label="Status"
+            >
+              <StatusBadge
+                className="mt-1 py-0 rounded-md"
+                active={group?.active || false}
+              />
+            </BasicInfoLabel>
+          </BasicInfoItem>
         </div>
         <Button
           onClick={() => {

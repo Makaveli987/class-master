@@ -54,6 +54,7 @@ export default async function GroupPage({
             enrollments={enrollments || []}
             groupId={params.groupId}
             courses={courses || []}
+            isGroupActive={group?.active}
           />
         </CardContent>
       </Card>

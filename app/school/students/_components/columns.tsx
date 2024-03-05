@@ -13,6 +13,8 @@ import React from "react";
 import { DeleteStudentButton } from "./delete-student-button";
 import { formatPhoneNumber } from "@/lib/utils";
 import { format } from "date-fns";
+import { MerakiBadge } from "@/components/ui/meraki-badge";
+import StatusBadge from "@/components/ui/status-badge";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -84,6 +86,19 @@ export const columns: ColumnDef<Student>[] = [
       return <span>{created}</span>;
     },
     enableSorting: false,
+  },
+  {
+    accessorKey: "active",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Status"
+      />
+    ),
+    cell: ({ row }) => {
+      return <StatusBadge active={row.original.active} />;
+    },
   },
   {
     id: "actions",

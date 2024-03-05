@@ -29,6 +29,9 @@ export const getGroups = async () => {
           },
         },
       },
+      orderBy: {
+        active: "desc",
+      },
     });
 
     return groups as GroupResponse[];

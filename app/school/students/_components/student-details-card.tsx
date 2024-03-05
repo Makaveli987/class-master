@@ -1,7 +1,14 @@
 "use client";
 import { StudentGroupsResponse } from "@/actions/get-students";
 import { Button } from "@/components/ui/button";
-import { BasicInfoItem } from "@/components/user/basic-info-item";
+import { Label } from "@/components/ui/label";
+import StatusBadge from "@/components/ui/status-badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  BasicInfoIcon,
+  BasicInfoItem,
+  BasicInfoLabel,
+} from "@/components/user/basic-info-item";
 import useStudentDialog from "@/hooks/use-student-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { formatPhoneNumber } from "@/lib/utils";
@@ -12,6 +19,7 @@ import {
   EditIcon,
   MailIcon,
   PhoneIcon,
+  UserRoundCheckIcon,
   Users2Icon,
 } from "lucide-react";
 import Link from "next/link";
@@ -42,28 +50,36 @@ export default function StudentDetails({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-5 mt-4">
-        <BasicInfoItem
-          icon={<MailIcon />}
-          label="Email"
-          value={student?.email}
-        />
-        <BasicInfoItem
-          icon={<PhoneIcon />}
-          label="Phone"
-          value={formatPhoneNumber(student?.phone as string)}
-        />
-        <BasicInfoItem
-          icon={<CalendarIcon />}
-          label="Date of Birth"
-          value={format(student?.dateOfBirth as Date, "dd-MMM-yyyy")}
-        />
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <MailIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Email"> {student?.email}</BasicInfoLabel>
+        </BasicInfoItem>
 
-        <div className="flex items-center gap-3">
-          <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <PhoneIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Phone">
+            {formatPhoneNumber(student?.phone as string)}
+          </BasicInfoLabel>
+        </BasicInfoItem>
+
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <CalendarIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Date of Birth">
+            {format(student?.dateOfBirth as Date, "dd-MMM-yyyy")}
+          </BasicInfoLabel>
+        </BasicInfoItem>
+
+        <BasicInfoItem>
+          <BasicInfoIcon>
             <Users2Icon />
-          </div>
-          <div className="flex flex-col text-sm">
-            <span className="text-muted-foreground text-xs">Groups</span>
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Groups">
             <div>
               {studentGroups?.length ? (
                 studentGroups?.map((item, index) => (
@@ -86,8 +102,20 @@ export default function StudentDetails({
                 <span className="pl-1">-</span>
               )}
             </div>
-          </div>
-        </div>
+          </BasicInfoLabel>
+        </BasicInfoItem>
+
+        <BasicInfoItem>
+          <BasicInfoIcon>
+            <UserRoundCheckIcon />
+          </BasicInfoIcon>
+          <BasicInfoLabel label="Status">
+            <StatusBadge
+              className="mt-1 py-0 rounded-md"
+              active={student?.active || false}
+            />
+          </BasicInfoLabel>
+        </BasicInfoItem>
       </div>
     </div>
   );

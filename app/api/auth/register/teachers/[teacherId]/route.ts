@@ -59,7 +59,7 @@ export async function PATCH(
     const currentUser = await getCurrentUser();
     const { teacherId } = params;
 
-    const { email, firstName, lastName, phone, role, dateOfBirth } =
+    const { email, firstName, lastName, phone, role, dateOfBirth, active } =
       await req.json();
 
     if (!currentUser) {
@@ -77,6 +77,7 @@ export async function PATCH(
         phone,
         role,
         dateOfBirth,
+        active,
       },
     });
 

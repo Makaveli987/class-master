@@ -10,6 +10,7 @@ import { EditIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { DeleteGroupButton } from "./delete-group-button";
+import StatusBadge from "@/components/ui/status-badge";
 
 export const columns: ColumnDef<GroupResponse>[] = [
   {
@@ -67,6 +68,19 @@ export const columns: ColumnDef<GroupResponse>[] = [
       );
 
       return <span>{updated}</span>;
+    },
+  },
+  {
+    accessorKey: "active",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Status"
+      />
+    ),
+    cell: ({ row }) => {
+      return <StatusBadge active={row.original.active} />;
     },
   },
   {

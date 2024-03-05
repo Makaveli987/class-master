@@ -1,4 +1,5 @@
 "use client";
+import { CourseResponse } from "@/actions/get-courses";
 import { EnrollmentResponse } from "@/actions/get-enrolments";
 import CourseEnrollment from "@/components/course-enrollment";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,8 @@ interface StudentCoursesProps {
   studentId: string;
   enrollments: EnrollmentResponse[];
   groupEnrollments: EnrollmentResponse[];
-  courses: any[];
+  courses: CourseResponse[];
+  isStudentActive?: boolean;
 }
 
 export default function StudentCourses({
@@ -25,6 +27,7 @@ export default function StudentCourses({
   enrollments,
   groupEnrollments,
   courses,
+  isStudentActive,
 }: StudentCoursesProps) {
   const enrollDialog = useEnrollDialog();
 
@@ -40,6 +43,7 @@ export default function StudentCourses({
             <CardDescription>Courses that student has attended</CardDescription>
           </div>
           <Button
+            disabled={!isStudentActive}
             className="sm:ml-auto"
             onClick={() =>
               enrollDialog.open({

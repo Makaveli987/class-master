@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     if (!courseId || !teacherId || !userId) {
       return new NextResponse(
-        JSON.stringify({ error: "Missing required fields" }),
+        JSON.stringify({ error: { message: "Missing required fields" } }),
         {
           status: 400,
           headers: {
@@ -34,14 +34,28 @@ export async function POST(req: Request) {
       );
     }
 
-    const group = await db.group.findUnique({
-      where: { id: userId },
-      select: { isCompanyGroup: true, students: true },
-    });
-
     let enrollment = null;
 
     if (userType === EnrollUserType.GROUP) {
+      const group = await db.group.findUnique({
+        where: { id: userId },
+        select: { isCompanyGroup: true, active: true, students: true },
+      });
+
+      if (!group?.active) {
+        return new NextResponse(
+          JSON.stringify({
+            error: { message: "Cannot enroll inactive group!" },
+          }),
+          {
+            status: 403,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+
       if (group?.isCompanyGroup) {
         enrollment = await db.enrollment.create({
           data: {
@@ -77,6 +91,25 @@ export async function POST(req: Request) {
 
       revalidatePath(`/school/groups/${userId}`);
     } else {
+      const student = await db.student.findUnique({
+        where: { id: userId },
+        select: { active: true },
+      });
+
+      if (!student?.active) {
+        return new NextResponse(
+          JSON.stringify({
+            error: { message: "Cannot enroll inactive student!" },
+          }),
+          {
+            status: 403,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+
       enrollment = await db.enrollment.create({
         data: {
           courseId,

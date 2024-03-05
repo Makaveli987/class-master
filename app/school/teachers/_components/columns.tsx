@@ -13,6 +13,7 @@ import { MerakiBadge } from "@/components/ui/meraki-badge";
 import { format } from "date-fns";
 import Image from "next/image";
 import { DeleteTeacherButton } from "./delete-course-button";
+import StatusBadge from "@/components/ui/status-badge";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -95,8 +96,21 @@ export const columns: ColumnDef<User>[] = [
     ),
     cell: ({ row }) => {
       const role = row.original.role;
-      const variant = role === "ADMIN" ? "purple" : "emerald";
+      const variant = role === "ADMIN" ? "purple" : "orange";
       return <MerakiBadge variant={variant}>{role.toLowerCase()}</MerakiBadge>;
+    },
+  },
+  {
+    accessorKey: "active",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Status"
+      />
+    ),
+    cell: ({ row }) => {
+      return <StatusBadge active={row.original.active} />;
     },
   },
   {

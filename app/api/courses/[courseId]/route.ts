@@ -18,6 +18,7 @@ export async function PATCH(
     const {
       name,
       description,
+      active,
       defaultPrice,
       defaultGroupPrice,
       defaultPricePerStudent,
@@ -30,6 +31,7 @@ export async function PATCH(
       data: {
         name,
         description,
+        active,
         defaultPrice,
         defaultGroupPrice,
         defaultPricePerStudent,

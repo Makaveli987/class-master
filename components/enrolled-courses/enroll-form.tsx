@@ -69,10 +69,12 @@ export default function EnrollForm() {
   });
 
   useEffect(() => {
-    const cOptions = enrollDialog.courses?.map((course: Course) => ({
-      value: course.id,
-      label: course.name,
-    }));
+    const cOptions = enrollDialog.courses
+      ?.filter((course) => course.active)
+      .map((course: Course) => ({
+        value: course.id,
+        label: course.name,
+      }));
     setCoursesOptions(cOptions || []);
     filterTeachersOptions(enrollDialog.data?.courseId);
 
@@ -89,10 +91,12 @@ export default function EnrollForm() {
       (course) => course.id === courseId
     );
 
-    const tOptions = selectedCourse?.userPerCourses?.map((item: any) => ({
-      value: item.user?.id,
-      label: `${item.user?.firstName} ${item.user?.lastName}`,
-    }));
+    const tOptions = selectedCourse?.userPerCourses
+      ?.filter((item) => item.user.active)
+      .map((item: any) => ({
+        value: item.user?.id,
+        label: `${item.user?.firstName} ${item.user?.lastName}`,
+      }));
     setTeachersOptions(tOptions || []);
   }
 
@@ -114,7 +118,11 @@ export default function EnrollForm() {
         }
       })
       .catch((error) => {
-        toast.error("Something went wrong. Student wasn't enrolled!");
+        console.log("error :>> ", error);
+        const errorMessage = error.response.data.error.message
+          ? error.response.data.error.message
+          : "Something went wrong. Student wasn't enrolled!";
+        toast.error(errorMessage);
       })
       .finally(() => {
         setIsPending(false);

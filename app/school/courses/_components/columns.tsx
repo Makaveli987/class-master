@@ -12,6 +12,7 @@ import Link from "next/link";
 import { DeleteCourseButton } from "./delete-course-button";
 import { format } from "date-fns";
 import { formatPrice } from "@/lib/utils";
+import StatusBadge from "@/components/ui/status-badge";
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -76,17 +77,16 @@ export const columns: ColumnDef<Course>[] = [
     },
   },
   {
-    accessorKey: "updatedAt",
+    accessorKey: "active",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated" />
+      <DataTableColumnHeader
+        className="pl-2 text-xs"
+        column={column}
+        title="Status"
+      />
     ),
     cell: ({ row }) => {
-      const updated = format(
-        row.original.updatedAt as Date,
-        "dd-MMM-yyyy HH:mm"
-      );
-
-      return <span>{updated}</span>;
+      return <StatusBadge active={row.original.active} />;
     },
   },
   {
