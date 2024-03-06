@@ -8,13 +8,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { EditIcon } from "lucide-react";
 import Link from "next/link";
 
+import StatusBadge from "@/components/ui/status-badge";
+import { formatPhoneNumber } from "@/lib/utils";
+import { format } from "date-fns";
 import Image from "next/image";
 import React from "react";
 import { DeleteStudentButton } from "./delete-student-button";
-import { formatPhoneNumber } from "@/lib/utils";
-import { format } from "date-fns";
-import { MerakiBadge } from "@/components/ui/meraki-badge";
-import StatusBadge from "@/components/ui/status-badge";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

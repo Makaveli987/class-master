@@ -3,21 +3,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const merakiBadgeVariants = cva(
-  "inline-flex items-center rounded-md px-2.5 py-0.5 text-sm font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded px-2.5 py-0.5 h-[22px] text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default: "bg-primary/10 text-primary border border-primary",
         emerald:
-          "bg-emerald-100/60 text-emerald-500 dark:bg-primary-foreground border border-emerald-500",
+          "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 border-transparent",
         violet:
-          "bg-violet-100/60 text-violet-500 dark:bg-primary-foreground border border-violet-500",
+          "bg-violet-100 text-violet-600 dark:bg-violet-500/20 border-transparent",
         purple:
-          "bg-purple-100/60 text-purple-500 dark:bg-primary-foreground border border-purple-500",
+          "bg-purple-100 text-purple-600 dark:bg-purple-500/20 border-transparent",
         orange:
-          "bg-orange-100/60 text-orange-500 dark:bg-primary-foreground border border-orange-500",
-        blue: "bg-blue-100/60 text-blue-500 dark:bg-primary-foreground border border-blue-500",
-        rose: "bg-rose-100/60 text-rose-500 dark:bg-primary-foreground border border-rose-500",
+          "bg-orange-100 text-orange-600 dark:bg-orange-500/20 border-transparent",
+        blue: "bg-blue-100 text-blue-600 dark:bg-blue-500/20 border-transparent",
+        rose: "bg-rose-100 text-rose-600 dark:bg-rose-500/20 border-transparent",
       },
     },
     defaultVariants: {

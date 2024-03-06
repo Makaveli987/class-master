@@ -31,10 +31,7 @@ export default function CourseDetails({ course }: CourseDetailsProps) {
               labelClassName="font-semibold text-base text-card-foreground"
               label="Status"
             >
-              <StatusBadge
-                className="mt-1 py-0 rounded-md"
-                active={course?.active || false}
-              />
+              <StatusBadge className="mt-1" active={course?.active || false} />
             </BasicInfoLabel>
           </BasicInfoItem>
         </div>

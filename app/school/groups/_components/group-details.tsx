@@ -38,10 +38,7 @@ export default function GroupDetails({ group, students }: GroupDetailsProps) {
               labelClassName="font-semibold text-base text-card-foreground"
               label="Status"
             >
-              <StatusBadge
-                className="mt-1 py-0 rounded-md"
-                active={group?.active || false}
-              />
+              <StatusBadge className="mt-1" active={group?.active || false} />
             </BasicInfoLabel>
           </BasicInfoItem>
         </div>

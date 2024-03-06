@@ -120,10 +120,7 @@ export default function TeacherDetails({ teacher }: TeacherDetailsProps) {
             <UserRoundCheckIcon />
           </BasicInfoIcon>
           <BasicInfoLabel label="Status">
-            <StatusBadge
-              className="mt-1 py-0 rounded-md"
-              active={teacher?.active || false}
-            />
+            <StatusBadge className="mt-1" active={teacher?.active || false} />
           </BasicInfoLabel>
         </BasicInfoItem>
       </div>

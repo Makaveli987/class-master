@@ -12,9 +12,11 @@ import axios from "axios";
 import { addMinutes, format } from "date-fns";
 import {
   CalendarCheckIcon,
+  CheckCircle2Icon,
   CheckIcon,
   EditIcon,
   Trash2Icon,
+  XCircleIcon,
   XIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -51,19 +53,19 @@ export function GetSchoolClassColumns(
 
   function getClassIcon(classStatus: ClassStatus): React.ReactNode {
     if (classStatus === ClassStatus.SCHEDULED)
-      return <CalendarCheckIcon className="w-4 h-4 mr-1" />;
+      return <CalendarCheckIcon className="w-3 h-3 mr-1" />;
     if (classStatus === ClassStatus.CANCELED)
-      return <XIcon className="w-4 h-4 mr-1" />;
+      return <XCircleIcon className="w-3 h-3 mr-1" />;
     if (classStatus === ClassStatus.HELD)
-      return <CheckIcon className="w-4 h-4 mr-1" />;
-    return <CalendarCheckIcon className="w-4 h-4 mr-1" />;
+      return <CheckCircle2Icon className="w-3 h-3 mr-1" />;
+    return <CalendarCheckIcon className="w-3 h-3 mr-1" />;
   }
 
   const columns: ColumnDef<SchoolClassResponse>[] = [
     {
       accessorKey: "start",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Created" />
+        <DataTableColumnHeader column={column} title="Date" />
       ),
       cell: ({ row }) => {
         const start = row.original.start;
@@ -113,7 +115,9 @@ export function GetSchoolClassColumns(
 
         return (
           <MerakiBadge variant={variant} className="border-0">
-            {getClassIcon(status)} {status.toLowerCase()}
+            <div className="flex items-center">
+              {getClassIcon(status)} {status.toLowerCase()}
+            </div>
           </MerakiBadge>
         );
       },
