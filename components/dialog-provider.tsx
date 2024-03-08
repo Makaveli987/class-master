@@ -10,6 +10,7 @@ import GroupDialog from "@/components/dialogs/group-dialog/group-dialog";
 import CourseDialog from "@/components/dialogs/course-dialog/course-dialog";
 import TeacherDialog from "@/components/dialogs/teacher-dialog/teacher-dialog";
 import ClassDetailsDialog from "./dialogs/class-details-dialog/class-details-dialog";
+import MultipleSelectDialog from "./dialogs/multiple-select-dialog/multiple-select-dialog";
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -33,6 +34,7 @@ export const DialogProvider = () => {
       <CourseDialog />
       <TeacherDialog />
       <ClassDetailsDialog />
+      <MultipleSelectDialog />
     </>
   );
 };

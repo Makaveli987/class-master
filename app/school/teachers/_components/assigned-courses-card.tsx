@@ -1,4 +1,5 @@
 "use client";
+import { assignCourses } from "@/actions/courses/assign-courses";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,23 +8,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ComboboxOptions } from "@/components/ui/combobox";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { DropdownSelect } from "@/components/ui/dropdown-select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip2 } from "@/components/ui/tooltip2";
+import useMultipleSelectDialog from "@/hooks/use-multiple-select-dialog";
 import { AssignedCourse } from "@/lib/models/assigned-course";
 import { Course } from "@prisma/client";
 import axios from "axios";
 import { PlusCircleIcon, XIcon } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Image from "next/image";
 
 interface CourseTeachersCardProps {
   teacherId: string;
@@ -36,23 +33,27 @@ export default function AssignedTeachersCard({
   courses,
   assignedCourses,
 }: CourseTeachersCardProps) {
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [courseOptions, setCourseOptions] = useState<any>([]);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [initialSelectedCourses, setInitialSelectedCourses] = useState<
+    string[]
+  >([]);
 
+  const [courseOptions, setCourseOptions] = useState<ComboboxOptions[]>([]);
+
+  const multipleSelectDialog = useMultipleSelectDialog();
   const router = useRouter();
 
   useEffect(() => {
-    const filteredArray = courses?.filter(
-      (item1) => !assignedCourses?.some((item2) => item2.course.id === item1.id)
+    const assignedCoursesOpts = assignedCourses?.map(
+      (course) => course.course.id
     );
 
-    const options = filteredArray?.map((course) => ({
+    const courseOpts = courses?.map((course) => ({
       value: course.id,
       label: course.name,
     }));
 
-    setCourseOptions(options);
+    setCourseOptions(courseOpts || []);
+    setInitialSelectedCourses(assignedCoursesOpts || []);
   }, [assignedCourses, courses]);
 
   function handleConfirm(id: string) {
@@ -65,16 +66,12 @@ export default function AssignedTeachersCard({
       .catch(() => toast.error("Something bad happend!"));
   }
 
-  function handleAssign() {
-    axios
-      .post("/api/course-assign", { courseId: selectedCourse, teacherId })
+  async function handleAssign(coursesIds: string[]) {
+    await assignCourses(coursesIds, teacherId)
       .then(() => {
-        toast.success("Course assigned.");
-        router.refresh();
+        toast.success("Courses successfully assigned.");
       })
-      .catch(() => toast.error("Something bad happend. Course not assigned!"));
-
-    setIsPopoverOpen(false);
+      .catch(() => toast.error("Something bad happend. Courses not assigned!"));
   }
 
   return (
@@ -87,37 +84,20 @@ export default function AssignedTeachersCard({
               Courses that can be taught by this teacher
             </CardDescription>
           </div>
-          <Popover
-            open={isPopoverOpen}
-            onOpenChange={() => {
-              setIsPopoverOpen((current) => !current);
-              setSelectedCourse("");
-            }}
+          <Button
+            onClick={() =>
+              multipleSelectDialog.open({
+                options: courseOptions,
+                initialSelectedOptions: initialSelectedCourses,
+                onSubmit: handleAssign,
+                dialogTitle: "Assign Courses",
+                dialogDescription: "Courses that can be taught by this teacher",
+              })
+            }
           >
-            <PopoverTrigger asChild>
-              <Button>
-                <PlusCircleIcon className="w-5 h-5 mr-2" />
-                Assign Course
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <p className="pb-2 text-sm font-medium">Course</p>
-              <DropdownSelect
-                options={courseOptions}
-                onChange={(value) => setSelectedCourse(value)}
-                value={selectedCourse}
-              />
-              <div className="flex justify-end mt-4">
-                <Button
-                  disabled={!selectedCourse}
-                  className="ml-auto"
-                  onClick={handleAssign}
-                >
-                  Assign
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
+            <PlusCircleIcon className="w-5 h-5 mr-2" />
+            Assign Courses
+          </Button>
         </CardHeader>
         <CardContent>
           {assignedCourses?.length === 0 ? (
