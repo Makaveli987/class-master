@@ -15,9 +15,10 @@ export async function POST(req: Request) {
     const {
       courseId,
       teacherId,
+      // student or group
       userId,
-      courseGoals,
       userType,
+      courseGoals,
       price,
       totalClasses,
     } = await req.json();
@@ -35,6 +36,57 @@ export async function POST(req: Request) {
     }
 
     let enrollment = null;
+
+    const groupEnrollments = await db.enrollment.findMany({
+      where: {
+        groupId: userId,
+        archived: false,
+      },
+      select: {
+        courseId: true,
+        completed: true,
+      },
+    });
+
+    const studentEnrollments = await db.enrollment.findMany({
+      where: {
+        studentId: userId,
+        archived: false,
+      },
+      select: {
+        courseId: true,
+        completed: true,
+      },
+    });
+
+    // Check if course is already enrolled and not completed for this group or student
+    let isCourseAlreadyEnrolled;
+
+    if (userType === EnrollUserType.GROUP) {
+      isCourseAlreadyEnrolled = groupEnrollments.some(
+        (enrollment) =>
+          enrollment.courseId === courseId && !enrollment.completed
+      );
+    } else {
+      isCourseAlreadyEnrolled = studentEnrollments.some(
+        (enrollment) =>
+          enrollment.courseId === courseId && !enrollment.completed
+      );
+    }
+
+    if (isCourseAlreadyEnrolled) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "This course is already enrolled and it's not completed",
+        }),
+        {
+          status: 403,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
     if (userType === EnrollUserType.GROUP) {
       const group = await db.group.findUnique({

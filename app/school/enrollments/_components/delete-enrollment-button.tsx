@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  enrollmentId?: string;
+  enrollmentId: string;
   buttonType: "icon" | "button";
 }
 

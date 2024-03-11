@@ -1,9 +1,12 @@
 "use client";
+import { completeEnrollment } from "@/actions/enrollments/complete-enrollment";
 import { CourseResponse } from "@/actions/get-courses";
 import { EnrollmentResponse } from "@/actions/get-enrolments";
 import CourseProgress from "@/components/course-progress";
 
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   BasicInfoIcon,
   BasicInfoItem,
@@ -20,8 +23,11 @@ import {
   EuroIcon,
   GraduationCapIcon,
   ListChecksIcon,
-  MailIcon,
+  ShieldCheckIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface EnrollmentDetailsProps {
   enrollment?: EnrollmentResponse;
@@ -33,12 +39,43 @@ export default function EnrollmentDetails({
   courses,
 }: EnrollmentDetailsProps) {
   const enrollDialog = useEnrollDialog();
+  const router = useRouter();
+
+  const [completed, setCompleted] = useState<boolean>(false);
+
+  const [stausDisabled, setStatusDisabled] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (enrollment?.completed) {
+      setCompleted(enrollment?.completed);
+    }
+  }, [enrollment]);
+
+  async function onStatusChange(status: boolean) {
+    await completeEnrollment(enrollment?.id as string, status)
+      .then((response) => {
+        if (response.error) {
+          toast.error(response.error);
+          setCompleted(enrollment?.completed as boolean);
+        } else {
+          toast.success(response.message);
+          setCompleted(status);
+
+          router.refresh();
+        }
+      })
+      .catch(() =>
+        toast.error("Something bad happend. Enrollment was not completed")
+      )
+      .finally(() => setStatusDisabled(false));
+  }
+
   return (
     <div className="max-w-4xl pt-4 pb-6 px-6">
       <div className="flex justify-between">
         <h3 className="font-semibold">Basic Details</h3>
-        {/* <CardTitle>Basic Details</CardTitle> */}
         <Button
+          disabled={enrollment?.completed}
           onClick={() =>
             enrollDialog.open({
               data: enrollment,
@@ -58,7 +95,6 @@ export default function EnrollmentDetails({
         </Button>
       </div>
 
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-5 mt-4"> */}
       <div className="flex flex-col gap-5 mt-4">
         <div className="flex">
           <div className="flex-1">
@@ -111,52 +147,83 @@ export default function EnrollmentDetails({
           )}
 
           {!enrollment?.pricePerStudent && (
-            <div className="flex flex-1 items-start gap-3">
-              <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
-                <BarChart3Icon />
-              </div>
-              <div className="flex flex-col justify-start items-start text-sm mt-1.5">
-                <span className="text-muted-foreground text-xs">Classes</span>
-                <CourseProgress
-                  attendedClasses={enrollment?.attendedClasses || 0}
-                  totalClasses={enrollment?.totalClasses || 0}
-                  className="mt-1.5"
-                  labelPosition="left"
-                />
-              </div>
+            <div className="flex-1">
+              <BasicInfoItem>
+                <BasicInfoIcon>
+                  <BarChart3Icon />
+                </BasicInfoIcon>
+                <BasicInfoLabel label="Classes">
+                  <CourseProgress
+                    attendedClasses={enrollment?.attendedClasses || 0}
+                    totalClasses={enrollment?.totalClasses || 0}
+                    className="mt-1.5"
+                    labelPosition="left"
+                    completed={enrollment?.completed || false}
+                  />
+                </BasicInfoLabel>
+              </BasicInfoItem>
             </div>
           )}
         </div>
 
         <div className="flex">
-          <div className="flex flex-1 items-start gap-3">
-            <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
-              <ListChecksIcon />
-            </div>
-            <div className="flex flex-col text-sm mt-1.5">
-              <span className="text-muted-foreground text-xs">Goals</span>
-              <span className="font-medium whitespace-pre-wrap">
-                {enrollment?.courseGoals || "-"}
-              </span>
-            </div>
+          <div className="flex-1">
+            <BasicInfoItem className="items-start">
+              <BasicInfoIcon>
+                <ListChecksIcon />
+              </BasicInfoIcon>
+              <BasicInfoLabel label="Goals">
+                <span className="font-medium whitespace-pre-wrap">
+                  {enrollment?.courseGoals || "-"}
+                </span>
+              </BasicInfoLabel>
+            </BasicInfoItem>
           </div>
 
           {enrollment?.pricePerStudent && (
-            <div className="flex flex-1 items-start gap-3">
-              <div className="rounded-full w-12 h-12 bg-muted flex items-center justify-center">
-                <BarChart3Icon />
-              </div>
-              <div className="flex flex-col justify-start items-start text-sm mt-1.5">
-                <span className="text-muted-foreground text-xs">Classes</span>
-                <CourseProgress
-                  attendedClasses={enrollment?.attendedClasses || 0}
-                  totalClasses={enrollment?.totalClasses || 0}
-                  className="mt-1.5"
-                  labelPosition="left"
-                />
-              </div>
+            <div className="flex-1">
+              <BasicInfoItem>
+                <BasicInfoIcon>
+                  <BarChart3Icon />
+                </BasicInfoIcon>
+                <BasicInfoLabel label="Classes">
+                  <CourseProgress
+                    attendedClasses={enrollment?.attendedClasses || 0}
+                    totalClasses={enrollment?.totalClasses || 0}
+                    className="mt-1.5"
+                    labelPosition="left"
+                    completed={enrollment?.completed || false}
+                  />
+                </BasicInfoLabel>
+              </BasicInfoItem>
             </div>
           )}
+        </div>
+        <div className="flex">
+          <div className="flex-1">
+            <BasicInfoItem>
+              <BasicInfoIcon>
+                <ShieldCheckIcon />
+              </BasicInfoIcon>
+              <BasicInfoLabel label="Status">
+                <div className="flex gap-2 items-center mt-1">
+                  <Switch
+                    disabled={stausDisabled}
+                    checked={completed}
+                    onCheckedChange={(val) => {
+                      setStatusDisabled(true);
+                      setCompleted(val);
+                      onStatusChange(val);
+                    }}
+                    aria-readonly
+                  />
+                  <Label className="font-semibold">
+                    {completed ? "Completed" : "In progress"}
+                  </Label>
+                </div>
+              </BasicInfoLabel>
+            </BasicInfoItem>
+          </div>
         </div>
       </div>
     </div>

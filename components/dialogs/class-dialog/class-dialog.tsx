@@ -195,6 +195,7 @@ export default function ClassDialog({
           params: teacherId ? { substituteTeacher: teacherId } : null,
         })
         .then((response: any) => {
+          console.log("response.data :>> ", response.data);
           setAttendeeOptions(response.data);
         })
         .catch((error: any) => {

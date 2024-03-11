@@ -149,6 +149,7 @@ model Enrollment {
   price           Int
   pricePerStudent Int?
   totalClasses    Int
+  completed       Boolean  @default(false)
 
   course               Course                 @relation(fields: [courseId], references: [id])
   student              Student?               @relation(fields: [studentId], references: [id])

@@ -85,11 +85,12 @@ export default function CourseEnrollment({
             totalClasses={enrollment?.totalClasses || 0}
             className="mt-2"
             labelPosition="right"
+            completed={enrollment?.completed || false}
           />
         </div>
         <div className="flex justify-end py-6">
           {showGroupEnrollmentsForStudent && (
-            <Tooltip2 text="Add note" side="top">
+            <Tooltip2 text="View" side="top">
               <Button
                 variant="ghost"
                 className="h-8 w-8 p-0 group"

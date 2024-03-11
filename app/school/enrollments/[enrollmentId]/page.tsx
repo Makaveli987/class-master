@@ -22,6 +22,7 @@ import {
   MessageCirclePlusIcon,
   MessageSquareTextIcon,
 } from "lucide-react";
+import { notFound } from "next/navigation";
 
 export default async function EnrollmentId({
   params,
@@ -31,6 +32,10 @@ export default async function EnrollmentId({
   const enrollment = (await getEnrollment(
     params.enrollmentId
   )) as EnrollmentResponse;
+
+  if (!enrollment) {
+    return notFound();
+  }
 
   const userId = enrollment.studentId
     ? enrollment.studentId
@@ -85,8 +90,11 @@ export default async function EnrollmentId({
               </p>
             </div>
 
-            <div className="ml-auto">
-              <DeleteEnrollmentButton buttonType="button" />
+            <div className="ml-auto flex gap-3">
+              <DeleteEnrollmentButton
+                enrollmentId={enrollment.id}
+                buttonType="button"
+              />
             </div>
           </div>
         </CardHeader>

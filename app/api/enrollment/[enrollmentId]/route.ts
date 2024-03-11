@@ -37,6 +37,44 @@ export async function PATCH(
         }
       );
     }
+
+    if (totalClasses < 1) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Total classes cannoy be less than 1",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    const currentEnrollment = await db.enrollment.findUnique({
+      where: {
+        id: enrollmentId,
+      },
+    });
+
+    if (
+      currentEnrollment?.attendedClasses &&
+      currentEnrollment?.attendedClasses > totalClasses
+    ) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Attended classes cannot be greater than total classes",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     const group = await db.group.findUnique({
       where: { id: userId },
       select: { isCompanyGroup: true, students: true },
@@ -47,7 +85,6 @@ export async function PATCH(
     if (userType === EnrollUserType.GROUP) {
       // Calculate total price and add price per group for individual groups
       if (group?.isCompanyGroup) {
-        console.log("isCompany :>> ");
         enrollment = await db.enrollment.update({
           where: {
             id: enrollmentId,
@@ -63,8 +100,6 @@ export async function PATCH(
         });
       } else {
         let totalPrice = 0;
-
-        console.log("group.students :>> ", group?.students);
 
         if (group?.students?.length) {
           // Price here is represented as Price Per Student because group is not Company

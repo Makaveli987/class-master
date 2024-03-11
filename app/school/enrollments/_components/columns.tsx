@@ -98,6 +98,7 @@ export function getEnrollmentColumns(
               attendedClasses={row.original?.attendedClasses || 0}
               totalClasses={row.original?.totalClasses || 0}
               labelPosition="right"
+              completed={row.original?.completed}
             />
           </div>
         );
@@ -106,17 +107,20 @@ export function getEnrollmentColumns(
     {
       id: "actions",
       cell: ({ row }) => {
-        const teacherId = row.original.id;
+        const enrollmentId = row.original.id;
         return (
           <div className="flex justify-end gap-2">
             <Tooltip2 text="Edit" side="top">
-              <Link href={`/school/teachers/${teacherId}`}>
+              <Link href={`/school/enrollments/${enrollmentId}`}>
                 <Button variant="ghost" className="h-8 w-8 p-0 group ">
                   <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
                 </Button>
               </Link>
             </Tooltip2>
-            <DeleteEnrollmentButton buttonType="icon" />
+            <DeleteEnrollmentButton
+              buttonType="icon"
+              enrollmentId={row.original.id}
+            />
           </div>
         );
       },

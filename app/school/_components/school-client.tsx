@@ -20,16 +20,16 @@ export default function SchoolClient({
   });
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       <div className="hidden lg:block">
         {session ? <Sidebar session={session} /> : <Sidebar.Skeleton />}
       </div>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col">
         <Header session={session} />
         <Separator />
 
-        <main className="flex-1 overflow-x-hidden p-6 bg-primary-foreground h-[calc(screen-56px)] overflow-auto">
+        <main className="flex-1 overflow-x-hidden p-6 bg-primary-foreground dashboard-content overflow-auto">
           {children}
         </main>
       </div>

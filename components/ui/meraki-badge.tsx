@@ -7,7 +7,7 @@ const merakiBadgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary/10 text-primary border border-primary",
+        default: "bg-primary/10 text-primary border border-transparent",
         emerald:
           "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 border-transparent",
         violet:

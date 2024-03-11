@@ -65,6 +65,50 @@ export async function POST(req: Request) {
       );
     }
 
+    const enrollment = await db.enrollment.findUnique({
+      where: {
+        id: enrollmentId,
+      },
+      select: {
+        attendedClasses: true,
+        totalClasses: true,
+        completed: true,
+      },
+    });
+
+    if (enrollment?.completed) {
+      return new NextResponse(
+        JSON.stringify({
+          error: "Cannot schedule class for completed enrollment",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    if (
+      enrollment?.attendedClasses &&
+      enrollment?.totalClasses &&
+      enrollment?.attendedClasses >= enrollment?.totalClasses
+    ) {
+      return new NextResponse(
+        JSON.stringify({
+          error:
+            "You have reached a maximum amount of classes for this enrollment. If you need more classes please update enrollment options.",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
     const group = await db.group.findUnique({
       where: { id: attendeeId },
       select: { students: { select: { studentId: true } } },

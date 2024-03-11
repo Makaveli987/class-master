@@ -44,6 +44,7 @@ export default function EnrolledCourses({ enrollments }: EnrolledCoursesProps) {
                 totalClasses={enrollment?.totalClasses || 0}
                 className="mt-2"
                 labelPosition="right"
+                completed={enrollment?.completed || false}
               />
             </div>
             <div className="flex justify-end">

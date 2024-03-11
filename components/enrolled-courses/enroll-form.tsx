@@ -69,6 +69,7 @@ export default function EnrollForm() {
   });
 
   useEffect(() => {
+    console.log("enrollDialog.courses :>> ", enrollDialog.courses);
     const cOptions = enrollDialog.courses
       ?.filter((course) => course.active)
       .map((course: Course) => ({

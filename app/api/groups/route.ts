@@ -86,6 +86,7 @@ export async function GET(req: NextRequest) {
         schoolId: currentUser?.schoolId,
         teacherId: substituteTeacher ? substituteTeacher : currentUser?.id,
         groupId: { not: null },
+        studentId: null,
         archived: false,
       },
       include: {
@@ -95,12 +96,32 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const mappedStudents = enrollments.map((enrollment) => ({
+    const mappedGroups = enrollments.map((enrollment) => ({
       value: enrollment.group?.id,
       label: enrollment.group?.name,
     }));
 
-    return new NextResponse(JSON.stringify(mappedStudents), {
+    // const enrollmentss = await db.enrollment.findMany({
+    //   where: {
+    //     schoolId: currentUser?.schoolId,
+    //     teacherId: substituteTeacher ? substituteTeacher : currentUser?.id,
+    //     studentId: { not: null },
+    //     groupId: null,
+    //     archived: false,
+    //   },
+    //   include: {
+    //     student: {
+    //       select: { id: true, firstName: true, lastName: true },
+    //     },
+    //   },
+    // });
+
+    // const mappedStudents = enrollments.map((enrollment) => ({
+    //   value: enrollment.student?.id,
+    //   label: `${enrollment.student?.firstName} ${enrollment.student?.lastName}`,
+    // }));
+
+    return new NextResponse(JSON.stringify(mappedGroups), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

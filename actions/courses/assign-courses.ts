@@ -8,13 +8,11 @@ export async function assignCourses(coursesIds: string[], teacherId: string) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    return {
-      error: "Unauthorized",
-    };
+    throw new Error("Unauthorized.");
   }
 
   if (!teacherId) {
-    return { error: "Missing teacherId" };
+    throw new Error("Missing teacherId.");
   }
 
   const assignedCourses = await db.userPerCourse.findMany({
