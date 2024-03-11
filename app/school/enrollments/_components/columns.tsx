@@ -8,9 +8,16 @@ import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { EditIcon } from "lucide-react";
+import {
+  CheckCheckIcon,
+  CheckCircle2Icon,
+  CheckCircleIcon,
+  EditIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { DeleteEnrollmentButton } from "./delete-enrollment-button";
+import StatusBadge from "@/components/ui/status-badge";
+import { MerakiBadge } from "@/components/ui/meraki-badge";
 
 export function getEnrollmentColumns(
   userType: EnrollUserType
@@ -92,7 +99,14 @@ export function getEnrollmentColumns(
         <DataTableColumnHeader column={column} title="Attended Classes" />
       ),
       cell: ({ row }) => {
-        return (
+        return row.original?.completed ? (
+          <div className="max-w-[180px] flex justify-center">
+            <MerakiBadge variant={"emerald"}>
+              <CheckCircleIcon className="w-3 h-3 mr-1" />
+              Completed
+            </MerakiBadge>
+          </div>
+        ) : (
           <div className="max-w-[220px]">
             <CourseProgress
               attendedClasses={row.original?.attendedClasses || 0}
