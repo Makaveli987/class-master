@@ -20,7 +20,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
+    <nav className="sticky h-14 inset-x-0 top-0 z-50 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all">
       <MaxWidthWrapper>
         <div className="flex h-14 items-center justify-between border-b border-zinc-200">
           <Link href="/" className="flex z-40 font-semibold">
@@ -39,7 +39,25 @@ const Navbar = () => {
                     size: "sm",
                   })}
                 >
-                  Pricing
+                  Usluge
+                </Link>
+                <Link
+                  href="/pricing"
+                  className={buttonVariants({
+                    variant: "ghost",
+                    size: "sm",
+                  })}
+                >
+                  Cenovnik
+                </Link>
+                <Link
+                  href="/pricing"
+                  className={buttonVariants({
+                    variant: "ghost",
+                    size: "sm",
+                  })}
+                >
+                  Kontakt
                 </Link>
                 <Link
                   className={buttonVariants({
@@ -48,7 +66,7 @@ const Navbar = () => {
                   })}
                   href={"/sign-in"}
                 >
-                  Sign in
+                  Prijava
                 </Link>
                 <Link
                   className={buttonVariants({
@@ -56,7 +74,7 @@ const Navbar = () => {
                   })}
                   href={"/"}
                 >
-                  Get started <ArrowRight className="ml-1.5 h-5 w-5" />
+                  Probajte besplatno <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Link>
               </>
             ) : (
@@ -68,7 +86,7 @@ const Navbar = () => {
                     size: "sm",
                   })}
                 >
-                  Dashboard
+                  Aplikacija
                 </Link>
 
                 {/* <UserAccountNav
