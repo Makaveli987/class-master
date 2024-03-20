@@ -29,9 +29,10 @@ model User {
   firstName             String
   lastName              String
   email                 String          @unique
+  emailVerified         DateTime?
   hashedPassword        String
   phone                 String
-  dateOfBirth           DateTime
+  dateOfBirth           DateTime?
   schoolId              String
   archived              Boolean         @default(false)
   active                Boolean         @default(true)
@@ -86,7 +87,7 @@ model Student {
   lastName      String
   email         String
   phone         String
-  dateOfBirth   DateTime
+  dateOfBirth   DateTime?
   schoolId      String
   archived      Boolean          @default(false)
   active        Boolean          @default(true)
@@ -134,22 +135,23 @@ model StudentToGroup {
 }
 
 model Enrollment {
-  id              String   @id @default(uuid())
-  archived        Boolean  @default(false)
-  courseId        String
-  studentId       String?
-  groupId         String?
-  teacherId       String
-  schoolId        String
-  courseGoals     String?  @db.Text
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  attendedClasses Int      @default(0)
+  id               String   @id @default(uuid())
+  archived         Boolean  @default(false)
+  courseId         String
+  studentId        String?
+  groupId          String?
+  teacherId        String
+  schoolId         String
+  courseGoals      String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  attendedClasses  Int      @default(0)
+  scheduledClasses Int      @default(0)
   // this will be in EnrollmentFinancials
-  price           Int
-  pricePerStudent Int?
-  totalClasses    Int
-  completed       Boolean  @default(false)
+  price            Int
+  pricePerStudent  Int?
+  totalClasses     Int
+  completed        Boolean  @default(false)
 
   course               Course                 @relation(fields: [courseId], references: [id])
   student              Student?               @relation(fields: [studentId], references: [id])
@@ -204,6 +206,7 @@ model SchoolClass {
   end                  DateTime
   duration             String
   description          String?
+  archived             Boolean      @default(false)
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
   enrollment           Enrollment   @relation(fields: [enrollmentId], references: [id])
@@ -284,7 +287,6 @@ model School {
   courses     Course[]
   enrollments Enrollment[]
   classrooms  Classroom[]
-  // colors      UserColor[]
   attendance  Attendance[]
 }
 
@@ -306,4 +308,13 @@ model AssignedColors {
   schooldId String
 
   // @@unique([userId, color])
+}
+
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
 }

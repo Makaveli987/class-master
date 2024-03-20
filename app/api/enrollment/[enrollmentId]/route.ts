@@ -41,7 +41,7 @@ export async function PATCH(
     if (totalClasses < 1) {
       return new NextResponse(
         JSON.stringify({
-          error: "Total classes cannoy be less than 1",
+          error: "Total classes cannot be less than 1",
         }),
         {
           status: 400,

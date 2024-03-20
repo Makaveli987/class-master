@@ -41,6 +41,8 @@ export default function EnrollmentDetails({
   const enrollDialog = useEnrollDialog();
   const router = useRouter();
 
+  console.log("enrollment", enrollment);
+
   const [completed, setCompleted] = useState<boolean>(false);
 
   const [stausDisabled, setStatusDisabled] = useState<boolean>(false);
@@ -139,7 +141,7 @@ export default function EnrollmentDetails({
                 <BasicInfoIcon>
                   <CoinsIcon />
                 </BasicInfoIcon>
-                <BasicInfoLabel label="Price">
+                <BasicInfoLabel label="Price Per Student">
                   {formatPrice(enrollment?.pricePerStudent as number)}
                 </BasicInfoLabel>
               </BasicInfoItem>

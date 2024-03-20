@@ -31,6 +31,7 @@ export const getClasses = async () => {
     const classes = await db.schoolClass.findMany({
       where: {
         schoolId: currentUser?.schoolId,
+        archived: false,
         start: {
           gte: startOfWeekDate,
           lte: endOfWeekDate,
@@ -110,6 +111,7 @@ export const getClassesByStudentId = async (studentId: string) => {
     const classes = await db.schoolClass.findMany({
       where: {
         schoolId: currentUser?.schoolId,
+        archived: false,
         studentId,
       },
       orderBy: {
@@ -179,6 +181,7 @@ export const getClassesByEnrollmentId = async (enrollmentId: string) => {
     const classes = await db.schoolClass.findMany({
       where: {
         schoolId: currentUser?.schoolId,
+        archived: false,
         enrollmentId,
       },
       orderBy: {

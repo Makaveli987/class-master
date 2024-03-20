@@ -28,7 +28,7 @@ export const {
       if (!existingUser?.active) return false;
 
       // Prevent sign in without email verification
-      // if (!existingUser?.emailVerified) return false;
+      if (!existingUser?.emailVerified) return false;
 
       return true;
     },

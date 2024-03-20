@@ -80,7 +80,7 @@ export default function TeacherDialog() {
           email: teacherDialog.data.email,
           phone: teacherDialog.data.phone,
           role: teacherDialog.data.role,
-          dateOfBirth: teacherDialog.data.dateOfBirth,
+          dateOfBirth: teacherDialog.data.dateOfBirth || undefined,
           active: teacherDialog.data.active,
         }
       : {
@@ -90,6 +90,7 @@ export default function TeacherDialog() {
           password: "",
           phone: "",
           role: "",
+          dateOfBirth: undefined,
         };
     form.reset(defValues);
   }, [teacherDialog.data, form]);

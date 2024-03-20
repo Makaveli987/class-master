@@ -61,7 +61,7 @@ export default function StudentDialog() {
           lastName: studentDialog.data.lastName,
           email: studentDialog.data.email,
           phone: studentDialog.data.phone,
-          dateOfBirth: studentDialog.data.dateOfBirth,
+          dateOfBirth: studentDialog.data.dateOfBirth || undefined,
           active: studentDialog.data.active,
         }
       : {
@@ -69,6 +69,7 @@ export default function StudentDialog() {
           lastName: "",
           email: "",
           phone: "",
+          dateOfBirth: undefined,
         };
     form.reset(defValues);
   }, [studentDialog.data, form]);

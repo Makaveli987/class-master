@@ -54,7 +54,7 @@ export const Combobox = ({
         return <span className="text-muted-foreground">{placeholder}</span>;
       }
       return (
-        <div>
+        <div className="overflow-hidden">
           {values.map((val) => (
             <Badge
               key={val.value}
@@ -84,7 +84,7 @@ export const Combobox = ({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full justify-between font-normal",
+            "w-full justify-between font-normal overflow-hidden",
             !value && "text-muted-foreground"
           )}
         >

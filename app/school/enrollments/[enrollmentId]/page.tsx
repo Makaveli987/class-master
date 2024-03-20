@@ -2,7 +2,10 @@ import { getCourses } from "@/actions/get-courses";
 import { EnrollmentResponse, getEnrollment } from "@/actions/get-enrolments";
 import { getNotes } from "@/actions/get-notes";
 
+import { getAttendance } from "@/actions/attendance/get-attendance";
+import { getClassesByEnrollmentId } from "@/actions/get-classes";
 import { getEnrollemntExams } from "@/actions/get-exams";
+import SchoolClassesTable from "@/components/classes-table/classes-table";
 import ExamsTable from "@/components/exams-table/exams-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -10,19 +13,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { NoteData } from "@/hooks/use-note-dialog";
 import { format } from "date-fns";
-import Image from "next/image";
-import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button";
-import EnrollmentDetails from "../_components/enrollment-details";
-import Notes from "../_components/notes";
-import SchoolClassesTable from "@/components/classes-table/classes-table";
-import { getClassesByEnrollmentId } from "@/actions/get-classes";
 import {
   CalendarCheckIcon,
   FileIcon,
-  MessageCirclePlusIcon,
   MessageSquareTextIcon,
+  UserCheckIcon,
 } from "lucide-react";
+import Image from "next/image";
 import { notFound } from "next/navigation";
+// import AttendanceTable from "../_components/_attendance/attendance-table2";
+import { DeleteEnrollmentButton } from "../_components/delete-enrollment-button";
+import EnrollmentDetails from "../_components/enrollment-details";
+import Notes from "../_components/notes";
+import AttendanceTable from "../_components/attendance-table";
 
 export default async function EnrollmentId({
   params,
@@ -44,6 +47,7 @@ export default async function EnrollmentId({
   const courses = await getCourses();
   const notes = (await getNotes(params.enrollmentId, userId)) as NoteData[];
   const exams = await getEnrollemntExams(enrollment.id);
+  const attendance = await getAttendance(params.enrollmentId);
 
   const schoolClasses = await getClassesByEnrollmentId(params.enrollmentId);
 
@@ -112,6 +116,13 @@ export default async function EnrollmentId({
                 <TabsTrigger className="min-w-28" value="notes">
                   <MessageSquareTextIcon className="w-4 h-4 mr-1" /> Notes
                 </TabsTrigger>
+
+                {enrollment.groupId && (
+                  <TabsTrigger className="min-w-28" value="attendance">
+                    <UserCheckIcon className="w-4 h-4 mr-1" />
+                    Attendance
+                  </TabsTrigger>
+                )}
                 <TabsTrigger className="min-w-28" value="tests">
                   <FileIcon className="w-4 h-4 mr-1" />
                   Tests
@@ -137,6 +148,14 @@ export default async function EnrollmentId({
                   }
                 />
               </TabsContent>
+              {enrollment.groupId && (
+                <TabsContent value="attendance">
+                  <AttendanceTable
+                    attendance={attendance}
+                    enrollmentId={enrollment.id}
+                  />
+                </TabsContent>
+              )}
               <TabsContent value="tests">
                 <ExamsTable
                   exams={exams}

@@ -3,21 +3,15 @@
 import CourseProgress from "@/components/course-progress";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
+import { MerakiBadge } from "@/components/ui/meraki-badge";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import {
-  CheckCheckIcon,
-  CheckCircle2Icon,
-  CheckCircleIcon,
-  EditIcon,
-} from "lucide-react";
+import { CheckCircleIcon, EditIcon } from "lucide-react";
 import Link from "next/link";
 import { DeleteEnrollmentButton } from "./delete-enrollment-button";
-import StatusBadge from "@/components/ui/status-badge";
-import { MerakiBadge } from "@/components/ui/meraki-badge";
 
 export function getEnrollmentColumns(
   userType: EnrollUserType

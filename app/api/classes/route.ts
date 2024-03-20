@@ -71,10 +71,13 @@ export async function POST(req: Request) {
       },
       select: {
         attendedClasses: true,
+        scheduledClasses: true,
         totalClasses: true,
         completed: true,
       },
     });
+
+    let scheduledClassesAmount = enrollment?.attendedClasses || 0;
 
     if (enrollment?.completed) {
       return new NextResponse(
@@ -91,9 +94,9 @@ export async function POST(req: Request) {
     }
 
     if (
-      enrollment?.attendedClasses &&
+      enrollment?.scheduledClasses &&
       enrollment?.totalClasses &&
-      enrollment?.attendedClasses >= enrollment?.totalClasses
+      enrollment?.scheduledClasses >= enrollment?.totalClasses
     ) {
       return new NextResponse(
         JSON.stringify({
@@ -132,6 +135,13 @@ export async function POST(req: Request) {
           onlineClassroom?.id
         );
 
+        if (
+          enrollment?.totalClasses &&
+          scheduledClassesAmount > enrollment?.totalClasses
+        ) {
+          break;
+        }
+
         if (isAvailable) {
           const classData = await db.schoolClass.create({
             data: {
@@ -148,6 +158,15 @@ export async function POST(req: Request) {
               schoolId: currentUser.schoolId,
             },
           });
+
+          await db.enrollment.update({
+            where: { id: enrollmentId },
+            data: {
+              scheduledClasses: { increment: 1 },
+            },
+          });
+
+          scheduledClassesAmount++;
 
           // Create attendance
           if (group?.students) {
@@ -195,6 +214,13 @@ export async function POST(req: Request) {
           onlineClassroom?.id
         );
 
+        if (
+          enrollment?.totalClasses &&
+          scheduledClassesAmount > enrollment?.totalClasses
+        ) {
+          break;
+        }
+
         if (isAvailable) {
           const classData = await db.schoolClass.create({
             data: {
@@ -212,6 +238,14 @@ export async function POST(req: Request) {
             },
           });
 
+          await db.enrollment.update({
+            where: { id: enrollmentId },
+            data: {
+              scheduledClasses: { increment: 1 },
+            },
+          });
+
+          scheduledClassesAmount++;
           // Create attendance
           if (group?.students) {
             await Promise.all(
@@ -245,6 +279,17 @@ export async function POST(req: Request) {
         onlineClassroom?.id
       );
 
+      // if (enrollment?.scheduledClasses! >= enrollment?.totalClasses!) {
+      //   return new NextResponse(
+      //     JSON.stringify({ error: "Date already taken" }),
+      //     {
+      //       status: 400,
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   );
+      // }
       if (isAvailable) {
         const classData = await db.schoolClass.create({
           data: {
@@ -259,6 +304,13 @@ export async function POST(req: Request) {
             end: addMinutes(new Date(startDate), Number(duration - 1)),
             duration,
             schoolId: currentUser.schoolId,
+          },
+        });
+
+        await db.enrollment.update({
+          where: { id: enrollmentId },
+          data: {
+            scheduledClasses: { increment: 1 },
           },
         });
 
@@ -332,6 +384,7 @@ async function isClassTimeSlotAvailable(
   const overlappingClasses = await db.schoolClass.findMany({
     where: {
       classroomId: classroomId,
+      archived: false,
       OR: [
         {
           AND: [{ start: { lte: start } }, { end: { gte: start } }],
@@ -371,6 +424,7 @@ export async function GET(req: NextRequest) {
     // Build the where clause based on provided parameters
     const whereClause: Record<string, any> = {
       schoolId: currentUser?.schoolId,
+      archived: false,
     };
 
     if (startDate && endDate) {

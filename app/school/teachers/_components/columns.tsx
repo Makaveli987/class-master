@@ -70,7 +70,10 @@ export const columns: ColumnDef<User>[] = [
       />
     ),
     cell: ({ row }) => {
-      const dateOfBirth = format(row.original.dateOfBirth, "dd-MMM-yyyy");
+      const dateOfBirth = format(
+        row.original.dateOfBirth as Date,
+        "dd-MMM-yyyy"
+      );
       return <span>{dateOfBirth}</span>;
     },
     enableSorting: false,

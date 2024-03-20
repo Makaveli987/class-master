@@ -1,4 +1,5 @@
 "use client";
+import { deleteSchoolClass } from "@/actions/school-classes/delete-school-class";
 import { UpdateClassPayload } from "@/app/api/classes/student/[schoolClassId]/route";
 import { NoteResponse } from "@/app/api/notes/class/[schoolClassId]/route";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ export default function StudentClassForm({
   notes,
 }: StudentClassFormProps) {
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [isDeletePending, setIsDeletePending] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
   const router = useRouter();
@@ -95,6 +97,26 @@ export default function StudentClassForm({
     };
 
     updateSchoolClass(payload);
+  }
+
+  async function handleDelete() {
+    if (classDetailsDialog.data?.enrollmentId && classDetailsDialog.data.id) {
+      setIsDeletePending(true);
+      await deleteSchoolClass(
+        classDetailsDialog.data.id,
+        classDetailsDialog.data?.enrollmentId
+      )
+        .then((response) => {
+          toast.success(response.message);
+        })
+        .catch((error) => {
+          toast.error(error.er);
+        })
+        .finally(() => {
+          setIsDeletePending(false);
+          classDetailsDialog.close();
+        });
+    }
   }
 
   return (
@@ -170,8 +192,22 @@ export default function StudentClassForm({
         />
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0 pt-2">
-          <Button variant="destructive" className="sm:mr-auto">
-            Delete
+          <Button
+            onClick={() => {
+              handleDelete();
+            }}
+            variant="destructive"
+            className="sm:mr-auto"
+            disabled={isPending || isDeletePending}
+          >
+            {isDeletePending ? (
+              <>
+                <Loader2Icon className="h-4 w-4 mr-2 animate-spin" />
+                Deleting
+              </>
+            ) : (
+              "Delete"
+            )}
           </Button>
           <Button
             type="button"

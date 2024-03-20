@@ -1,4 +1,5 @@
 "use client";
+import { deleteSchoolClass } from "@/actions/school-classes/delete-school-class";
 import { AttendanceResponse } from "@/app/api/attendance/class/[schoolClassId]/route";
 import {
   AttendancePayload,
@@ -45,6 +46,7 @@ export default function GroupClassForm({
   isLoading,
 }: GroupClassFormProps) {
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [isDeletePending, setIsDeletePending] = useState<boolean>(false);
 
   const classDetailsDialog = useClassDetailsDialog();
   const router = useRouter();
@@ -104,6 +106,26 @@ export default function GroupClassForm({
     };
 
     updateSchoolClass(payload);
+  }
+
+  async function handleDelete() {
+    if (classDetailsDialog.data?.enrollmentId && classDetailsDialog.data.id) {
+      setIsDeletePending(true);
+      await deleteSchoolClass(
+        classDetailsDialog.data.id,
+        classDetailsDialog.data?.enrollmentId
+      )
+        .then((response) => {
+          toast.success(response.message);
+        })
+        .catch((error) => {
+          toast.error(error.er);
+        })
+        .finally(() => {
+          setIsDeletePending(false);
+          classDetailsDialog.close();
+        });
+    }
   }
 
   useEffect(() => {
@@ -217,7 +239,7 @@ export default function GroupClassForm({
                         <FormControl>
                           <Checkbox
                             className="mr-4 sm:mr-10"
-                            disabled={isPending}
+                            disabled={isPending || isDeletePending}
                             checked={field.value}
                             onCheckedChange={field.onChange}
                           />
@@ -239,6 +261,7 @@ export default function GroupClassForm({
                             onChange={field.onChange}
                             className="h-[48px] min-w-50 sm:min-w-72 rounded-b-md rounded-t-md bg-card"
                             placeholder="Type note..."
+                            disabled={isPending || isDeletePending}
                           />
                         </FormControl>
                         <FormMessage />
@@ -252,8 +275,22 @@ export default function GroupClassForm({
         )}
 
         <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 sm:gap-0 mt-6">
-          <Button variant="destructive" className="sm:mr-auto">
-            Delete
+          <Button
+            onClick={() => {
+              handleDelete();
+            }}
+            variant="destructive"
+            className="sm:mr-auto"
+            disabled={isPending || isDeletePending}
+          >
+            {isDeletePending ? (
+              <>
+                <Loader2Icon className="h-4 w-4 mr-2 animate-spin" />
+                Deleting
+              </>
+            ) : (
+              "Delete"
+            )}
           </Button>
           <Button
             type="button"
@@ -265,7 +302,7 @@ export default function GroupClassForm({
             Cancel
           </Button>
 
-          <Button disabled={isPending} type="submit">
+          <Button disabled={isPending || isDeletePending} type="submit">
             {isPending ? (
               <>
                 <Loader2Icon className="h-4 w-4 mr-2 animate-spin" />

@@ -8,39 +8,19 @@ import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 import { getTimeFromDate } from "@/lib/utils";
 import { ClassStatus } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import axios from "axios";
 import { addMinutes, format } from "date-fns";
 import {
   CalendarCheckIcon,
   CheckCircle2Icon,
-  CheckIcon,
   EditIcon,
-  Trash2Icon,
   XCircleIcon,
-  XIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { ConfirmDialog } from "../ui/confirm-dialog";
 import { MerakiBadge } from "../ui/meraki-badge";
 
 export function GetSchoolClassColumns(
   excludeCourseCol: boolean
 ): ColumnDef<SchoolClassResponse>[] {
   const classDetailsDialog = useClassDetailsDialog();
-  const router = useRouter();
-
-  function onDelete(examId: string) {
-    axios
-      .delete(`/api/classes/${examId}`)
-      .then(() => {
-        toast.success("Class has been archived");
-        router.refresh();
-      })
-      .catch(() =>
-        toast.error("Something bad happend. Class has not been archived!")
-      );
-  }
 
   function getClassVariant(
     classStatus: ClassStatus
@@ -139,19 +119,6 @@ export function GetSchoolClassColumns(
                 <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
               </Button>
             </Tooltip2>
-            {/* <DeleteExamButton examId={examId} buttonType="icon" /> */}
-            <ConfirmDialog
-              description="This action will delete the class. You will not be able to retrieve it."
-              onConfirm={() => onDelete(examId)}
-            >
-              <div>
-                <Tooltip2 text="Delete" side="top">
-                  <Button variant="ghost" className="h-8 w-8 p-0 group">
-                    <Trash2Icon className="w-4 h-4 text-muted-foreground group-hover:text-rose-600" />
-                  </Button>
-                </Tooltip2>
-              </div>
-            </ConfirmDialog>
           </div>
         );
       },

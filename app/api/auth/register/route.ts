@@ -1,4 +1,6 @@
+import { generateVerificationToken } from "@/actions/verification-token/generate-verification-token";
 import { db } from "@/lib/db";
+import { sendVerificationEmail } from "@/lib/nodemailer";
 import { getRandomColor, userColors } from "@/lib/user-colors";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
@@ -73,6 +75,12 @@ export async function POST(request: Request) {
         color,
       },
     });
+
+    const verificationToken = await generateVerificationToken(email);
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
 
     await db.classroom.create({
       data: {

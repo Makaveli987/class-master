@@ -24,6 +24,9 @@ import { User } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { toast } from "sonner";
+import { sendVerificationEmail } from "@/lib/nodemailer";
+import { generateVerificationToken } from "@/actions/verification-token/generate-verification-token";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -62,18 +65,21 @@ const SignUpClient = () => {
       .post("/api/auth/register", { ...values, role: RoleType.ADMIN })
       .then((response: AxiosResponse<User>) => {
         if (response.status === 201) {
-          signIn("credentials", {
-            email: values.email,
-            password: values.password,
-            callbackUrl: "/school/calendar",
-          }).finally(() => setPending(false));
+          toast.success(
+            `Registration successful! Please check your email for the verification link.`
+          );
+          // signIn("credentials", {
+          //   email: values.email,
+          //   password: values.password,
+          //   callbackUrl: "/verify-account",
+          // }).finally(() => setPending(false));
         }
       })
       .catch((error) => {
         setPending(false);
-
-        console.error(error);
-      });
+        toast.error(error.response.data.error);
+      })
+      .finally(() => setPending(false));
   }
 
   return (
