@@ -41,8 +41,6 @@ export default function EnrollmentDetails({
   const enrollDialog = useEnrollDialog();
   const router = useRouter();
 
-  console.log("enrollment", enrollment);
-
   const [completed, setCompleted] = useState<boolean>(false);
 
   const [stausDisabled, setStatusDisabled] = useState<boolean>(false);

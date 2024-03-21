@@ -85,6 +85,7 @@ export default function GroupClassForm({
         }
       })
       .catch((error) => {
+        console.log("error", error.response.data);
         toast.error("Something went wrong. Class wasn't updated!");
       })
       .finally(() => {
@@ -157,6 +158,7 @@ export default function GroupClassForm({
                   onChange={field.onChange}
                   className="h-14"
                   placeholder="Class description..."
+                  disabled={isPending || isDeletePending}
                 />
               </FormControl>
               <FormMessage />
@@ -188,6 +190,7 @@ export default function GroupClassForm({
                   ]}
                   value={field.value}
                   onChange={field.onChange}
+                  disabled={isPending || isDeletePending}
                 />
               </FormControl>
               <FormMessage />
@@ -225,7 +228,7 @@ export default function GroupClassForm({
               {attendees.map((field, index) => (
                 <div
                   key={field.id}
-                  className="flex items-center h-14 border-b cursor-pointer pl-1 hover:bg-muted"
+                  className="flex items-center h-14 border-b cursor-pointer pl-1 pr-2 hover:bg-muted"
                 >
                   <FormField
                     control={form.control}
@@ -295,6 +298,7 @@ export default function GroupClassForm({
           <Button
             type="button"
             variant="outline"
+            disabled={isPending || isDeletePending}
             onClick={() => {
               classDetailsDialog.close();
             }}

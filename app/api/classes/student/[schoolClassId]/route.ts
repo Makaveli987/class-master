@@ -39,8 +39,14 @@ export async function PATCH(
       return new NextResponse("Forbidden", { status: 403 });
     }
 
+    let isStatusUpdated = undefined;
+
     const result = await db.$transaction(async (tx) => {
-      await updateAttendedClass(schoolClassId, enrollmentId, classStatus);
+      isStatusUpdated = await updateAttendedClass(
+        schoolClassId,
+        enrollmentId,
+        classStatus
+      );
 
       await db.schoolClass.update({
         where: {
@@ -48,7 +54,7 @@ export async function PATCH(
         },
         data: {
           description,
-          schoolClassStatus: classStatus,
+          // schoolClassStatus: classStatus,
         },
       });
 
@@ -74,6 +80,12 @@ export async function PATCH(
       }
     });
 
+    if (!isStatusUpdated) {
+      throw new Error(
+        "Unable change the status. This enrollment alredy has maximum amount of classes."
+      );
+    }
+
     revalidatePath("/school/calendar");
     return new NextResponse(JSON.stringify(result), {
       status: 200,
@@ -81,7 +93,7 @@ export async function PATCH(
         "Content-Type": "application/json",
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

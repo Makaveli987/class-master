@@ -69,7 +69,6 @@ export default function EnrollForm() {
   });
 
   useEffect(() => {
-    console.log("enrollDialog.courses :>> ", enrollDialog.courses);
     const cOptions = enrollDialog.courses
       ?.filter((course) => course.active)
       .map((course: Course) => ({
@@ -119,7 +118,6 @@ export default function EnrollForm() {
         }
       })
       .catch((error) => {
-        console.log("error :>> ", error);
         const errorMessage = error.response.data.error.message
           ? error.response.data.error.message
           : "Something went wrong. Student wasn't enrolled!";

@@ -148,7 +148,6 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    console.log("error :>> ", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

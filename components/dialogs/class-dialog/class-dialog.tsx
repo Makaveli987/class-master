@@ -195,7 +195,6 @@ export default function ClassDialog({
           params: teacherId ? { substituteTeacher: teacherId } : null,
         })
         .then((response: any) => {
-          console.log("response.data :>> ", response.data);
           setAttendeeOptions(response.data);
         })
         .catch((error: any) => {
@@ -482,6 +481,7 @@ export default function ClassDialog({
               <FormField
                 control={form.control}
                 name="attendeeId"
+                disabled={isPending}
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex flex-col space-y-2">
@@ -499,7 +499,6 @@ export default function ClassDialog({
                               : "Select group..."
                           }
                           value={field.value}
-                          // disabled={pending}
                           options={attendeeOptions}
                           onChange={(value) => {
                             field.onChange(value);

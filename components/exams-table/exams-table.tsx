@@ -31,8 +31,6 @@ export default function ExamsTable({
 }: ExamsProps) {
   const examDialog = useExamDialog();
 
-  console.log("exams :>> ", exams);
-
   return (
     <Card className="border-0 shadow-none">
       <CardHeader>

@@ -63,7 +63,6 @@ export function GetExamColumns(
         <DataTableColumnHeader column={column} title="Course" />
       ),
       cell: ({ row }) => {
-        console.log("row :>> ", row);
         const enrollmentCourse = row.original.enrollment?.course;
         return <span>{enrollmentCourse?.name}</span>;
       },

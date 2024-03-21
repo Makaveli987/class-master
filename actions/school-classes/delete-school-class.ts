@@ -59,7 +59,6 @@ export async function deleteSchoolClass(
 
     return { data: "Class removed!", message: "Class sucesfully removed." };
   } catch (error) {
-    console.log("error", error);
     return {
       error: "Something bad happened. Class was not removed.",
     };

@@ -130,7 +130,6 @@ export default function CourseEnrollment({
                 className="h-8 w-8 p-0 group"
                 onClick={(e) => {
                   e.stopPropagation();
-                  console.log("enrollment", enrollment);
                   enrollDialog.open({
                     data: enrollment,
                     userType: enrollment.groupId

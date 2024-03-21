@@ -77,7 +77,7 @@ export async function POST(req: Request) {
       },
     });
 
-    let scheduledClassesAmount = enrollment?.attendedClasses || 0;
+    let scheduledClassesAmount = enrollment?.scheduledClasses || 0;
 
     if (enrollment?.completed) {
       return new NextResponse(
@@ -137,9 +137,20 @@ export async function POST(req: Request) {
 
         if (
           enrollment?.totalClasses &&
-          scheduledClassesAmount > enrollment?.totalClasses
+          scheduledClassesAmount >= enrollment?.totalClasses
         ) {
-          break;
+          return new NextResponse(
+            JSON.stringify({
+              error:
+                "You have reached a maximum amount of classes for this enrollment. Some classes were not scheduled.",
+            }),
+            {
+              status: 400,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
         }
 
         if (isAvailable) {
@@ -216,9 +227,20 @@ export async function POST(req: Request) {
 
         if (
           enrollment?.totalClasses &&
-          scheduledClassesAmount > enrollment?.totalClasses
+          scheduledClassesAmount >= enrollment?.totalClasses
         ) {
-          break;
+          return new NextResponse(
+            JSON.stringify({
+              error:
+                "You have reached a maximum amount of classes for this enrollment. Some classes were not scheduled.",
+            }),
+            {
+              status: 400,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
         }
 
         if (isAvailable) {

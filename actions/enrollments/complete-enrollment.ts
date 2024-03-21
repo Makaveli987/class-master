@@ -54,20 +54,16 @@ export async function completeEnrollment(
     };
   }
 
-  if (enrollment?.attendedClasses === 0) {
-    return {
-      error: "Cannot complete course. Student did not attended all classes.",
-    };
-  }
-
   if (
     enrollment?.attendedClasses &&
     enrollment?.totalClasses &&
-    enrollment?.attendedClasses > 0 &&
+    enrollment?.attendedClasses >= 0 &&
     enrollment?.attendedClasses < enrollment?.totalClasses
   ) {
     return {
-      error: "Cannot complete course. Student did not attended all classes.",
+      error: `Cannot complete course. ${
+        enrollment.groupId ? "Group" : "Student"
+      } did not attended all classes.`,
     };
   }
 

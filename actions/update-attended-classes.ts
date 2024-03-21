@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { ClassStatus } from "@prisma/client";
+import { NextResponse } from "next/server";
 
 export async function updateAttendedClass(
   schoolClassId: string,
@@ -10,6 +11,8 @@ export async function updateAttendedClass(
     where: { id: schoolClassId },
   });
 
+  console.log("schoolClass", schoolClass?.schoolClassStatus);
+
   const enrollment = await db.enrollment.findFirst({
     where: {
       id: enrollmentId,
@@ -17,10 +20,9 @@ export async function updateAttendedClass(
     select: {
       attendedClasses: true,
       scheduledClasses: true,
+      totalClasses: true,
     },
   });
-
-  // if (enrollment?.attendedClasses! > 0) {
 
   // SCHEDULED --> HELD
   if (
@@ -34,7 +36,7 @@ export async function updateAttendedClass(
       },
     });
 
-    return;
+    return true;
   }
 
   // SCHEDULED --> CANCELED
@@ -51,7 +53,7 @@ export async function updateAttendedClass(
       },
     });
 
-    return;
+    return true;
   }
 
   // HELD --> SCHEDULED
@@ -66,7 +68,7 @@ export async function updateAttendedClass(
       },
     });
 
-    return;
+    return true;
   }
 
   // HELD --> CANCELED
@@ -82,7 +84,7 @@ export async function updateAttendedClass(
       },
     });
 
-    return;
+    return true;
   }
 
   // CANCELED --> SCHEDULED
@@ -90,6 +92,10 @@ export async function updateAttendedClass(
     schoolClass?.schoolClassStatus === ClassStatus.CANCELED &&
     classStatus === ClassStatus.SCHEDULED
   ) {
+    if (enrollment?.scheduledClasses === enrollment?.totalClasses) {
+      return false;
+    }
+
     await db.enrollment.update({
       where: { id: enrollmentId },
       data: {
@@ -97,7 +103,7 @@ export async function updateAttendedClass(
       },
     });
 
-    return;
+    return true;
   }
 
   // CANCELED --> HELD
@@ -105,6 +111,10 @@ export async function updateAttendedClass(
     schoolClass?.schoolClassStatus === ClassStatus.CANCELED &&
     classStatus === ClassStatus.HELD
   ) {
+    if (enrollment?.scheduledClasses === enrollment?.totalClasses) {
+      return false;
+    }
+
     await db.enrollment.update({
       where: { id: enrollmentId },
       data: {
@@ -113,20 +123,6 @@ export async function updateAttendedClass(
       },
     });
 
-    return;
+    return true;
   }
-  // }
-
-  // // Increment if Prev status was not CANCELED and new one is HELD or SCHEDULED
-  // if (
-  //   schoolClass?.schoolClassStatus === ClassStatus.CANCELED &&
-  //   classStatus !== ClassStatus.HELD
-  // ) {
-  //   await db.enrollment.update({
-  //     where: { id: enrollmentId },
-  //     data: {
-  //       attendedClasses: { increment: 1 },
-  //     },
-  //   });
-  // }
 }

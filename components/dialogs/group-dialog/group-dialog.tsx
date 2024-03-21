@@ -142,8 +142,6 @@ export default function GroupDialog() {
   }
 
   function updateGroup(data: GroupPayload) {
-    console.log("data", data);
-
     axios
       .patch("/api/groups/" + groupDialog?.data?.id, { ...data })
       .then((response) => {

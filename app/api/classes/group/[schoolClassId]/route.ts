@@ -42,7 +42,17 @@ export async function PATCH(
     }: UpdateClassGroupPayload = await req.json();
 
     const result = await db.$transaction(async (tx) => {
-      await updateAttendedClass(schoolClassId, enrollmentId, classStatus);
+      const isStatusUpdated = await updateAttendedClass(
+        schoolClassId,
+        enrollmentId,
+        classStatus
+      );
+
+      if (!isStatusUpdated) {
+        throw new Error(
+          "Unable change the status. This enrollment alredy has maximum amount of classes."
+        );
+      }
 
       const updatedClass = await db.schoolClass.update({
         where: {
@@ -50,7 +60,7 @@ export async function PATCH(
         },
         data: {
           description,
-          schoolClassStatus: classStatus,
+          // schoolClassStatus: classStatus,
         },
       });
 
@@ -105,14 +115,11 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    return new NextResponse(
-      JSON.stringify({ error: "Internal Server Error" }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    return new NextResponse(JSON.stringify({ error: error }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }
