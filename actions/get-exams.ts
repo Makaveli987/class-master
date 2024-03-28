@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { Exam } from "@prisma/client";
 
-export interface ExamResponse extends Exam {
+export interface Exams extends Exam {
   enrollment?: {
     course: {
       id: string;
@@ -15,10 +15,17 @@ export interface ExamResponse extends Exam {
   };
 }
 
-export const getEnrollemntExams = async (enrollmentId: string) => {
+export type ExamResponse = {
+  data: Exams[];
+  error?: string;
+};
+
+export const getEnrollemntExams = async (
+  enrollmentId: string
+): Promise<ExamResponse> => {
   try {
     // const currentUser = await getCurrentUser();
-    const exams: ExamResponse[] = await db.exam.findMany({
+    const exams: Exams[] = await db.exam.findMany({
       where: { enrollmentId },
       include: {
         enrollment: {
@@ -41,16 +48,17 @@ export const getEnrollemntExams = async (enrollmentId: string) => {
       },
     });
 
-    return exams;
+    return { data: exams };
   } catch (error) {
-    console.error("[EXAMS] Error fetching exams");
-    return null;
+    return { error: "Failed to fetch exams. Please try again.", data: [] };
   }
 };
 
-export const getStudentExams = async (studentId: string) => {
+export const getStudentExams = async (
+  studentId: string
+): Promise<ExamResponse> => {
   try {
-    const exams: ExamResponse[] = await db.exam.findMany({
+    const exams = await db.exam.findMany({
       where: { studentId },
       include: {
         enrollment: {
@@ -66,9 +74,8 @@ export const getStudentExams = async (studentId: string) => {
       },
     });
 
-    return exams;
+    return { data: exams };
   } catch (error) {
-    console.error("[EXAMS] Error fetching exams");
-    return null;
+    return { error: "Failed to fetch exams. Please try again.", data: [] };
   }
 };

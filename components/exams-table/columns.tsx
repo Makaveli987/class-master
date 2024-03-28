@@ -1,6 +1,6 @@
 "use client";
 
-import { ExamResponse } from "@/actions/get-exams";
+import { ExamResponse, Exams } from "@/actions/get-exams";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { Tooltip2 } from "@/components/ui/tooltip2";
@@ -18,9 +18,7 @@ interface ExamColumnsPops {
   isGroupExam?: boolean;
 }
 
-export function GetExamColumns(
-  props: ExamColumnsPops
-): ColumnDef<ExamResponse>[] {
+export function GetExamColumns(props: ExamColumnsPops): ColumnDef<Exams>[] {
   const examDialog = useExamDialog();
   const router = useRouter();
 
@@ -36,7 +34,7 @@ export function GetExamColumns(
       );
   }
 
-  const columns: ColumnDef<ExamResponse>[] = [
+  const columns: ColumnDef<Exams>[] = [
     {
       accessorKey: "createdAt",
       header: ({ column }) => (

@@ -7,6 +7,7 @@ import {
   getAttendance,
 } from "@/actions/attendance/get-attendance";
 import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 
 type AttendanceTableProps = {
   enrollmentId: string;
@@ -27,12 +28,7 @@ export default async function AttendanceTable({
 
         <Button
           className="ml-auto"
-          //   onClick={() =>
-          //     noteDialog.open({
-          //       enrollmentId,
-          //       userId: userId || "",
-          //     })
-          //   }
+          // TODO implement dowload attendance functionality
         >
           <DownloadIcon className="w-5 h-5 mr-2" />
           Download

@@ -2,6 +2,17 @@ import { db } from "@/lib/db";
 import { ClassStatus } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+async function updateClass(schoolClassId: string, classStatus: ClassStatus) {
+  await db.schoolClass.update({
+    where: {
+      id: schoolClassId,
+    },
+    data: {
+      schoolClassStatus: classStatus,
+    },
+  });
+}
+
 export async function updateAttendedClass(
   schoolClassId: string,
   enrollmentId: string,
@@ -11,7 +22,11 @@ export async function updateAttendedClass(
     where: { id: schoolClassId },
   });
 
-  console.log("schoolClass", schoolClass?.schoolClassStatus);
+  console.log("update class");
+
+  if (schoolClass?.schoolClassStatus === classStatus) {
+    return true;
+  }
 
   const enrollment = await db.enrollment.findFirst({
     where: {
@@ -36,6 +51,8 @@ export async function updateAttendedClass(
       },
     });
 
+    await updateClass(schoolClassId, classStatus);
+
     return true;
   }
 
@@ -53,6 +70,8 @@ export async function updateAttendedClass(
       },
     });
 
+    await updateClass(schoolClassId, classStatus);
+
     return true;
   }
 
@@ -67,6 +86,8 @@ export async function updateAttendedClass(
         attendedClasses: { decrement: 1 },
       },
     });
+
+    await updateClass(schoolClassId, classStatus);
 
     return true;
   }
@@ -83,6 +104,8 @@ export async function updateAttendedClass(
         scheduledClasses: { decrement: 1 },
       },
     });
+
+    await updateClass(schoolClassId, classStatus);
 
     return true;
   }
@@ -103,6 +126,8 @@ export async function updateAttendedClass(
       },
     });
 
+    await updateClass(schoolClassId, classStatus);
+
     return true;
   }
 
@@ -122,6 +147,8 @@ export async function updateAttendedClass(
         scheduledClasses: { increment: 1 },
       },
     });
+
+    await updateClass(schoolClassId, classStatus);
 
     return true;
   }

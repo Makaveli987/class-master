@@ -29,6 +29,11 @@ import { Input } from "../../ui/input";
 import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
 import { GroupStudentsResponse } from "@/app/api/groups/[groupId]/students/route";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  CourseOptionsResponse,
+  getCourseOptions,
+} from "@/actions/courses/get-course-options";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 
 const formSchema = z.object({
   name: z.string().min(1, "Field is required"),
@@ -41,6 +46,7 @@ const formSchema = z.object({
 export default function ExamDialog() {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [groupStudents, setGroupStudents] = useState<ComboboxOptions[]>([]);
+  const [courseOptions, setCourseOptions] = useState<ComboboxOptions[]>([]);
 
   const examDialog = useExamDialog();
   const router = useRouter();
@@ -73,6 +79,23 @@ export default function ExamDialog() {
       form.setValue("studentId", examDialog?.studentId || "");
     }
 
+    if (examDialog.studentId && !examDialog.enrollmentId) {
+      getCourseOptions(examDialog.studentId, EnrollUserType.STUDENT)
+        .then((response: CourseOptionsResponse) => {
+          console.log("response :>> ", response);
+          if (response.data) {
+            setCourseOptions(response.data);
+          }
+          if (response.info) {
+            toast.info(response.info);
+          }
+          if (response.error) {
+            toast.info(response.error);
+          }
+        })
+        .catch((error) => console.log("error :>> ", error));
+    }
+
     form.setValue("enrollmentId", examDialog?.enrollmentId || "");
 
     if (!!examDialog.data) {
@@ -86,7 +109,13 @@ export default function ExamDialog() {
     }
 
     form.clearErrors();
-  }, [form, examDialog]);
+  }, [
+    form,
+    examDialog.data,
+    examDialog.studentId,
+    examDialog.enrollmentId,
+    examDialog.groupId,
+  ]);
 
   function createExam(values: z.infer<typeof formSchema>): void {
     axios
@@ -184,6 +213,31 @@ export default function ExamDialog() {
                           placeholder="Select student..."
                           value={field.value}
                           options={groupStudents}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {!examDialog.enrollmentId && (
+              <FormField
+                control={form.control}
+                name="enrollmentId"
+                disabled={isPending}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-col space-y-2">
+                      <FormLabel>Course</FormLabel>
+                      <FormControl>
+                        <Combobox
+                          disabled={isPending}
+                          placeholder="Select course..."
+                          value={field.value}
+                          options={courseOptions}
                           onChange={field.onChange}
                         />
                       </FormControl>

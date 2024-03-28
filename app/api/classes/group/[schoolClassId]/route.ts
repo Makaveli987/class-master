@@ -42,6 +42,12 @@ export async function PATCH(
     }: UpdateClassGroupPayload = await req.json();
 
     const result = await db.$transaction(async (tx) => {
+      // const currentClassStatus = await db.schoolClass.findUnique({
+      //   where: {id: schoolClassId}, select: {
+      //     schoolClassStatus: true
+      //   }
+      // })
+
       const isStatusUpdated = await updateAttendedClass(
         schoolClassId,
         enrollmentId,
@@ -50,8 +56,19 @@ export async function PATCH(
 
       if (!isStatusUpdated) {
         throw new Error(
-          "Unable change the status. This enrollment alredy has maximum amount of classes."
+          "Unable to change the status. This enrollment alredy has maximum amount of classes."
         );
+      }
+
+      const dataForUpdate: {
+        description?: string;
+        schoolClassStatus?: ClassStatus;
+      } = {
+        description,
+      };
+
+      if (isStatusUpdated) {
+        dataForUpdate.schoolClassStatus = classStatus;
       }
 
       const updatedClass = await db.schoolClass.update({
@@ -59,8 +76,7 @@ export async function PATCH(
           id: schoolClassId,
         },
         data: {
-          description,
-          // schoolClassStatus: classStatus,
+          ...dataForUpdate,
         },
       });
 
@@ -115,6 +131,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
+    console.log("error", error);
     return new NextResponse(JSON.stringify({ error: error }), {
       status: 500,
       headers: {

@@ -1,7 +1,5 @@
 "use client";
 import { useExamDialog } from "@/hooks/use-exam-dialog";
-import { Exam } from "@prisma/client";
-import { useRouter } from "next/navigation";
 import { DataTable } from "../ui/data-table/data-table";
 import { GetExamColumns } from "./columns";
 import {
@@ -17,7 +15,7 @@ import { ExamResponse } from "@/actions/get-exams";
 import { Button } from "../ui/button";
 
 interface ExamsProps {
-  exams: ExamResponse[] | null;
+  exams: ExamResponse | null;
   enrollmentId: string;
   studentId?: string | null;
   groupId?: string;
@@ -45,7 +43,7 @@ export default function ExamsTable({
             isEnrolmentExam: true,
             isGroupExam: !!groupId,
           })}
-          data={exams || []}
+          data={exams?.data || []}
           filterPlaceholder="Search exams..."
         >
           <Button

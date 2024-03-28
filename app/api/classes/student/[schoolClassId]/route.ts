@@ -82,7 +82,7 @@ export async function PATCH(
 
     if (!isStatusUpdated) {
       throw new Error(
-        "Unable change the status. This enrollment alredy has maximum amount of classes."
+        "Unable to change the status. This enrollment alredy has maximum amount of classes."
       );
     }
 

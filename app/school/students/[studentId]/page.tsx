@@ -116,7 +116,7 @@ export default async function StudentPage({
               </TabsContent>
               <TabsContent value="tests">
                 <ExamsTable
-                  exams={exams}
+                  exams={exams || []}
                   enrollmentId={""}
                   studentId={params.studentId}
                 />
