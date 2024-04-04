@@ -36,8 +36,8 @@ export default function StudentCourses({
   }
   return (
     <Card className="border-0 shadow-none">
-      <div className=" max-w-4xl">
-        <CardHeader className="mb-3 flex flex-row max-w-4xl">
+      <div className="max-w-screen-xl">
+        <CardHeader className="mb-3 flex flex-row max-w-screen-xl">
           <div className="space-y-1.5">
             <CardTitle>Enrolled Courses</CardTitle>
             <CardDescription>Courses that student has attended</CardDescription>
@@ -57,7 +57,7 @@ export default function StudentCourses({
             <PlusCircleIcon className="w-4 h-4 mr-2" /> Enroll Course
           </Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0 mx-6 border rounded-md">
           <div>
             {enrollments?.map((enrollment) => (
               <CourseEnrollment

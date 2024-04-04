@@ -29,24 +29,24 @@ export default function CourseProgress({
         className
       )}
     >
-      {/* {completed ? (
+      {completed ? (
         <MerakiBadge variant={"emerald"}>
-          <CheckCircleIcon className="w-3 h-3 mr-1" />
+          <CheckCircleIcon className="size-3 mr-1" />
           Completed
         </MerakiBadge>
-      ) : ( */}
-      <div className="w-[180px] flex flex-col gap-2">
-        <p
-          className={cn(
-            "text-sm font-semibold leading-none",
-            labelPosition === "left" ? "text-left" : "text-right"
-          )}
-        >
-          {attendedClasses}/{totalClasses}
-        </p>
-        <Progress value={calcPercentage(attendedClasses, totalClasses)} />
-      </div>
-      {/* )} */}
+      ) : (
+        <div className="w-[180px] flex flex-col gap-2">
+          <p
+            className={cn(
+              "text-sm font-semibold leading-none",
+              labelPosition === "left" ? "text-left" : "text-right"
+            )}
+          >
+            {attendedClasses}/{totalClasses}
+          </p>
+          <Progress value={calcPercentage(attendedClasses, totalClasses)} />
+        </div>
+      )}
     </div>
   );
 }

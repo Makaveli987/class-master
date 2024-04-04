@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import {
   CalendarCheckIcon,
   FileIcon,
+  FileImageIcon,
   MessageSquareTextIcon,
   UserCheckIcon,
 } from "lucide-react";
@@ -72,108 +73,182 @@ export default async function EnrollmentId({
   }
 
   return (
-    <div className="max-w-[900px] m-auto">
-      <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollment</h3>
-      <Card>
-        <CardHeader>
-          <div className="flex gap-6 items-center">
-            <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
-              <Image
-                src={`/${getEnrollentUserIcon()}.png`}
-                alt={"test"}
-                fill
-                className="rounded-full"
-              />
-            </div>
-            <div className="flex flex-col justify-center">
-              <h2 className="text-xl font-bold tracking-tight">
-                {getEnrollentUser()}
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Enrolled: {format(getEnrollentDate()!, "dd-MMM-yyyy")}
-              </p>
-            </div>
+    // <div className="max-w-[900px] m-auto">
+    //   <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollment</h3>
+    //   <Card>
+    //     <CardHeader>
+    //       <div className="flex gap-6 items-center">
+    //         <div className="w-16 h-16 relative rounded-full flex justify-center items-center bg-muted">
+    //           <Image
+    //             src={`/${getEnrollentUserIcon()}.png`}
+    //             alt={"test"}
+    //             fill
+    //             className="rounded-full"
+    //           />
+    //         </div>
+    //         <div className="flex flex-col justify-center">
+    //           <h2 className="text-xl font-bold tracking-tight">
+    //             {getEnrollentUser()}
+    //           </h2>
+    //           <p className="text-muted-foreground text-sm">
+    //             Enrolled: {format(getEnrollentDate()!, "dd-MMM-yyyy")}
+    //           </p>
+    //         </div>
 
-            <div className="ml-auto flex gap-3">
-              <DeleteEnrollmentButton
+    //         <div className="ml-auto flex gap-3">
+    //           <DeleteEnrollmentButton
+    //             enrollmentId={enrollment.id}
+    //             buttonType="button"
+    //           />
+    //         </div>
+    //       </div>
+    //     </CardHeader>
+    //     <CardContent>
+    //       <Separator className="my-1" />
+
+    //       <EnrollmentDetails enrollment={enrollment} courses={courses || []} />
+
+    //       <Card className="mt-4">
+    //         <Tabs
+    //           defaultValue="notes"
+    //           className="w-full overflow-auto flex flex-col"
+    //         >
+    //           <TabsList className="justify-start flex-1 min-w-min rounded-b-none">
+    //             <TabsTrigger className="min-w-28" value="notes">
+    //               <MessageSquareTextIcon className="w-4 h-4 mr-1" /> Notes
+    //             </TabsTrigger>
+
+    //             {enrollment.groupId && (
+    //               <TabsTrigger className="min-w-28" value="attendance">
+    //                 <UserCheckIcon className="w-4 h-4 mr-1" />
+    //                 Attendance
+    //               </TabsTrigger>
+    //             )}
+    //             <TabsTrigger className="min-w-28" value="tests">
+    //               <FileIcon className="w-4 h-4 mr-1" />
+    //               Tests
+    //             </TabsTrigger>
+    //             <TabsTrigger className="min-w-28" value="classes">
+    //               <CalendarCheckIcon className="w-4 h-4 mr-1" />
+    //               Classes
+    //             </TabsTrigger>
+    //           </TabsList>
+    //           <TabsContent value="notes">
+    //             <Notes
+    //               userType={
+    //                 enrollment.groupId
+    //                   ? EnrollUserType.GROUP
+    //                   : EnrollUserType.STUDENT
+    //               }
+    //               notes={notes}
+    //               enrollmentId={params.enrollmentId}
+    //               userId={
+    //                 enrollment.studentId
+    //                   ? enrollment.studentId
+    //                   : enrollment.groupId
+    //               }
+    //             />
+    //           </TabsContent>
+    //           {enrollment.groupId && (
+    //             <TabsContent value="attendance">
+    //               <AttendanceTable
+    //                 attendance={attendance}
+    //                 enrollmentId={enrollment.id}
+    //               />
+    //             </TabsContent>
+    //           )}
+    //           <TabsContent value="tests">
+    //             <ExamsTable
+    //               exams={exams}
+    //               enrollmentId={enrollment.id}
+    //               studentId={enrollment.studentId}
+    //               groupId={enrollment.groupId || undefined}
+    //             />
+    //           </TabsContent>
+    //           <TabsContent value="classes">
+    //             <SchoolClassesTable
+    //               schoolClasses={schoolClasses || []}
+    //               excludeCourseCol
+    //             />
+    //           </TabsContent>
+    //         </Tabs>
+    //       </Card>
+    //     </CardContent>
+    //   </Card>
+    // </div>
+    <div className="w-full flex max-w-screen-xl mx-auto border rounded-md bg-card shadow-sm">
+      {/* Side Info */}
+      <EnrollmentDetails enrollment={enrollment} courses={courses || []} />
+
+      {/*  Main Content */}
+      <div className="py-6 px-8 flex-1">
+        <Tabs
+          defaultValue="notes"
+          className="w-full overflow-auto flex flex-col"
+        >
+          <TabsList className="justify-start flex-1 min-w-min">
+            <TabsTrigger className="min-w-28" value="notes">
+              <MessageSquareTextIcon className="w-4 h-4 mr-1" /> Notes
+            </TabsTrigger>
+
+            {enrollment.groupId && (
+              <TabsTrigger className="min-w-28" value="attendance">
+                <UserCheckIcon className="w-4 h-4 mr-1" />
+                Attendance
+              </TabsTrigger>
+            )}
+            <TabsTrigger className="min-w-28" value="tests">
+              <FileIcon className="w-4 h-4 mr-1" />
+              Tests
+            </TabsTrigger>
+            <TabsTrigger className="min-w-28" value="classes">
+              <CalendarCheckIcon className="w-4 h-4 mr-1" />
+              Classes
+            </TabsTrigger>
+            <TabsTrigger className="min-w-28" value="reports">
+              <FileImageIcon className="w-4 h-4 mr-1" />
+              Reports
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="notes">
+            <Notes
+              userType={
+                enrollment.groupId
+                  ? EnrollUserType.GROUP
+                  : EnrollUserType.STUDENT
+              }
+              notes={notes}
+              enrollmentId={params.enrollmentId}
+              userId={
+                enrollment.studentId ? enrollment.studentId : enrollment.groupId
+              }
+            />
+          </TabsContent>
+          {enrollment.groupId && (
+            <TabsContent value="attendance">
+              <AttendanceTable
+                attendance={attendance}
                 enrollmentId={enrollment.id}
-                buttonType="button"
               />
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Separator className="my-1" />
-
-          <EnrollmentDetails enrollment={enrollment} courses={courses || []} />
-
-          <Card className="mt-4">
-            <Tabs
-              defaultValue="notes"
-              className="w-full overflow-auto flex flex-col"
-            >
-              <TabsList className="justify-start flex-1 min-w-min rounded-b-none">
-                <TabsTrigger className="min-w-28" value="notes">
-                  <MessageSquareTextIcon className="w-4 h-4 mr-1" /> Notes
-                </TabsTrigger>
-
-                {enrollment.groupId && (
-                  <TabsTrigger className="min-w-28" value="attendance">
-                    <UserCheckIcon className="w-4 h-4 mr-1" />
-                    Attendance
-                  </TabsTrigger>
-                )}
-                <TabsTrigger className="min-w-28" value="tests">
-                  <FileIcon className="w-4 h-4 mr-1" />
-                  Tests
-                </TabsTrigger>
-                <TabsTrigger className="min-w-28" value="classes">
-                  <CalendarCheckIcon className="w-4 h-4 mr-1" />
-                  Classes
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="notes">
-                <Notes
-                  userType={
-                    enrollment.groupId
-                      ? EnrollUserType.GROUP
-                      : EnrollUserType.STUDENT
-                  }
-                  notes={notes}
-                  enrollmentId={params.enrollmentId}
-                  userId={
-                    enrollment.studentId
-                      ? enrollment.studentId
-                      : enrollment.groupId
-                  }
-                />
-              </TabsContent>
-              {enrollment.groupId && (
-                <TabsContent value="attendance">
-                  <AttendanceTable
-                    attendance={attendance}
-                    enrollmentId={enrollment.id}
-                  />
-                </TabsContent>
-              )}
-              <TabsContent value="tests">
-                <ExamsTable
-                  exams={exams}
-                  enrollmentId={enrollment.id}
-                  studentId={enrollment.studentId}
-                  groupId={enrollment.groupId || undefined}
-                />
-              </TabsContent>
-              <TabsContent value="classes">
-                <SchoolClassesTable
-                  schoolClasses={schoolClasses || []}
-                  excludeCourseCol
-                />
-              </TabsContent>
-            </Tabs>
-          </Card>
-        </CardContent>
-      </Card>
+            </TabsContent>
+          )}
+          <TabsContent value="tests">
+            <ExamsTable
+              exams={exams}
+              enrollmentId={enrollment.id}
+              studentId={enrollment.studentId}
+              groupId={enrollment.groupId || undefined}
+            />
+          </TabsContent>
+          <TabsContent value="classes">
+            <SchoolClassesTable
+              schoolClasses={schoolClasses || []}
+              excludeCourseCol
+            />
+          </TabsContent>
+          <TabsContent value="reports">reports</TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

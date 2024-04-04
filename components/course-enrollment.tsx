@@ -51,9 +51,9 @@ export default function CourseEnrollment({
   }
 
   return (
-    <div key={enrollment.id}>
-      <Separator />
-      <div className="grid grid-cols-7 gap-4  pl-2 hover:bg-muted cursor-pointer">
+    <div key={enrollment.id} className="border-t first:border-t-0">
+      {/* <Separator /> */}
+      <div className="grid grid-cols-7 gap-4 px-4 hover:bg-muted cursor-pointer">
         <div
           className="flex flex-col col-span-2 space-y-1 text-left py-6"
           onClick={() => router.push(`/school/enrollments/${enrollment.id}`)}

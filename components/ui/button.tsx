@@ -17,29 +17,41 @@ const buttonVariants = cva(
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         "outline-destructive":
           "border border-destructive bg-background shadow-sm text-destructive hover:bg-destructive/5",
+        "outline-primary":
+          "border border-primary bg-background shadow-sm text-primary hover:bg-primary/5",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         "ghost-destructive": "hover:bg-destructive/5 hover:text-destructive",
         link: "text-primary underline-offset-4 hover:underline",
-        red: "bg-red-500 text-red-50 dark:bg-red-700",
-        orange: "bg-orange-500 text-orange-50 dark:bg-orange-700",
-        amber: "bg-amber-500 text-amber-50 dark:bg-amber-700",
-        yellow: "bg-yellow-500 text-yellow-50 dark:bg-yellow-700",
-        lime: "bg-lime-500 text-lime-50 dark:bg-lime-700",
-        green: "bg-green-500 text-green-50 dark:bg-green-700",
-        emerald: "bg-emerald-500 text-emerald-50 dark:bg-emerald-700",
-        teal: "bg-teal-500 text-teal-50 dark:bg-teal-700",
-        cyan: "bg-cyan-500 text-cyan-50 dark:bg-cyan-700",
-        sky: "bg-sky-500 text-sky-50 dark:bg-sky-700",
-        blue: "bg-blue-500 text-blue-50 dark:bg-blue-700",
-        indigo: "bg-indigo-500 text-indigo-50 dark:bg-indigo-700",
-        violet: "bg-violet-500 text-violet-50 dark:bg-violet-700",
-        purple: "bg-purple-500 text-purple-50 dark:bg-purple-700",
-        fuchsia: "bg-fuchsia-500 text-fuchsia-50 dark:bg-fuchsia-700",
-        pink: "bg-pink-500 text-pink-50 dark:bg-pink-700",
-        rose: "bg-rose-500 text-rose-50 dark:bg-rose-700",
-        "sidebar-active": "bg-blue-50 text-blue-500",
+        red: "bg-red-500 text-red-50 dark:bg-red-700 hover:bg-red-500/90 dark:hover:bg-red-700/90",
+        orange:
+          "bg-orange-500 text-orange-50 dark:bg-orange-700 hover:bg-orange-500/90 dark:hover:bg-orange-700/90",
+        amber:
+          "bg-amber-500 text-amber-50 dark:bg-amber-700 hover:bg-amber-500/90 dark:hover:bg-amber-700/90",
+        yellow:
+          "bg-yellow-500 text-yellow-50 dark:bg-yellow-700 hover:bg-yellow-500/90 dark:hover:bg-yellow-700/90",
+        lime: "bg-lime-500 text-lime-50 dark:bg-lime-700 hover:bg-lime-500/90 dark:hover:bg-lime-700/90",
+        green:
+          "bg-green-500 text-green-50 dark:bg-green-700 dark:hover:bg-green-700/90 dark:hover:bg-green-700/90",
+        emerald:
+          "bg-emerald-500 text-emerald-50 dark:bg-emerald-700 hover:bg-emerald-500/90 dark:hover:bg-emerald-700/90",
+        teal: "bg-teal-500 text-teal-50 dark:bg-teal-700 hover:bg-teal-500/90 dark:hover:bg-teal-700/90",
+        cyan: "bg-cyan-500 text-cyan-50 dark:bg-cyan-700 hover:bg-cyan-500/90 dark:hover:bg-cyan-700/90",
+        sky: "bg-sky-500 text-sky-50 dark:bg-sky-700 hover:bg-sky-500/90 dark:hover:bg-sky-700/90",
+        blue: "bg-blue-500 text-blue-50 dark:bg-blue-700 hover:bg-blue-500/90 dark:hover:bg-blue-700/90",
+        indigo:
+          "bg-indigo-500 text-indigo-50 dark:bg-indigo-700 hover:bg-indigo-500/90 dark:hover:bg-indigo-700/90",
+        violet:
+          "bg-violet-500 text-violet-50 dark:bg-violet-700 hover:bg-violet-500/90 dark:hover:bg-violet-700/90",
+        purple:
+          "bg-purple-500 text-purple-50 dark:bg-purple-700 hover:bg-purple-500/90 dark:hover:bg-purple-700/90",
+        fuchsia:
+          "bg-fuchsia-500 text-fuchsia-50 dark:bg-fuchsia-700 hover:bg-fuchisia-500/90 dark:hover:bg-fuchisia-700/90",
+        pink: "bg-pink-500 text-pink-50 dark:bg-pink-700 hover:bg-pink-500/90 dark:hover:bg-pink-700/90",
+        rose: "bg-rose-500 text-rose-50 dark:bg-rose-700 hover:bg-rose-500/90 dark:hover:bg-rose-700/90",
+        "sidebar-active":
+          "bg-blue-50 text-blue-500 hover:bg-emerald-500/90 dark:hover:bg-emerald-700/90",
       },
       size: {
         default: "h-9 px-4 py-2",

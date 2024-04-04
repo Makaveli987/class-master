@@ -35,9 +35,8 @@ export default function ExamsTable({
         <CardTitle>Exams</CardTitle>
         <CardDescription>All the exams student has taken</CardDescription>
       </CardHeader>
-      <CardContent className="max-w-4xl ">
+      <CardContent className="max-w-screen-xl">
         <DataTable
-          className="border-0"
           headerClassName="rounded-t-md bg-muted/50"
           columns={GetExamColumns({
             isEnrolmentExam: true,

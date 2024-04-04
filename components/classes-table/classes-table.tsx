@@ -26,9 +26,8 @@ export default function SchoolClassesTable({
         <CardTitle>Classes</CardTitle>
         <CardDescription>All the classes student has attended</CardDescription>
       </CardHeader>
-      <CardContent className="max-w-4xl ">
+      <CardContent className="max-w-screen-xl">
         <DataTable
-          className="border-0"
           headerClassName="rounded-t-md bg-muted/50"
           columns={GetSchoolClassColumns(excludeCourseCol || false)}
           data={schoolClasses || []}
