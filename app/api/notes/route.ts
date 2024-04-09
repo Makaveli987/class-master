@@ -1,4 +1,5 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { enrollmentId, userId, text } = await req.json();
+    const { enrollmentId, userId, userType, text } = await req.json();
 
     if (!enrollmentId || !text) {
       return new NextResponse(
@@ -29,6 +30,8 @@ export async function POST(req: Request) {
       data: {
         enrollmentId,
         teacherId: currentUser.id,
+        studentId: userType === EnrollUserType.STUDENT ? userId : null,
+        groupId: userType === EnrollUserType.GROUP ? userId : null,
         text,
         userId,
       },

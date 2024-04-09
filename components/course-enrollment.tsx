@@ -114,6 +114,7 @@ export default function CourseEnrollment({
                       userType === EnrollUserType.GROUP
                         ? (enrollment.groupId as string)
                         : (enrollment.studentId as string),
+                    userType,
                   });
                 }}
                 variant="ghost"

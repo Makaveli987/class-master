@@ -19,6 +19,7 @@ interface GroupCoursesProps {
   enrollments: EnrollmentResponse[];
   courses: CourseResponse[];
   isGroupActive?: boolean;
+  isCompanyGroup?: boolean;
 }
 
 export default function GroupCourses({
@@ -26,6 +27,7 @@ export default function GroupCourses({
   enrollments,
   courses,
   isGroupActive = true,
+  isCompanyGroup = false,
 }: GroupCoursesProps) {
   const enrollDialog = useEnrollDialog();
 
@@ -59,6 +61,7 @@ export default function GroupCourses({
                   userType: EnrollUserType.GROUP,
                   courses,
                   action: DialogAction.CREATE,
+                  isCompanyGroup,
                 })
               }
             >

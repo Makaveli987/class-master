@@ -81,9 +81,9 @@ export default async function Home() {
           <div>
             <div className="mx-auto max-w-6xl px-6 lg:px-8">
               <div className="mt-16 flow-root sm:mt-24">
-                <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+                <div className="-m-2 rounded-xl bg-gray-600/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                   <Image
-                    src="/calendar-view.JPG"
+                    src="/calendar-view2.png"
                     alt="product preview"
                     width={1920}
                     height={1080}

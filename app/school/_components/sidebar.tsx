@@ -90,7 +90,7 @@ export function Sidebar({ className, session }: SidebarProps) {
   return (
     <div
       className={cn(
-        "pb-12 lg:border-r h-full bg-[#020817] bg-card overflow-hidden transition-all duration-200 ",
+        "pb-12 lg:border-r h-full fixed z-30 bg-[#020817] bg-card overflow-hidden transition-all duration-200 ",
         className,
         sidebar.isOpen ? "w-56" : "w-0"
       )}
@@ -139,7 +139,7 @@ export function Sidebar({ className, session }: SidebarProps) {
 
 Sidebar.Skeleton = function SkeletonSidebar() {
   return (
-    <div className="pb-12 w-56 border-r h-full bg-card">
+    <div className="pb-12 w-56 fixed border-r h-full bg-card">
       <div className="h-14 ml-5 flex items-center">
         <Link href="/school/calendar">
           <Logo />

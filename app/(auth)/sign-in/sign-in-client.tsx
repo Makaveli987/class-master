@@ -30,10 +30,12 @@ const INVALID_CREDENTIALS = "CredentialsSignin";
 export default function SignInClient() {
   const [pending, setPending] = useState(false);
   const [isDialogOpen, setisDialogOpen] = useState(false);
+  const [error, setError] = useState("");
+
   const params = useSearchParams();
   const router = useRouter();
 
-  const error = params.get("error");
+  // const error = params.get("error");
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -56,10 +58,12 @@ export default function SignInClient() {
     // });
     await login(values)
       .then((res) => {
-        console.log("res", res);
         if (res?.error) {
-          console.log("error", error);
-          setisDialogOpen(true);
+          if (res.code === 951) {
+            setisDialogOpen(true);
+          } else {
+            setError(res.error);
+          }
           // router.push("/verify-account");
         }
       })
@@ -129,9 +133,7 @@ export default function SignInClient() {
             <Alert variant="destructive">
               <AlertDescription className="flex items-center gap-2">
                 <ExclamationTriangleIcon className="h-4 w-4" />
-                {error === INVALID_CREDENTIALS
-                  ? "Invalid credentials"
-                  : "Something went wrong"}
+                {error}
               </AlertDescription>
             </Alert>
           )}

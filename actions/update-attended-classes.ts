@@ -22,8 +22,6 @@ export async function updateAttendedClass(
     where: { id: schoolClassId },
   });
 
-  console.log("update class");
-
   if (schoolClass?.schoolClassStatus === classStatus) {
     return true;
   }

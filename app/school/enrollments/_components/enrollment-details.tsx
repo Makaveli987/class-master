@@ -326,7 +326,7 @@ export default function EnrollmentDetails({
         completed={enrollment?.completed as boolean}
       />
 
-      <div className="mt-14 flex gap-3">
+      <div className="mt-6 flex gap-3">
         <ConfirmDialog
           description="This action will archive the student. You will not be able to assign students and classes to this student."
           onConfirm={onDelete}
@@ -354,7 +354,8 @@ export default function EnrollmentDetails({
               courses: courses,
             })
           }
-          variant="outline"
+          variant={"outline"}
+          className="flex-1 hover:bg-primary/5 hover:text-primary hover:border-primary"
         >
           <EditIcon className="w-4 h-4 mr-2" /> Edit
         </Button>

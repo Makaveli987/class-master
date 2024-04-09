@@ -56,7 +56,7 @@ export function GetExamColumns(props: ExamColumnsPops): ColumnDef<Exams>[] {
       },
     },
     {
-      accessorKey: "enrollment",
+      accessorKey: "enrollment.course.name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Course" />
       ),

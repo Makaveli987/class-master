@@ -25,7 +25,7 @@ export const login = async (
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email) {
-    return { error: "Email does not exist!" };
+    return { error: "Invalid credentials!", code: 950 };
   }
 
   if (!existingUser.emailVerified) {
@@ -38,7 +38,7 @@ export const login = async (
       verificationToken.token
     );
 
-    return { error: "Email not verified" };
+    return { error: "Email not verified", code: 951 };
   }
 
   try {

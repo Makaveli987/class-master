@@ -1,5 +1,6 @@
 import getCurrentUser from "@/actions/get-current-user";
 import { updateAttendedClass } from "@/actions/update-attended-classes";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { db } from "@/lib/db";
 import { ClassStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -12,6 +13,7 @@ export interface UpdateClassPayload {
   classStatus: ClassStatus;
   enrollmentId: string;
   userId: string;
+  userType: EnrollUserType;
 }
 
 export async function PATCH(
@@ -33,6 +35,7 @@ export async function PATCH(
       classStatus,
       enrollmentId,
       userId,
+      userType,
     }: UpdateClassPayload = await req.json();
 
     if (currentUser.id !== userId && currentUser.role === Role.TEACHER) {
@@ -63,9 +66,10 @@ export async function PATCH(
           data: {
             enrollmentId,
             teacherId: currentUser.id,
+            studentId: userType === EnrollUserType.STUDENT ? userId : null,
+            groupId: userType === EnrollUserType.GROUP ? userId : null,
             text: note,
             userId,
-            schoolClassId,
           },
         });
       }
@@ -94,6 +98,7 @@ export async function PATCH(
       },
     });
   } catch (error: any) {
+    console.log("error :>> ", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

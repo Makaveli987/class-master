@@ -126,7 +126,7 @@ export default function StudentDetails({
         active={student?.active || false}
       />
 
-      <div className="mt-14 flex gap-3">
+      <div className="mt-4 flex gap-3">
         <ConfirmDialog
           description="This action will archive the student. You will not be able to assign students and classes to this student."
           onConfirm={onDelete}

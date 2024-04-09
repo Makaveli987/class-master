@@ -1,5 +1,6 @@
 import { Group, Note, Student, User } from "@prisma/client";
 import { create } from "zustand";
+import { EnrollUserType } from "./use-enroll-dialog";
 
 export interface NoteData extends Note {
   teacher: Pick<User, "id" | "firstName" | "lastName">;
@@ -11,6 +12,7 @@ interface OpenParams {
   note?: NoteData;
   enrollmentId?: string;
   userId?: string;
+  userType?: EnrollUserType;
 }
 
 type NoteDialogStore = {
@@ -20,6 +22,7 @@ type NoteDialogStore = {
   data: NoteData | null;
   enrollmentId?: string;
   userId?: string;
+  userType?: EnrollUserType;
 };
 
 export const useNoteDialog = create<NoteDialogStore>((set) => ({
@@ -32,7 +35,15 @@ export const useNoteDialog = create<NoteDialogStore>((set) => ({
       data: params?.note,
       enrollmentId: params.enrollmentId,
       userId: params.userId,
+      userType: params.userType,
     });
   },
-  close: () => set({ isOpen: false, data: null, enrollmentId: "", userId: "" }),
+  close: () =>
+    set({
+      isOpen: false,
+      data: null,
+      enrollmentId: "",
+      userId: "",
+      userType: undefined,
+    }),
 }));

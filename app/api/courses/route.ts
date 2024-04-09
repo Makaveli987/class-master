@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       defaultTotalClasses,
     } = await req.json();
 
-    if (!name || !description || !defaultPrice || !defaultTotalClasses) {
+    if (!name || !defaultPrice || !defaultTotalClasses) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     const s = await db.course.create({
       data: {
         name,
-        description,
+        description: description || "",
         defaultPrice,
         defaultGroupPrice,
         defaultPricePerStudent,

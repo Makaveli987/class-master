@@ -51,11 +51,13 @@ export default function NotesDialog() {
   }, [form, noteDialog.data]);
 
   function createNote(values: z.infer<typeof formSchema>): void {
+    setIsPending(true);
     axios
       .post("/api/notes", {
         ...values,
         enrollmentId: noteDialog?.enrollmentId,
         userId: noteDialog?.userId,
+        userType: noteDialog?.userType,
       })
       .then((response: AxiosResponse<Enrollment[]>) => {
         if (response.status === 201) {

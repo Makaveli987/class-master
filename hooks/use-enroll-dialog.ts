@@ -23,6 +23,7 @@ interface OpenParams {
   userId?: string | null;
   courses?: CourseResponse[];
   action: DialogAction;
+  isCompanyGroup?: boolean;
 }
 
 // eslint-disable-next-line no-redeclare
@@ -39,6 +40,7 @@ interface EnrollDialogStore {
   userId: string | null;
   courses: CourseResponse[];
   action: DialogAction;
+  isCompanyGroup?: boolean;
 }
 
 const emptyData: EnrollmentResponse = {
@@ -76,6 +78,7 @@ const useEnrollDialog = create<EnrollDialogStore>((set) => ({
       userId: params.userId,
       courses: params.courses,
       action: params.action,
+      isCompanyGroup: params.isCompanyGroup,
     });
   },
   close: () =>
@@ -86,6 +89,7 @@ const useEnrollDialog = create<EnrollDialogStore>((set) => ({
       userId: "",
       courses: [],
       action: DialogAction.CREATE,
+      isCompanyGroup: false,
     }),
 }));
 

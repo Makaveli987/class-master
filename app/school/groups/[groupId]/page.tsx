@@ -55,6 +55,7 @@ export default async function GroupPage({
             groupId={params.groupId}
             courses={courses || []}
             isGroupActive={group?.active}
+            isCompanyGroup={group?.isCompanyGroup}
           />
         </CardContent>
       </Card>

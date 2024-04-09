@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/card";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
-import { PlusCircleIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { BookMarkedIcon, BookmarkIcon, PlusCircleIcon } from "lucide-react";
 
 interface StudentCoursesProps {
   studentId: string;
@@ -57,27 +58,61 @@ export default function StudentCourses({
             <PlusCircleIcon className="w-4 h-4 mr-2" /> Enroll Course
           </Button>
         </CardHeader>
-        <CardContent className="p-0 mx-6 border rounded-md">
-          <div>
-            {enrollments?.map((enrollment) => (
-              <CourseEnrollment
-                key={enrollment.id}
-                enrollment={enrollment}
-                userType={EnrollUserType.STUDENT}
-                courses={courses}
-              />
-            ))}
+        <CardContent
+          className={cn(
+            "p-0 mx-6 rounded-md",
+            !enrollments.length && !groupEnrollments.length
+              ? "border border-dashed"
+              : "border"
+          )}
+        >
+          {!enrollments.length && !groupEnrollments.length ? (
+            <div className="flex h-[450px] shrink-0 items-center justify-center rounded-md">
+              <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
+                <BookMarkedIcon className="size-7" />
+                <h3 className="mt-4 text-lg font-semibold">
+                  No courses enrolled.
+                </h3>
+                <p className="mb-4 mt-2 text-sm text-muted-foreground">
+                  The student is not yet enrolled in any course.
+                </p>
+                <Button
+                  size={"sm"}
+                  onClick={() =>
+                    enrollDialog.open({
+                      userId: studentId,
+                      userType: EnrollUserType.STUDENT,
+                      courses,
+                      action: DialogAction.CREATE,
+                    })
+                  }
+                >
+                  Enroll Course
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {enrollments?.map((enrollment) => (
+                <CourseEnrollment
+                  key={enrollment.id}
+                  enrollment={enrollment}
+                  userType={EnrollUserType.STUDENT}
+                  courses={courses}
+                />
+              ))}
 
-            {groupEnrollments?.map((enrollment) => (
-              <CourseEnrollment
-                key={enrollment.id}
-                enrollment={enrollment}
-                userType={EnrollUserType.STUDENT}
-                courses={courses}
-                showGroupEnrollmentsForStudent
-              />
-            ))}
-          </div>
+              {groupEnrollments?.map((enrollment) => (
+                <CourseEnrollment
+                  key={enrollment.id}
+                  enrollment={enrollment}
+                  userType={EnrollUserType.STUDENT}
+                  courses={courses}
+                  showGroupEnrollmentsForStudent
+                />
+              ))}
+            </div>
+          )}
         </CardContent>
       </div>
     </Card>

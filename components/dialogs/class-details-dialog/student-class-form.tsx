@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import useFilteredClasses from "@/hooks/use-filter-classes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ClassStatus } from "@prisma/client";
@@ -84,8 +85,8 @@ export default function StudentClassForm({
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const userId = classDetailsDialog.data?.schoolId
-      ? classDetailsDialog.data?.schoolId
+    const userId = classDetailsDialog.data?.studentId
+      ? classDetailsDialog.data?.studentId
       : classDetailsDialog.data?.groupId;
 
     const payload: UpdateClassPayload = {
@@ -94,6 +95,9 @@ export default function StudentClassForm({
       enrollmentId: classDetailsDialog.data?.enrollmentId || "",
       userId: userId || "",
       noteId: notes[0]?.id || "",
+      userType: classDetailsDialog.data?.groupId
+        ? EnrollUserType.GROUP
+        : EnrollUserType.STUDENT,
     };
 
     updateSchoolClass(payload);

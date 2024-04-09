@@ -85,7 +85,6 @@ export default function GroupClassForm({
         }
       })
       .catch((error) => {
-        console.log("error", error.response.data);
         toast.error("Something went wrong. Class wasn't updated!");
       })
       .finally(() => {

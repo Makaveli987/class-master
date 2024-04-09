@@ -27,8 +27,6 @@ export async function completeEnrollment(
   });
 
   if (!completed) {
-    console.log("completed false ", completed);
-
     try {
       const enrollment = await db.enrollment.update({
         where: {

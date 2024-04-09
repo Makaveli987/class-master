@@ -1,5 +1,5 @@
 "use client";
-import { DefaultConfigResponse } from "@/app/api/courses/default-config/[course-id]/route";
+import { DefaultConfigResponse } from "@/app/api/courses/default-config/[courseId]/route";
 import useEnrollDialog, { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,7 +47,7 @@ export default function EnrollForm() {
     let initPrice = 0;
 
     if (enrollDialog.data.groupId) {
-      initPrice = enrollDialog.data.group?.isCompanyGroup
+      initPrice = enrollDialog?.isCompanyGroup
         ? enrollDialog.data.price
         : (enrollDialog.data.pricePerStudent as number);
     } else {
@@ -80,11 +80,11 @@ export default function EnrollForm() {
 
     if (
       enrollDialog.userType === EnrollUserType.GROUP &&
-      !enrollDialog.data.group?.isCompanyGroup
+      !enrollDialog?.isCompanyGroup
     ) {
       setPriceLabel("Price Per Student");
     }
-  }, [enrollDialog.data]);
+  }, [enrollDialog.courses]);
 
   function filterTeachersOptions(courseId: string) {
     const selectedCourse = enrollDialog.courses?.find(
@@ -176,7 +176,7 @@ export default function EnrollForm() {
       .get("/api/courses/default-config/" + courseId)
       .then((response: AxiosResponse<DefaultConfigResponse>) => {
         if (enrollDialog.userType === EnrollUserType.GROUP) {
-          if (enrollDialog.data.group?.isCompanyGroup) {
+          if (enrollDialog?.isCompanyGroup) {
             form.setValue("price", response.data?.defaultGroupPrice || 0);
             setPriceLabel("Price");
           } else {

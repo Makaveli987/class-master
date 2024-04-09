@@ -17,7 +17,6 @@ export default function VerificationForm() {
   const token = searchParams.get("token");
 
   const onSubmit = useCallback(async () => {
-    console.log("token", token);
     if (!token) {
       setError("Missing token");
       return;
