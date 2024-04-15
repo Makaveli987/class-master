@@ -105,6 +105,8 @@ export async function PATCH(
                 text: item.noteContent,
                 schoolClassId,
                 enrollmentId,
+                studentId: item.studentId,
+                groupId: userId,
               },
             });
           }

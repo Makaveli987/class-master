@@ -1,4 +1,4 @@
-import { Group, Note, Student, User } from "@prisma/client";
+import { Enrollment, Group, Note, Student, User } from "@prisma/client";
 import { create } from "zustand";
 import { EnrollUserType } from "./use-enroll-dialog";
 
@@ -6,6 +6,7 @@ export interface NoteData extends Note {
   teacher: Pick<User, "id" | "firstName" | "lastName">;
   student?: Pick<Student, "id" | "firstName" | "lastName">;
   group?: Pick<Group, "id" | "name">;
+  enrollment?: { course: { name: string } };
 }
 
 interface OpenParams {

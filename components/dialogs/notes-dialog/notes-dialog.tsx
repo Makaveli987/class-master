@@ -26,13 +26,22 @@ import { Textarea } from "../../ui/textarea";
 import { Enrollment } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
 import { toast } from "sonner";
+import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
+import {
+  CourseOptionsResponse,
+  getCourseOptions,
+} from "@/actions/courses/get-course-options";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 
 const formSchema = z.object({
+  enrollmentId: z.string().min(1, "Field is required"),
   text: z.string().min(1, "Field is required"),
 });
 
 export default function NotesDialog() {
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [courseOptions, setCourseOptions] = useState<ComboboxOptions[]>([]);
+  const [showCopurseOptions, setShowCourseOptions] = useState(false);
 
   const noteDialog = useNoteDialog();
   const router = useRouter();
@@ -43,9 +52,39 @@ export default function NotesDialog() {
   });
 
   useEffect(() => {
+    if (noteDialog.userId) {
+      getCourseOptions(
+        noteDialog.userId,
+        noteDialog?.userType as EnrollUserType
+      )
+        .then((response: CourseOptionsResponse) => {
+          if (response.data) {
+            setCourseOptions(response.data);
+          }
+          if (response.info) {
+            toast.info(response.info);
+          }
+          if (response.error) {
+            toast.info(response.error);
+          }
+        })
+        .catch((error) => console.log("error :>> ", error));
+    }
+
     noteDialog.data
       ? form.setValue("text", noteDialog.data.text)
       : form.setValue("text", "");
+
+    if (noteDialog.enrollmentId) {
+      form.setValue("enrollmentId", noteDialog.enrollmentId);
+      setShowCourseOptions(false);
+    } else if (noteDialog.data?.enrollmentId) {
+      form.setValue("enrollmentId", noteDialog.data?.enrollmentId);
+      setShowCourseOptions(false);
+    } else {
+      form.setValue("enrollmentId", "");
+      setShowCourseOptions(true);
+    }
 
     form.clearErrors();
   }, [form, noteDialog.data]);
@@ -55,7 +94,6 @@ export default function NotesDialog() {
     axios
       .post("/api/notes", {
         ...values,
-        enrollmentId: noteDialog?.enrollmentId,
         userId: noteDialog?.userId,
         userType: noteDialog?.userType,
       })
@@ -124,6 +162,31 @@ export default function NotesDialog() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 mt-2"
           >
+            {showCopurseOptions && (
+              <FormField
+                control={form.control}
+                name="enrollmentId"
+                disabled={isPending}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-col space-y-2">
+                      <FormLabel>Course</FormLabel>
+                      <FormControl>
+                        <Combobox
+                          disabled={isPending}
+                          placeholder="Select course..."
+                          value={field.value}
+                          options={courseOptions}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="text"

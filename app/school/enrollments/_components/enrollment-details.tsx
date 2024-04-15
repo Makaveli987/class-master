@@ -333,6 +333,7 @@ export default function EnrollmentDetails({
         >
           <Button
             variant={"outline"}
+            size={"sm"}
             className="flex-1 hover:bg-destructive/5 hover:text-destructive hover:border-destructive"
           >
             <Trash2Icon className="size-4 mr-2" />
@@ -355,6 +356,7 @@ export default function EnrollmentDetails({
             })
           }
           variant={"outline"}
+          size={"sm"}
           className="flex-1 hover:bg-primary/5 hover:text-primary hover:border-primary"
         >
           <EditIcon className="w-4 h-4 mr-2" /> Edit
@@ -365,6 +367,7 @@ export default function EnrollmentDetails({
         variant={completed ? "pink" : "emerald"}
         disabled={isPending}
         onClick={onStatusChange}
+        size={"sm"}
       >
         {isPending ? (
           <>

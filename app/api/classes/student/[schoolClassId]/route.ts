@@ -70,6 +70,7 @@ export async function PATCH(
             groupId: userType === EnrollUserType.GROUP ? userId : null,
             text: note,
             userId,
+            schoolClassId,
           },
         });
       }

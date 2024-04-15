@@ -94,9 +94,10 @@ export default function GroupClassForm({
   }
 
   function onSubmit(values: any) {
-    const userId = classDetailsDialog.data?.schoolId
-      ? classDetailsDialog.data?.schoolId
-      : classDetailsDialog.data?.groupId;
+    console.log("classDetailsDialog :>> ", classDetailsDialog.data);
+    const userId = classDetailsDialog.data?.studentId
+      ? classDetailsDialog.data?.studentId
+      : classDetailsDialog.data?.group.id;
 
     const payload = {
       ...values,

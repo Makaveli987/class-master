@@ -122,7 +122,7 @@ export default function StudentDetails({
       </div>
 
       <StatusBadge
-        className="mt-4 justify-center"
+        className="mt-4 justify-center h-7"
         active={student?.active || false}
       />
 
@@ -132,6 +132,7 @@ export default function StudentDetails({
           onConfirm={onDelete}
         >
           <Button
+            size={"sm"}
             variant={"outline"}
             className="flex-1 hover:bg-destructive/5 hover:text-destructive hover:border-destructive"
           >
@@ -140,6 +141,7 @@ export default function StudentDetails({
           </Button>
         </ConfirmDialog>
         <Button
+          size={"sm"}
           variant={"outline"}
           className="flex-1 hover:bg-primary/5 hover:text-primary hover:border-primary"
           onClick={() =>

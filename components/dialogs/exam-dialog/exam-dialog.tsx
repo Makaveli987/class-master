@@ -82,7 +82,6 @@ export default function ExamDialog() {
     if (examDialog.studentId && !examDialog.enrollmentId) {
       getCourseOptions(examDialog.studentId, EnrollUserType.STUDENT)
         .then((response: CourseOptionsResponse) => {
-          console.log("response :>> ", response);
           if (response.data) {
             setCourseOptions(response.data);
           }

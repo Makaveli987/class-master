@@ -59,7 +59,7 @@ export default function Notes({
 
     // @ts-ignore
     if (!restricted.includes(e.target?.tagName)) {
-      noteDialog.open({ note, userType });
+      noteDialog.open({ note, enrollmentId, userId: userId || "", userType });
     }
   }
 
@@ -141,7 +141,7 @@ export default function Notes({
               <div
                 key={note.id}
                 onClick={(e) => handleNoteDialog(e, note)}
-                className="flex w-64 cursor-pointer flex-col gap-2 justify-between rounded-md border border-amber-100 transition-all p-4 shadow-sm hover:shadow-md bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-50 dark:border-amber-900"
+                className="flex w-64 cursor-pointer group flex-col gap-2 justify-between rounded-md border  transition-all p-4 shadow-sm hover:shadow-md"
               >
                 <div className="flex items-start justify-between">
                   <p className="text-sm font-semibold pt-0.5">{`${note.teacher.firstName} ${note.teacher.lastName}`}</p>
@@ -151,21 +151,24 @@ export default function Notes({
                     }
                     onConfirm={() => handleConfirm(note.id)}
                   >
-                    <div>
+                    <div className="size-4">
                       <Tooltip2 text="Delete Note">
-                        <Button variant="ghost" className="p-1 size-6">
-                          <XIcon className="w-4 h-4" />
+                        <Button
+                          variant="ghost"
+                          className="p-1 size-6 hidden group-hover:block"
+                        >
+                          <XIcon className="size-4" />
                         </Button>
                       </Tooltip2>
                     </div>
                   </ConfirmDialog>
                 </div>
 
-                <div className="text-sm text-muted-foreground text-amber-700">
+                <div className="text-sm text-muted-foreground whitespace-pre-wrap">
                   {note.text}
                 </div>
 
-                <p className="mt-auto pt-2 text-xs text-muted-foreground text-amber-600">
+                <p className="mt-auto pt-2 text-xs text-muted-foreground  ">
                   {format(note?.createdAt as Date, "dd-MMM-yyyy")}
                 </p>
               </div>

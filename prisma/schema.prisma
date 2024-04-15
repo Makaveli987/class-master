@@ -173,6 +173,7 @@ model Enrollment {
   schoolClass          SchoolClass[]
   Exam                 Exam[]
   enrollmentFinancials EnrollmentFinancials[]
+  Note                 Note[]
 
   @@index([courseId])
   @@index([studentId])
@@ -254,20 +255,21 @@ model Attendance {
 }
 
 model Note {
-  id            String   @id @default(uuid())
+  id            String      @id @default(uuid())
   enrollmentId  String
   teacherId     String
   schoolClassId String?
   // Student or Group Id
   userId        String
-  text          String   @db.Text
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  teacher       User     @relation(fields: [teacherId], references: [id])
-  Student       Student? @relation(fields: [studentId], references: [id])
+  text          String      @db.Text
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  teacher       User        @relation(fields: [teacherId], references: [id])
+  student       Student?    @relation(fields: [studentId], references: [id])
   studentId     String?
-  Group         Group?   @relation(fields: [groupId], references: [id])
+  group         Group?      @relation(fields: [groupId], references: [id])
   groupId       String?
+  enrollment    Enrollment? @relation(fields: [enrollmentId], references: [id])
 
   @@index([teacherId])
 }
