@@ -1,12 +1,20 @@
 import { db } from "@/lib/db";
 import getCurrentUser from "./get-current-user";
-import { Course, Enrollment, Group, Student, User } from "@prisma/client";
+import {
+  Course,
+  Enrollment,
+  Group,
+  Payments,
+  Student,
+  User,
+} from "@prisma/client";
 
 export interface EnrollmentResponse extends Enrollment {
   teacher?: User;
   course?: Course;
   student?: Student;
   group?: Group;
+  payments?: Payments[];
 }
 
 export const getStudentsEnrollments = async () => {
@@ -22,6 +30,7 @@ export const getStudentsEnrollments = async () => {
         teacher: true,
         course: true,
         student: true,
+        payments: true,
       },
     });
     return enrollments as EnrollmentResponse[];
@@ -44,6 +53,7 @@ export const getGroupsEnrollments = async () => {
         teacher: true,
         course: true,
         group: true,
+        payments: true,
       },
     });
     return enrollments as EnrollmentResponse[];
@@ -96,6 +106,7 @@ export const getEnrollment = async (enrollmentId: string) => {
         course: true,
         student: true,
         group: true,
+        payments: true,
       },
     });
     return enrollments as EnrollmentResponse;

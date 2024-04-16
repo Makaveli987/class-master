@@ -1,5 +1,6 @@
 "use client";
 
+import { EnrollmentResponse } from "@/actions/get-enrolments";
 import CourseProgress from "@/components/course-progress";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
@@ -8,19 +9,17 @@ import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { EnrollmentData } from "@/lib/models/enrollment-data";
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
 import { CheckCircleIcon, EditIcon } from "lucide-react";
 import Link from "next/link";
-import { DeleteEnrollmentButton } from "./delete-enrollment-button";
-import { EnrollmentResponse } from "@/actions/get-enrolments";
+import { formatPrice } from "@/lib/utils";
 
 export function getEnrollmentColumns(
   userType: EnrollUserType
-): ColumnDef<EnrollmentResponse>[] {
+): ColumnDef<EnrollmentData>[] {
   const userAccessorName =
     userType === EnrollUserType.STUDENT ? "student.firstName" : "group.name";
 
-  const columns: ColumnDef<EnrollmentData>[] = [
+  const columns: ColumnDef<EnrollmentResponse>[] = [
     {
       accessorKey: userAccessorName,
       header: ({ column }) => (
@@ -64,35 +63,72 @@ export function getEnrollmentColumns(
       ),
     },
     {
-      accessorKey: "createdAt",
+      accessorKey: "price",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Created" />
+        <DataTableColumnHeader column={column} title="Price" />
       ),
       cell: ({ row }) => {
-        const created = format(row.original.createdAt, "dd-MMM-yyyy HH:mm");
-
-        return <span>{created}</span>;
+        return (
+          <span className="font-semibold">
+            {formatPrice(row.original.price)}
+          </span>
+        );
       },
     },
     {
-      accessorKey: "updatedAt",
+      accessorKey: "payments.paid",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Updated" />
+        <DataTableColumnHeader
+          className="text-xs ml-2"
+          column={column}
+          title="Paid"
+        />
       ),
+      enableSorting: false,
       cell: ({ row }) => {
-        const updated = format(
-          row.original.updatedAt as Date,
-          "dd-MMM-yyyy  HH:mm"
+        let paid = 0;
+        if (row.original.payments) {
+          row.original.payments.forEach((p) => (paid += p.amount));
+        }
+        return (
+          <span className="text-emerald-600 font-semibold">
+            {formatPrice(paid)}
+          </span>
         );
-
-        return <span>{updated}</span>;
+      },
+    },
+    {
+      accessorKey: "payments.unpaid",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          className="text-xs ml-2"
+          column={column}
+          title="Unpaid"
+        />
+      ),
+      enableSorting: false,
+      cell: ({ row }) => {
+        let paid = 0;
+        if (row.original.payments) {
+          row.original.payments.forEach((p) => (paid += p.amount));
+        }
+        return (
+          <span className="text-rose-600 font-semibold">
+            {formatPrice(row.original.price - paid)}
+          </span>
+        );
       },
     },
     {
       accessorKey: "progress",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Attended Classes" />
+        <DataTableColumnHeader
+          className="text-xs ml-2"
+          column={column}
+          title="Attended Classes"
+        />
       ),
+      enableSorting: false,
       cell: ({ row }) => {
         return row.original?.completed ? (
           <div className="max-w-[180px] flex justify-center">
@@ -120,16 +156,12 @@ export function getEnrollmentColumns(
         return (
           <div className="flex justify-end gap-2">
             <Tooltip2 text="Edit" side="top">
-              <Link href={`/school/enrollments/${enrollmentId}`}>
+              <Link href={`/school/payments/${enrollmentId}`}>
                 <Button variant="ghost" className="h-8 w-8 p-0 group ">
                   <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
                 </Button>
               </Link>
             </Tooltip2>
-            <DeleteEnrollmentButton
-              buttonType="icon"
-              enrollmentId={row.original.id}
-            />
           </div>
         );
       },

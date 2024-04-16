@@ -1,23 +1,21 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import {
-  EnrollmentResponse,
   getGroupsEnrollments,
   getStudentsEnrollments,
 } from "@/actions/get-enrolments";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { UserIcon, UsersIcon } from "lucide-react";
-import EnrollmentTable from "./_components/enrollment-table";
+import PaymentsTable from "./_components/payments-table";
 
-export default async function EnrollmentsPage() {
-  const studentsEnrollments =
-    (await getStudentsEnrollments()) as EnrollmentResponse[];
-  const groupsEnrollments =
-    (await getGroupsEnrollments()) as EnrollmentResponse[];
+export default async function PaymentsPage() {
+  const groupEnrollments = await getGroupsEnrollments();
+  const studentEnrollments = await getStudentsEnrollments();
 
   return (
     <div className="max-w-screen-2xl m-auto">
-      <h3 className="pb-4 font-medium tracking-tight text-xl">Enrollments</h3>
+      <h3 className="pb-4 font-medium tracking-tight text-xl">Payments</h3>
       <Card className="pt-6">
         <CardContent>
           <Tabs defaultValue="students">
@@ -33,16 +31,16 @@ export default async function EnrollmentsPage() {
             </TabsList>
 
             <TabsContent value="students">
-              <EnrollmentTable
+              <PaymentsTable
                 userType={EnrollUserType.STUDENT}
-                enrollments={studentsEnrollments || []}
+                enrollments={studentEnrollments || []}
               />
             </TabsContent>
 
             <TabsContent value="groups">
-              <EnrollmentTable
+              <PaymentsTable
                 userType={EnrollUserType.GROUP}
-                enrollments={groupsEnrollments || []}
+                enrollments={groupEnrollments || []}
               />
             </TabsContent>
           </Tabs>

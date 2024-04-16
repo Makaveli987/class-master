@@ -4,11 +4,7 @@
 //   relationMode = "prisma"
 // }
 
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
-}
-
+// NEON
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -16,8 +12,21 @@ datasource db {
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+// SUPABASE
+// datasource db {
+//   provider  = "postgresql"
+//   url       = env("DATABASE_URL")
+//   directUrl = env("DIRECT_URL")
+// }
+
 // generator client {
-//   provider = "prisma-client-js"
+//   provider        = "prisma-client-js"
+//   previewFeatures = ["multiSchema"]
 // }
 
 enum Role {
@@ -165,15 +174,15 @@ model Enrollment {
   totalClasses     Int
   completed        Boolean  @default(false)
 
-  course               Course                 @relation(fields: [courseId], references: [id])
-  student              Student?               @relation(fields: [studentId], references: [id])
-  group                Group?                 @relation(fields: [groupId], references: [id])
-  teacher              User                   @relation(fields: [teacherId], references: [id])
-  school               School                 @relation(fields: [schoolId], references: [id])
-  schoolClass          SchoolClass[]
-  Exam                 Exam[]
-  enrollmentFinancials EnrollmentFinancials[]
-  Note                 Note[]
+  course      Course        @relation(fields: [courseId], references: [id])
+  student     Student?      @relation(fields: [studentId], references: [id])
+  group       Group?        @relation(fields: [groupId], references: [id])
+  teacher     User          @relation(fields: [teacherId], references: [id])
+  school      School        @relation(fields: [schoolId], references: [id])
+  schoolClass SchoolClass[]
+  exam        Exam[]
+  note        Note[]
+  payments    Payments[]
 
   @@index([courseId])
   @@index([studentId])
@@ -182,27 +191,15 @@ model Enrollment {
   @@index([schoolId])
 }
 
-model EnrollmentFinancials {
+model Payments {
   id           String     @id @default(uuid())
   enrollmentId String
-  studentId    String?
-  groupId      String?
-  payments     Payments[]
-
-  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  amount       Float
+  // Student or Group ID
+  userId       String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
 
   @@index([enrollmentId])
-}
-
-model Payments {
-  id                     String               @id @default(uuid())
-  enrollmentFinancialsId String
-  amount                 Float
-  // Student or Group ID
-  userId                 String
-  EnrollmentFinancials   EnrollmentFinancials @relation(fields: [enrollmentFinancialsId], references: [id])
-
-  @@index([enrollmentFinancialsId])
 }
 
 model SchoolClass {

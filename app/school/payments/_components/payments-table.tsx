@@ -1,17 +1,17 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table/data-table";
 
-import { EnrollmentResponse } from "@/actions/get-enrolments";
-import { EnrollUserType } from "@/hooks/use-enroll-dialog";
+import { EnrollmentData } from "@/lib/models/enrollment-data";
 import { useRouter } from "next/navigation";
 import { getEnrollmentColumns } from "./columns";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 
 interface EnrollmentTableProps {
-  enrollments: EnrollmentResponse[];
+  enrollments: EnrollmentData[];
   userType: EnrollUserType;
 }
 
-export default function EnrollmentTable({
+export default function PaymentsTable({
   enrollments,
   userType,
 }: EnrollmentTableProps) {
@@ -19,7 +19,7 @@ export default function EnrollmentTable({
   return (
     <DataTable
       onRowClick={(rowData) => {
-        router.push(`enrollments/${rowData.id}`);
+        router.push(`payments/${rowData.id}`);
       }}
       columns={getEnrollmentColumns(userType)}
       data={enrollments || []}
