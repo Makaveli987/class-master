@@ -7,15 +7,15 @@ import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-col
 import { MerakiBadge } from "@/components/ui/meraki-badge";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
-import { EnrollmentData } from "@/lib/models/enrollment-data";
+import { getPaidSum, getUnpaidSum } from "@/lib/payment-utils";
+import { formatPrice } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircleIcon, EditIcon } from "lucide-react";
 import Link from "next/link";
-import { formatPrice } from "@/lib/utils";
 
 export function getEnrollmentColumns(
   userType: EnrollUserType
-): ColumnDef<EnrollmentData>[] {
+): ColumnDef<EnrollmentResponse>[] {
   const userAccessorName =
     userType === EnrollUserType.STUDENT ? "student.firstName" : "group.name";
 
@@ -86,13 +86,9 @@ export function getEnrollmentColumns(
       ),
       enableSorting: false,
       cell: ({ row }) => {
-        let paid = 0;
-        if (row.original.payments) {
-          row.original.payments.forEach((p) => (paid += p.amount));
-        }
         return (
           <span className="text-emerald-600 font-semibold">
-            {formatPrice(paid)}
+            {formatPrice(getPaidSum(row.original.payments || []))}
           </span>
         );
       },
@@ -108,13 +104,11 @@ export function getEnrollmentColumns(
       ),
       enableSorting: false,
       cell: ({ row }) => {
-        let paid = 0;
-        if (row.original.payments) {
-          row.original.payments.forEach((p) => (paid += p.amount));
-        }
         return (
           <span className="text-rose-600 font-semibold">
-            {formatPrice(row.original.price - paid)}
+            {formatPrice(
+              getUnpaidSum(row.original.payments || [], row.original)
+            )}
           </span>
         );
       },

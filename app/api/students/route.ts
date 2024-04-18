@@ -29,6 +29,7 @@ export async function POST(req: Request) {
       data: {
         firstName,
         lastName,
+        fullName: firstName + " " + lastName,
         email,
         phone,
         dateOfBirth,
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (error) {
+    console.log("eror :>> ", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

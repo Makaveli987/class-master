@@ -66,6 +66,7 @@ export async function POST(request: Request) {
       data: {
         firstName,
         lastName,
+        fullName: firstName + " " + lastName,
         email,
         hashedPassword,
         phone,

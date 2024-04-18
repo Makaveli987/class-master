@@ -1,15 +1,12 @@
 import { getEnrollment } from "@/actions/get-enrolments";
-import { notFound } from "next/navigation";
-import React from "react";
-import EnrollmentDetails from "../_components/enrollment-details";
+import { getPaymentsByEnrollmentId } from "@/actions/payments/getPayments";
+import { getPaidSum, getTotalPrice, getUnpaidSum } from "@/lib/payment-utils";
 import { formatPrice } from "@/lib/utils";
-import {
-  BanknoteIcon,
-  CoinsIcon,
-  DollarSignIcon,
-  PlusCircleIcon,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { BanknoteIcon, CoinsIcon, DollarSignIcon } from "lucide-react";
+import { notFound } from "next/navigation";
+import AddPaymentHeader from "../_components/add-payment-header";
+import EnrollmentDetails from "../_components/enrollment-details";
+import PaymentsHistoryTable from "../_components/payment-history-table";
 
 export default async function EnrollmentPayments({
   params,
@@ -17,18 +14,17 @@ export default async function EnrollmentPayments({
   params: { enrollmentId: string };
 }) {
   const enrollment = await getEnrollment(params.enrollmentId);
+  const payments = await getPaymentsByEnrollmentId(params.enrollmentId);
 
   if (!enrollment) {
     return notFound();
   }
 
-  function getPaidSum() {
-    let paid = 0;
-    if (enrollment?.payments) {
-      enrollment.payments.forEach((p) => (paid += p.amount));
+  function shouldShowStudents() {
+    if (enrollment?.groupId && !enrollment?.group?.isCompanyGroup) {
+      return true;
     }
-
-    return paid;
+    return false;
   }
 
   return (
@@ -51,7 +47,7 @@ export default async function EnrollmentPayments({
               </div>
               <div className="p-6 pt-0">
                 <div className="text-2xl font-semibold">
-                  {formatPrice(enrollment.price)}
+                  {formatPrice(getTotalPrice(enrollment))}
                 </div>
               </div>
             </div>
@@ -65,7 +61,7 @@ export default async function EnrollmentPayments({
               </div>
               <div className="p-6 pt-0">
                 <div className="text-2xl font-semibold text-emerald-600">
-                  +{formatPrice(getPaidSum())}
+                  {formatPrice(getPaidSum(payments?.data || []))}
                 </div>
               </div>
             </div>
@@ -79,35 +75,31 @@ export default async function EnrollmentPayments({
               </div>
               <div className="p-6 pt-0">
                 <div className="text-2xl font-semibold text-rose-600">
-                  -{formatPrice(enrollment.price - getPaidSum())}
+                  {formatPrice(getUnpaidSum(payments?.data || [], enrollment))}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="space-y-1.5 pt-10 pb-6 px-2 mb-3 flex flex-row max-w-5xl">
-            <div className="space-y-1.5">
-              <h3 className="font-semibold leading-none tracking-tight">
-                Payment History
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                All payments for this enrollment
-              </p>
-            </div>
-            <Button
-              className="ml-auto"
-              //   onClick={() =>
-              //     noteDialog.open({
-              //       enrollmentId,
-              //       userId: userId || "",
-              //       userType,
-              //     })
-              //   }
-            >
-              <PlusCircleIcon className="w-5 h-5 mr-2" />
-              New Payment
-            </Button>
-          </div>
+          <AddPaymentHeader
+            enrollmentId={enrollment.id}
+            userId={
+              enrollment.studentId
+                ? enrollment.schoolId
+                : enrollment.groupId || ""
+            }
+            userName={
+              enrollment.student
+                ? enrollment.student?.fullName
+                : enrollment.group?.name || ""
+            }
+            shouldShowStudents={shouldShowStudents()}
+          />
+
+          <PaymentsHistoryTable
+            shouldShowStudents={shouldShowStudents()}
+            payments={payments?.data || []}
+          />
         </div>
       </div>
     </div>

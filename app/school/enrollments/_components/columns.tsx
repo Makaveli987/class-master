@@ -1,18 +1,17 @@
 "use client";
 
+import { EnrollmentResponse } from "@/actions/get-enrolments";
 import CourseProgress from "@/components/course-progress";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-colimn-header";
 import { MerakiBadge } from "@/components/ui/meraki-badge";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
-import { EnrollmentData } from "@/lib/models/enrollment-data";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { CheckCircleIcon, EditIcon } from "lucide-react";
 import Link from "next/link";
 import { DeleteEnrollmentButton } from "./delete-enrollment-button";
-import { EnrollmentResponse } from "@/actions/get-enrolments";
 
 export function getEnrollmentColumns(
   userType: EnrollUserType
@@ -20,7 +19,7 @@ export function getEnrollmentColumns(
   const userAccessorName =
     userType === EnrollUserType.STUDENT ? "student.firstName" : "group.name";
 
-  const columns: ColumnDef<EnrollmentData>[] = [
+  const columns: ColumnDef<EnrollmentResponse>[] = [
     {
       accessorKey: userAccessorName,
       header: ({ column }) => (

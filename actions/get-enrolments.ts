@@ -6,6 +6,7 @@ import {
   Group,
   Payments,
   Student,
+  StudentToGroup,
   User,
 } from "@prisma/client";
 
@@ -13,8 +14,12 @@ export interface EnrollmentResponse extends Enrollment {
   teacher?: User;
   course?: Course;
   student?: Student;
-  group?: Group;
+  group?: ExtendedGroup;
   payments?: Payments[];
+}
+
+interface ExtendedGroup extends Group {
+  students: StudentToGroup[];
 }
 
 export const getStudentsEnrollments = async () => {
@@ -52,7 +57,9 @@ export const getGroupsEnrollments = async () => {
       include: {
         teacher: true,
         course: true,
-        group: true,
+        group: {
+          include: { students: true },
+        },
         payments: true,
       },
     });
@@ -105,7 +112,9 @@ export const getEnrollment = async (enrollmentId: string) => {
         teacher: true,
         course: true,
         student: true,
-        group: true,
+        group: {
+          include: { students: true },
+        },
         payments: true,
       },
     });

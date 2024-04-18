@@ -45,6 +45,7 @@ export const {
       if (session.user) {
         session.user.firstName = token.firstName;
         session.user.lastName = token.lastName;
+        session.user.fullName = token.fullName;
         session.user.email = token.email;
         session.user.school = token.school;
         session.user.color = token.color;
@@ -60,6 +61,7 @@ export const {
       if (!existingUser) return token;
       token.firstName = existingUser.firstName;
       token.lastName = existingUser.lastName;
+      token.fullName = existingUser.fullName;
       token.email = existingUser.email;
       token.school = existingUser.school;
       token.role = existingUser.role;

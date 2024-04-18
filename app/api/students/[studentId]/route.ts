@@ -24,6 +24,7 @@ export async function PATCH(
       data: {
         firstName,
         lastName,
+        fullName: firstName + " " + lastName,
         email,
         phone,
         dateOfBirth,

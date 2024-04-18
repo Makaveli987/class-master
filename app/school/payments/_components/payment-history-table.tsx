@@ -1,18 +1,18 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table/data-table";
 
-import { EnrollmentData } from "@/lib/models/enrollment-data";
-import { useRouter } from "next/navigation";
-import { getEnrollmentColumns } from "./columns";
-import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { Payments } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { GetPaymentHistoryColumns } from "./payment-history-columns";
 
 interface EnrollmentTableProps {
   payments: Payments[];
+  shouldShowStudents: boolean;
 }
 
 export default function PaymentsHistoryTable({
   payments,
+  shouldShowStudents,
 }: EnrollmentTableProps) {
   const router = useRouter();
   return (
@@ -20,7 +20,7 @@ export default function PaymentsHistoryTable({
       onRowClick={(rowData) => {
         router.push(`payments/${rowData.id}`);
       }}
-      columns={paymentHistoryColumns}
+      columns={GetPaymentHistoryColumns(shouldShowStudents)}
       data={payments || []}
       filterPlaceholder={"Search payments..."}
     ></DataTable>

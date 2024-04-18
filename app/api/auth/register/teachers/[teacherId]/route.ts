@@ -74,6 +74,7 @@ export async function PATCH(
         email,
         firstName,
         lastName,
+        fullName: firstName + " " + lastName,
         phone,
         role,
         dateOfBirth,

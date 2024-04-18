@@ -1,13 +1,13 @@
 "use client";
 import { DataTable } from "@/components/ui/data-table/data-table";
 
-import { EnrollmentData } from "@/lib/models/enrollment-data";
+import { EnrollmentResponse } from "@/actions/get-enrolments";
+import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 import { useRouter } from "next/navigation";
 import { getEnrollmentColumns } from "./columns";
-import { EnrollUserType } from "@/hooks/use-enroll-dialog";
 
 interface EnrollmentTableProps {
-  enrollments: EnrollmentData[];
+  enrollments: EnrollmentResponse[];
   userType: EnrollUserType;
 }
 
