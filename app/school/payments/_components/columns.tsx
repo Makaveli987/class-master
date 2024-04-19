@@ -7,7 +7,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-col
 import { MerakiBadge } from "@/components/ui/meraki-badge";
 import { Tooltip2 } from "@/components/ui/tooltip2";
 import { EnrollUserType } from "@/hooks/use-enroll-dialog";
-import { getPaidSum, getUnpaidSum } from "@/lib/payment-utils";
+import { getPaidSum, getPendingSum, getTotalPrice } from "@/lib/payment-utils";
 import { formatPrice } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { CheckCircleIcon, EditIcon } from "lucide-react";
@@ -70,7 +70,7 @@ export function getEnrollmentColumns(
       cell: ({ row }) => {
         return (
           <span className="font-semibold">
-            {formatPrice(row.original.price)}
+            {formatPrice(getTotalPrice(row.original))}
           </span>
         );
       },
@@ -87,27 +87,27 @@ export function getEnrollmentColumns(
       enableSorting: false,
       cell: ({ row }) => {
         return (
-          <span className="text-emerald-600 font-semibold">
+          <span className="text-emerald-500 font-semibold">
             {formatPrice(getPaidSum(row.original.payments || []))}
           </span>
         );
       },
     },
     {
-      accessorKey: "payments.unpaid",
+      accessorKey: "payments.pending",
       header: ({ column }) => (
         <DataTableColumnHeader
           className="text-xs ml-2"
           column={column}
-          title="Unpaid"
+          title="Pending"
         />
       ),
       enableSorting: false,
       cell: ({ row }) => {
         return (
-          <span className="text-rose-600 font-semibold">
+          <span className="text-rose-500 font-semibold">
             {formatPrice(
-              getUnpaidSum(row.original.payments || [], row.original)
+              getPendingSum(row.original.payments || [], row.original)
             )}
           </span>
         );

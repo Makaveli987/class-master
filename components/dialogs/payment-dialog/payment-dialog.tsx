@@ -1,5 +1,6 @@
 "use client";
 import { createPayment } from "@/actions/payments/create-payment";
+import { updatePayment } from "@/actions/payments/update-payment";
 import { getStudentsOptions } from "@/actions/students/get-students-options";
 import { Button } from "@/components/ui/button";
 import { Combobox, ComboboxOptions } from "@/components/ui/combobox";
@@ -33,6 +34,7 @@ const formSchema = z.object({
 
 export default function PaymenDialog() {
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [showStudents, setShowStudents] = useState<boolean>(false);
   const [studentOptions, setStudentOptions] = useState<ComboboxOptions[]>([]);
 
   const paymentDialog = usePaymentDialog();
@@ -42,8 +44,14 @@ export default function PaymenDialog() {
   });
 
   useEffect(() => {
-    console.log("paymentDialog", paymentDialog);
-    if (paymentDialog.shouldShowStudents) {
+    if (paymentDialog.data) {
+      form.setValue("userId", paymentDialog.data.userId);
+      form.setValue("amount", paymentDialog.data.amount);
+      setShowStudents(false);
+      setStudentOptions([]);
+    } else if (paymentDialog.shouldShowStudents) {
+      setShowStudents(true);
+
       getStudentsOptions(paymentDialog.userId)
         .then((res) => {
           if (res.error) {
@@ -54,7 +62,10 @@ export default function PaymenDialog() {
         .catch(() => toast.error("Something went wrong"));
     } else {
       form.setValue("userId", paymentDialog.userId || "");
+      form.resetField("amount");
+
       setStudentOptions([]);
+      setShowStudents(false);
     }
   }, [
     form,
@@ -65,7 +76,7 @@ export default function PaymenDialog() {
 
   async function create(values: z.infer<typeof formSchema>) {
     // Get student name if we  are showing students list
-    const userName = paymentDialog.shouldShowStudents
+    const userName = showStudents
       ? studentOptions.find((s) => s.value === values.userId)?.label
       : paymentDialog.userName;
 
@@ -78,7 +89,21 @@ export default function PaymenDialog() {
       .then(() => {
         toast.success("Payment successfull.");
       })
-      .catch(() => toast.error("Something went wrong"))
+      .catch(() => toast.error("Something went wrong. Payment was not created"))
+      .finally(() => {
+        setIsPending(false);
+        form.reset();
+        paymentDialog.close();
+      });
+  }
+
+  async function update(values: z.infer<typeof formSchema>) {
+    setIsPending(true);
+    await updatePayment(paymentDialog.data?.id!, values.amount)
+      .then(() => {
+        toast.success("Payment updated successfully.");
+      })
+      .catch(() => toast.error("Something went wrong. Payment was not updated"))
       .finally(() => {
         setIsPending(false);
         form.reset();
@@ -87,14 +112,9 @@ export default function PaymenDialog() {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // setIsPending(true);
-    // !!noteDialog.data ? updateNote(values) : createNote(values);
-    console.log("submit ");
-    create(values);
-  }
-
-  function onErrors(errors: any) {
-    console.log("Validation errors: ", errors);
+    console.log("!!paymentDialog.data :>> ", !!paymentDialog.data);
+    !!paymentDialog.data ? console.log("update") : console.log("create");
+    !!paymentDialog.data ? update(values) : create(values);
   }
 
   return (
@@ -110,17 +130,16 @@ export default function PaymenDialog() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {/* {!!paymentDialog.data ? "Edit Note" : "Add Note"} */}
-            New Payment
+            {!!paymentDialog.data ? "Edit Payment" : "New Payment"}
           </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit, onErrors)}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 mt-2"
           >
-            {paymentDialog.shouldShowStudents && (
+            {showStudents && (
               <FormField
                 control={form.control}
                 name="userId"

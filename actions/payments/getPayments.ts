@@ -14,6 +14,7 @@ export const getPaymentsByEnrollmentId = async (enrollmentId: string) => {
       where: {
         enrollmentId,
       },
+      orderBy: { createdAt: "desc" },
     });
     return { data: payments as unknown as Payments[] };
   } catch (error) {

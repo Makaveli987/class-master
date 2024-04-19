@@ -1,6 +1,6 @@
 import { getEnrollment } from "@/actions/get-enrolments";
 import { getPaymentsByEnrollmentId } from "@/actions/payments/getPayments";
-import { getPaidSum, getTotalPrice, getUnpaidSum } from "@/lib/payment-utils";
+import { getPaidSum, getTotalPrice, getPendingSum } from "@/lib/payment-utils";
 import { formatPrice } from "@/lib/utils";
 import { BanknoteIcon, CoinsIcon, DollarSignIcon } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -60,7 +60,7 @@ export default async function EnrollmentPayments({
                 <BanknoteIcon className="size-4 text-muted-foreground" />
               </div>
               <div className="p-6 pt-0">
-                <div className="text-2xl font-semibold text-emerald-600">
+                <div className="text-2xl font-semibold text-emerald-500">
                   {formatPrice(getPaidSum(payments?.data || []))}
                 </div>
               </div>
@@ -70,12 +70,12 @@ export default async function EnrollmentPayments({
               x-chunk="A card showing the total sales and the percentage difference from last month."
             >
               <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-                <h3 className="tracking-tight text-sm font-medium">Unpaid</h3>
+                <h3 className="tracking-tight text-sm font-medium">Pending</h3>
                 <CoinsIcon className="size-4 text-muted-foreground" />
               </div>
               <div className="p-6 pt-0">
-                <div className="text-2xl font-semibold text-rose-600">
-                  {formatPrice(getUnpaidSum(payments?.data || [], enrollment))}
+                <div className="text-2xl font-semibold text-rose-500">
+                  {formatPrice(getPendingSum(payments?.data || [], enrollment))}
                 </div>
               </div>
             </div>

@@ -19,9 +19,10 @@ export function getTotalPrice(enrollment: EnrollmentResponse) {
   return enrollment?.price || 0;
 }
 
-export function getUnpaidSum(
+export function getPendingSum(
   payments: Payments[],
   enrollment: EnrollmentResponse
 ) {
-  return getTotalPrice(enrollment) - getPaidSum(payments);
+  const pendingSum = getTotalPrice(enrollment) - getPaidSum(payments);
+  return pendingSum < 0 ? 0 : pendingSum;
 }

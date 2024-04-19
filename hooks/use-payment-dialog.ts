@@ -1,3 +1,4 @@
+import { Payments } from "@prisma/client";
 import { create } from "zustand";
 
 interface OpenParams {
@@ -5,6 +6,7 @@ interface OpenParams {
   userId: string;
   userName: string;
   shouldShowStudents: boolean;
+  data?: Payments;
 }
 
 type PaymentDialogStore = {
@@ -15,11 +17,12 @@ type PaymentDialogStore = {
   userName: string;
   enrollmentId: string;
   shouldShowStudents: boolean;
+  data?: Payments;
 };
 
 export const usePaymentDialog = create<PaymentDialogStore>((set) => ({
   isOpen: false,
-  data: null,
+  data: undefined,
   enrollmentId: "",
   userId: "",
   userName: "",
@@ -31,6 +34,7 @@ export const usePaymentDialog = create<PaymentDialogStore>((set) => ({
       userName: params.userName,
       enrollmentId: params.enrollmentId,
       shouldShowStudents: params.shouldShowStudents,
+      data: params?.data,
     });
   },
   close: () =>
@@ -40,5 +44,6 @@ export const usePaymentDialog = create<PaymentDialogStore>((set) => ({
       userName: "",
       enrollmentId: "",
       shouldShowStudents: false,
+      data: undefined,
     }),
 }));

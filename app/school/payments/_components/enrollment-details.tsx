@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import {
   BookAIcon,
   CoinsIcon,
+  DollarSignIcon,
   EuroIcon,
   GraduationCapIcon,
   ListChecksIcon,
@@ -60,11 +61,7 @@ export default function EnrollmentDetails({
           <GraduationCapIcon />
         </div>
         <div className="flex flex-col text-sm">
-          <span className="font-semibold">
-            {enrollment?.teacher?.firstName +
-              " " +
-              enrollment?.teacher?.lastName}
-          </span>
+          <span className="font-semibold">{enrollment?.teacher?.fullName}</span>
         </div>
       </div>
 
@@ -76,6 +73,22 @@ export default function EnrollmentDetails({
           {enrollment?.course?.name}
         </span>
       </div>
+
+      {enrollment?.pricePerStudent && (
+        <div className="mt-1 flex items-start gap-3">
+          <div className="flex size-4 items-center justify-center rounded-full">
+            <EuroIcon />
+          </div>
+          <div className="font-semibold flex flex-col items-start justify-start gap-2">
+            <span className="text-sm whitespace-pre-wrap">
+              {formatPrice(enrollment?.pricePerStudent)}{" "}
+              <span className="text-muted-foreground font-normal">
+                / per student
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="mt-1 flex items-start gap-3">
         <div className="flex size-4 items-center justify-center rounded-full">

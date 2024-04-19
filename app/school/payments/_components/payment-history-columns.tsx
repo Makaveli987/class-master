@@ -9,6 +9,7 @@ import { Payments } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { EditIcon } from "lucide-react";
+import { DeletePaymentButton } from "./delete-payment-button";
 
 export function GetPaymentHistoryColumns(
   shouldShowStudents: boolean
@@ -60,7 +61,7 @@ export function GetPaymentHistoryColumns(
       ),
       cell: ({ row }) => {
         return (
-          <span className="font-semibold text-emerald-600">
+          <span className="font-semibold text-emerald-500">
             +{formatPrice(row.original.amount)}
           </span>
         );
@@ -69,7 +70,8 @@ export function GetPaymentHistoryColumns(
     {
       id: "actions",
       cell: ({ row }) => {
-        const enrollmentId = row.original.id;
+        const enrollmentId = row.original.enrollmentId;
+        const paymentId = row.original.id;
         return (
           <div className="flex justify-end gap-2">
             <Tooltip2 text="Edit" side="top">
@@ -82,12 +84,14 @@ export function GetPaymentHistoryColumns(
                     userId: row.original.userId,
                     userName: row.original.userName,
                     shouldShowStudents,
+                    data: row.original,
                   });
                 }}
               >
                 <EditIcon className="w-4 h-4 text-muted-foreground group-hover:text-blue-600" />
               </Button>
             </Tooltip2>
+            <DeletePaymentButton paymentId={paymentId} buttonType={"icon"} />
           </div>
         );
       },
