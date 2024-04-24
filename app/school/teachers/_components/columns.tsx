@@ -17,7 +17,7 @@ import StatusBadge from "@/components/ui/status-badge";
 
 export const columns: ColumnDef<User>[] = [
   {
-    accessorKey: "firstName",
+    accessorKey: "fullname",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
@@ -31,9 +31,7 @@ export const columns: ColumnDef<User>[] = [
             className="rounded-full"
           />
         </div>
-        <span className="font-medium">
-          {row.original.firstName} {row.original.lastName}
-        </span>
+        <span className="font-medium">{row.original.fullName}</span>
       </div>
     ),
   },

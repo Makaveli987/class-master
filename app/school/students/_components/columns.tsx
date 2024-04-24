@@ -23,7 +23,7 @@ export interface ButtonProps
 
 export const columns: ColumnDef<Student>[] = [
   {
-    accessorKey: "firstName",
+    accessorKey: "fullname",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
     ),
@@ -37,9 +37,7 @@ export const columns: ColumnDef<Student>[] = [
             className="rounded-full"
           />
         </div>
-        <span className="font-medium">
-          {row.original.firstName} {row.original.lastName}
-        </span>
+        <span className="font-medium">{row.original.fullName}</span>
       </div>
     ),
   },

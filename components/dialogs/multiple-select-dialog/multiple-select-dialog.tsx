@@ -53,7 +53,10 @@ export default function MultipleSelectDialog() {
           <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
         <Command className="overflow-hidden rounded-t-none border-t bg-transparent">
-          <CommandInput placeholder="Search option..." />
+          <CommandInput
+            className="border-0  focus:ring-0"
+            placeholder="Search option..."
+          />
           <CommandList>
             <CommandEmpty>No users found.</CommandEmpty>
             <CommandGroup className="p-2">

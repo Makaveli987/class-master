@@ -14,6 +14,7 @@ import {
   CreditCardIcon,
   DoorOpenIcon,
   GraduationCapIcon,
+  LineChartIcon,
   SettingsIcon,
   User2Icon,
   Users2Icon,
@@ -81,6 +82,12 @@ const navLinks: NavLink[] = [
     path: "/school/payments",
     icon: <CreditCardIcon className="size-4 mr-2" />,
     label: "Payments",
+    isRestricted: true,
+  },
+  {
+    path: "/school/analytics",
+    icon: <LineChartIcon className="size-4 mr-2" />,
+    label: "Analytics",
     isRestricted: true,
   },
   {

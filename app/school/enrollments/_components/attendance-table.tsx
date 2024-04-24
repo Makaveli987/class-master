@@ -45,7 +45,7 @@ export default async function AttendanceTable({
 
               {attendance?.schoolClasses.map((record) => (
                 <th key={record} className="font-semibold w-20 px-4 mr-2">
-                  {format(record, "dd. MMM yyyy")}
+                  {format(record as unknown as Date, "dd. MMM yyyy")}
                 </th>
               ))}
             </tr>
