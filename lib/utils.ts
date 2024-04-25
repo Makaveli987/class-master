@@ -70,3 +70,7 @@ export function formatPhoneNumber(phoneNumber: string) {
 
   return `${countryCode} ${operatorCode} ${restOfNumber}`;
 }
+
+export const chartValueFormatter = function (number: number) {
+  return new Intl.NumberFormat("us").format(number).toString();
+};

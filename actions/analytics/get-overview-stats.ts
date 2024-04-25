@@ -38,13 +38,6 @@ export async function getOverviewStats() {
       where: { schoolId: currentUser.schoolId, archived: false },
     });
 
-    console.log("object :>> ", {
-      totalRevenue: revenue._sum.amount,
-      totalEnrolledCurses,
-      totalStudents,
-      totalGroups,
-    });
-
     return {
       totalRevenue: revenue._sum.amount,
       totalEnrolledCurses,

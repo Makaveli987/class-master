@@ -6,12 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loader from "@/components/ui/page-loader";
 import { AreaChart } from "@tremor/react";
 import { useEffect, useState } from "react";
+import { chartValueFormatter } from "@/lib/utils";
 
-export function AreaChartUsageExample() {
-  const valueFormatter = function (number: number) {
-    return new Intl.NumberFormat("us").format(number).toString();
-  };
-
+export function MonthlyRevenue() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RevenuePerMonthResponse[]>([]);
   const [error, setError] = useState("");
@@ -35,26 +32,12 @@ export function AreaChartUsageExample() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  function getTotalRevenue(): number {
-    if (!data.length) {
-      return 0;
-    }
-
-    let totalRevenue = 0;
-
-    data.forEach((item) => (totalRevenue += item.revenue));
-    return totalRevenue;
-  }
-
   return (
-    <Card className="flex-1 min-h-[433px]">
+    <Card className="relative min-h-[433px] w-3/5">
       <CardHeader>
-        <CardTitle>
-          Monthly Revenue
-          {/* <span className="text-xl">{formatPrice(getTotalRevenue())}</span>{" "} */}
-        </CardTitle>
+        <CardTitle>Monthly Revenue</CardTitle>
       </CardHeader>
-      <CardContent className="relative h-4/5">
+      <CardContent>
         {isLoading && !error ? (
           <div className=" flex-1">
             <Loader />
@@ -67,7 +50,7 @@ export function AreaChartUsageExample() {
             yAxisWidth={65}
             categories={["revenue"]}
             colors={["green"]}
-            valueFormatter={valueFormatter}
+            valueFormatter={chartValueFormatter}
           />
         )}
         {error && (

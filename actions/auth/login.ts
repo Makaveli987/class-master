@@ -28,6 +28,10 @@ export const login = async (
     return { error: "Invalid credentials!", code: 950 };
   }
 
+  if (!existingUser.active || existingUser.archived) {
+    return { error: "Inactive user!", code: 950 };
+  }
+
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(
       existingUser.email

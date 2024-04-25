@@ -3,6 +3,11 @@ import { db } from "@/lib/db";
 import getCurrentUser from "../get-current-user";
 import { Role } from "@prisma/client";
 
+export interface RevenueByCourseResponse {
+  name: string;
+  value: number | string;
+}
+
 export async function getTotalRevenueByCourse() {
   console.log("object :>> ");
   try {
@@ -12,10 +17,10 @@ export async function getTotalRevenueByCourse() {
       return { error: "Unauthorized" };
     }
 
-    const paymentsPerCourse = await db.$queryRaw`
+    const revenuePerCourse: RevenueByCourseResponse[] = await db.$queryRaw`
         SELECT
             c.name AS name,
-            SUM(p.amount) AS revenue
+            SUM(p.amount) AS value
         FROM
             "Payments" p
         JOIN
@@ -28,10 +33,10 @@ export async function getTotalRevenueByCourse() {
         GROUP BY
             c.name;
         `;
-    console.log("paymentsPerCourse :>> ", paymentsPerCourse);
-    return paymentsPerCourse;
+    console.log("revenuePerCourse :>> ", revenuePerCourse);
+    return revenuePerCourse;
   } catch (error) {
-    console.error("Error retrieving payments per course:", error);
+    console.error("Error retrieving revenue per course:", error);
     throw error;
   }
 }
