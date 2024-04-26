@@ -5,15 +5,20 @@ import { AreaChart } from "@tremor/react";
 import { useEffect, useState } from "react";
 import { chartValueFormatter } from "@/lib/utils";
 import { getNewStudentsPerMonth } from "@/actions/analytics/get-new-students-per-month";
+import { DateRange } from "@/lib/models/DaateRange";
 
-export function MonthlyNewStudents() {
+type MonthlyNewStudentsProps = {
+  date: DateRange;
+};
+
+export function MonthlyNewStudents({ date }: MonthlyNewStudentsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RevenuePerMonthResponse[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getNewStudentsPerMonth()
+    getNewStudentsPerMonth(date)
       .then((res: any) => {
         setData(res);
       })
@@ -21,7 +26,7 @@ export function MonthlyNewStudents() {
         setError("Failed to fetch data.");
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [date]);
 
   return (
     <Card className="relative min-h-[433px] flex-1">

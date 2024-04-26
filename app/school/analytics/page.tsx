@@ -2,8 +2,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { addDays } from "date-fns";
-import React from "react";
+import { addDays, subMonths } from "date-fns";
+import React, { useEffect } from "react";
 import { DateRange } from "react-day-picker";
 import { MonthlyRevenue } from "./_components/monthly-revenue";
 import OverviewStats from "./_components/overview-stats";
@@ -16,9 +16,9 @@ import CompletedEnrollments from "./_components/completed-enrollments";
 import { MonthlyNewEnrollments } from "./_components/monthly-new-enrollments";
 
 export default function Analytics() {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
+  const [date, setDate] = React.useState<{ from: Date; to: Date }>({
+    from: subMonths(new Date(), 12),
+    to: new Date(),
   });
 
   return (
@@ -35,18 +35,12 @@ export default function Analytics() {
                 <TabsTrigger value="courses">Courses</TabsTrigger>
               </TabsList>
               <div className="md:ml-auto mt-4 md:mt-0 flex items-center gap-2">
-                <DateRangePicker
-                  date={{
-                    from: new Date(2022, 0, 20),
-                    to: new Date(2022, 1, 20),
-                  }}
-                  setDate={setDate}
-                />
+                <DateRangePicker date={date} setDate={setDate} />
               </div>
             </div>
             <TabsContent className="mt-3" value="finance">
               <div className="mt-3 flex flex-col xl:flex-row gap-6">
-                <MonthlyRevenue />
+                <MonthlyRevenue date={date} />
                 <RevenueByCourse />
               </div>
             </TabsContent>
@@ -56,16 +50,16 @@ export default function Analytics() {
                   <StudentsStats />
                   <GroupsStats />
                 </div>
-                <MonthlyNewStudents />
+                <MonthlyNewStudents date={date} />
               </div>
             </TabsContent>
             <TabsContent className="mt-3" value="courses">
               <div className="mt-3 flex flex-col xl:flex-row gap-6 ">
-                <div className="flex flex-col md:flex-row gap-6 ">
+                <div className="flex flex-col md:flex-row md:w-2/5 gap-6 flex-1">
                   <EnrollmentsByCourse />
                   <CompletedEnrollments />
                 </div>
-                <MonthlyNewEnrollments />
+                <MonthlyNewEnrollments date={date} />
               </div>
             </TabsContent>
           </Tabs>

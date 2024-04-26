@@ -7,15 +7,20 @@ import Loader from "@/components/ui/page-loader";
 import { AreaChart } from "@tremor/react";
 import { useEffect, useState } from "react";
 import { chartValueFormatter } from "@/lib/utils";
+import { DateRange } from "@/lib/models/DaateRange";
 
-export function MonthlyRevenue() {
+type MonthlyRevenueProps = {
+  date: DateRange;
+};
+
+export function MonthlyRevenue({ date }: MonthlyRevenueProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RevenuePerMonthResponse[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getRevenuePerMonth()
+    getRevenuePerMonth(date)
       .then((res: any) => {
         setData(res);
       })
@@ -23,7 +28,7 @@ export function MonthlyRevenue() {
         setError("Failed to fetch data.");
       })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [date]);
 
   return (
     <Card className="relative min-h-[433px] w-full xl:w-3/5">

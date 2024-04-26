@@ -1,15 +1,10 @@
 "use client";
 
-import * as React from "react";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { addDays, format } from "date-fns";
-import {
-  DateRange,
-  SelectRangeEventHandler,
-  SelectSingleEventHandler,
-} from "react-day-picker";
+import { format } from "date-fns";
+import * as React from "react";
+import { SelectRangeEventHandler } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -17,10 +12,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface DateTimePickerProps {
   date: { from: Date; to: Date };
-  setDate: SelectRangeEventHandler;
+  setDate:
+    | React.Dispatch<React.SetStateAction<{ from: Date; to: Date }>>
+    | SelectRangeEventHandler;
   disabled?: boolean;
 }
 
@@ -69,8 +67,9 @@ export function DateRangePicker({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={setDate as SelectRangeEventHandler}
             numberOfMonths={2}
+            disabled={{ after: new Date() }}
           />
         </PopoverContent>
       </Popover>

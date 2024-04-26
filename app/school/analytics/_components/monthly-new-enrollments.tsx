@@ -2,18 +2,23 @@ import { getNewEnrollmentsPerMonth } from "@/actions/analytics/get-monthly-new-e
 import { RevenuePerMonthResponse } from "@/actions/analytics/get-revenue-per-month";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loader from "@/components/ui/page-loader";
+import { DateRange } from "@/lib/models/DaateRange";
 import { chartValueFormatter } from "@/lib/utils";
 import { AreaChart } from "@tremor/react";
 import { useEffect, useState } from "react";
 
-export function MonthlyNewEnrollments() {
+type MonthlyNewEnrollmentsProps = {
+  date: DateRange;
+};
+
+export function MonthlyNewEnrollments({ date }: MonthlyNewEnrollmentsProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RevenuePerMonthResponse[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getNewEnrollmentsPerMonth()
+    getNewEnrollmentsPerMonth(date)
       .then((res: any) => {
         setData(res);
       })

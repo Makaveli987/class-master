@@ -3,13 +3,14 @@ import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { endOfYear, startOfYear } from "date-fns";
 import getCurrentUser from "../get-current-user";
+import { DateRange } from "@/lib/models/DaateRange";
 
 export interface NewEnrollmentsPerMonthResponse {
   date: string;
   enrollments: number;
 }
 
-export async function getNewEnrollmentsPerMonth() {
+export async function getNewEnrollmentsPerMonth(date: DateRange) {
   try {
     const currentUser = await getCurrentUser();
 
@@ -25,11 +26,9 @@ export async function getNewEnrollmentsPerMonth() {
       FROM
           "Enrollment"
       WHERE
-          "schoolId" = ${
-            currentUser!.schoolId
-          } AND "createdAt" >= ${startOfYear(
-        new Date()
-      )} AND "createdAt" <= ${endOfYear(new Date())}
+          "schoolId" = ${currentUser!.schoolId} AND "createdAt" >= ${
+        date.from
+      } AND "createdAt" <= ${date.to}
       GROUP BY
           date
       ORDER BY

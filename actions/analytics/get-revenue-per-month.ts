@@ -3,13 +3,14 @@ import { db } from "@/lib/db";
 import { Role } from "@prisma/client";
 import { endOfYear, startOfYear } from "date-fns";
 import getCurrentUser from "../get-current-user";
+import { DateRange } from "@/lib/models/DaateRange";
 
 export interface RevenuePerMonthResponse {
   date: "string";
   revenue: number;
 }
 
-export async function getRevenuePerMonth() {
+export async function getRevenuePerMonth(date: DateRange) {
   try {
     const currentUser = await getCurrentUser();
 
@@ -24,11 +25,9 @@ export async function getRevenuePerMonth() {
         FROM
             "Payments"
         WHERE
-            "schoolId" = ${
-              currentUser!.schoolId
-            } AND "createdAt" >= ${startOfYear(
-      new Date()
-    )} AND "createdAt" <= ${endOfYear(new Date())}
+            "schoolId" = ${currentUser!.schoolId} AND "createdAt" >= ${
+      date.from
+    } AND "createdAt" <= ${date.to}
         GROUP BY
             date
         ORDER BY
