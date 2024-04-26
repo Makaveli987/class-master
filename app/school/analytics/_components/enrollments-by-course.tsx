@@ -1,19 +1,19 @@
-import { RevenuePerMonthResponse } from "@/actions/analytics/get-revenue-per-month";
+import { getTotalEnrollmentsByCourse } from "@/actions/analytics/get-total-enrollments-by-course";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loader from "@/components/ui/page-loader";
-import { AreaChart } from "@tremor/react";
-import { useEffect, useState } from "react";
 import { chartValueFormatter } from "@/lib/utils";
-import { getNewStudentsPerMonth } from "@/actions/analytics/get-new-students-per-month";
+import { BarList } from "@tremor/react";
 
-export function MonthlyNewStudents() {
+import { useEffect, useState } from "react";
+
+export function EnrollmentsByCourse() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [data, setData] = useState<RevenuePerMonthResponse[]>([]);
+  const [data, setData] = useState<any>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getNewStudentsPerMonth()
+    getTotalEnrollmentsByCourse()
       .then((res: any) => {
         setData(res);
       })
@@ -24,24 +24,25 @@ export function MonthlyNewStudents() {
   }, []);
 
   return (
-    <Card className="relative min-h-[433px] flex-1">
+    <Card className="md:w-3/5 lg:7/12 min-h-[433px] relative flex-1">
       <CardHeader>
-        <CardTitle>Monthly New Students</CardTitle>
+        <CardTitle>Total Course Enrollments</CardTitle>
+        <p className="pt-12 text-tremor-default flex items-center justify-between text-tremor-content dark:text-dark-tremor-content">
+          <span>Course</span>
+          <span>Enrollments</span>
+        </p>
       </CardHeader>
-      <CardContent className="pl-0">
+      <CardContent className="pl-6 pr-12">
         {isLoading && !error ? (
           <div className=" flex-1">
             <Loader />
           </div>
         ) : (
-          <AreaChart
-            className="mt-6"
+          <BarList
             data={data}
-            index="date"
-            yAxisWidth={65}
-            categories={["students"]}
-            colors={["purple"]}
+            className="mx-auto"
             valueFormatter={chartValueFormatter}
+            color={"indigo"}
           />
         )}
         {error && (

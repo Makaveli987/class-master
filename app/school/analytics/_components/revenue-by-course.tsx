@@ -14,12 +14,6 @@ export function RevenueByCourse() {
     setIsLoading(true);
     getTotalRevenueByCourse()
       .then((res: any) => {
-        const s = [];
-        s.push(res[0]);
-        s.push({
-          name: "Test 2",
-          revenue: 37500,
-        });
         setData(res);
       })
       .catch(() => {
@@ -32,12 +26,12 @@ export function RevenueByCourse() {
     <Card className="flex-1 min-h-[433px] relative">
       <CardHeader>
         <CardTitle>Total Revenue by Course</CardTitle>
-        <p className="pt-12 px-4 text-tremor-default flex items-center justify-between text-tremor-content dark:text-dark-tremor-content">
+        <p className="pt-12 text-tremor-default flex items-center justify-between text-tremor-content dark:text-dark-tremor-content">
           <span>Course</span>
           <span>Revenue</span>
         </p>
       </CardHeader>
-      <CardContent className="px-10">
+      <CardContent>
         {isLoading && !error ? (
           <div className=" flex-1">
             <Loader />

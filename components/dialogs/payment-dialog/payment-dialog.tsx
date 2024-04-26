@@ -112,8 +112,6 @@ export default function PaymenDialog() {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("!!paymentDialog.data :>> ", !!paymentDialog.data);
-    !!paymentDialog.data ? console.log("update") : console.log("create");
     !!paymentDialog.data ? update(values) : create(values);
   }
 

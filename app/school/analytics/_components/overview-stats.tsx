@@ -9,44 +9,38 @@ import { DollarSign, BookAIcon, User2Icon, Users2Icon } from "lucide-react";
 import React, { Suspense, useEffect, useState } from "react";
 
 export default function OverviewStats() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<OverviewStatsResponse>();
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setIsLoading(true);
     getOverviewStats()
       .then((res: any) => {
-        console.log("overview :>> ", res);
         setData(res);
       })
       .catch(() => {
         setError("Failed to fetch data.");
-      })
-      .finally(() => setIsLoading(false));
+      });
   }, []);
 
   return (
-    <div className="flex gap-6 mb-6">
-      <Suspense fallback={"Loading"}>
-        <Card className="flex-1">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <div className="size-6 flex justify-center items-center rounded-md bg-emerald-100 text-emerald-600 dark:text-emerald-100 dark:bg-emerald-800">
-              <DollarSign className="h-4 w-4" />
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+      <Card className="flex-1">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+          <div className="size-6 flex justify-center items-center rounded-md bg-emerald-100 text-emerald-600 dark:text-emerald-100 dark:bg-emerald-800">
+            <DollarSign className="h-4 w-4" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          {data ? (
+            <div className="text-2xl font-bold">
+              {formatPrice(data?.totalRevenue || 0)}
             </div>
-          </CardHeader>
-          <CardContent>
-            {data ? (
-              <div className="text-2xl font-bold">
-                {formatPrice(data?.totalRevenue || 0)}
-              </div>
-            ) : (
-              <Skeleton className="w-24 h-8" />
-            )}
-          </CardContent>
-        </Card>
-      </Suspense>
+          ) : (
+            <Skeleton className="w-24 h-8" />
+          )}
+        </CardContent>
+      </Card>
       <Card className="flex-1">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -57,7 +51,6 @@ export default function OverviewStats() {
           </div>
         </CardHeader>
         <CardContent>
-          {/* <div className="text-2xl font-bold">{data?.totalEnrolledCurses}</div> */}
           {data ? (
             <div className="text-2xl font-bold">
               {data?.totalEnrolledCurses}
@@ -75,7 +68,6 @@ export default function OverviewStats() {
           </div>
         </CardHeader>
         <CardContent>
-          {/* <div className="text-2xl font-bold">{data?.totalStudents}</div> */}
           {data ? (
             <div className="text-2xl font-bold">{data?.totalStudents}</div>
           ) : (
@@ -91,7 +83,6 @@ export default function OverviewStats() {
           </div>
         </CardHeader>
         <CardContent>
-          {/* <div className="text-2xl font-bold">{data?.totalGroups}</div> */}
           {data ? (
             <div className="text-2xl font-bold">{data?.totalGroups}</div>
           ) : (

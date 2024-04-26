@@ -35,8 +35,6 @@ export async function getRevenuePerMonth() {
             date;
       `;
 
-    console.log("revenueByMonth :>> ", revenueByMonth);
-
     return revenueByMonth;
   } catch (error) {
     console.error("Error fetching payments by month:", error);

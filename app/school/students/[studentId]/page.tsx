@@ -42,7 +42,7 @@ export default async function StudentPage({
   return (
     <div className="w-full max-w-screen-xl mx-auto">
       <StudentBreadcrumbs
-        student={{ id: student?.id, name: student?.fullName }}
+        student={{ id: student?.id || "", name: student?.fullName || "" }}
       />
       <div className="w-full flex border rounded-md bg-card shadow-sm mt-6">
         {/* Side Info */}

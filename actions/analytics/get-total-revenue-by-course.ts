@@ -9,7 +9,6 @@ export interface RevenueByCourseResponse {
 }
 
 export async function getTotalRevenueByCourse() {
-  console.log("object :>> ");
   try {
     const currentUser = await getCurrentUser();
 
@@ -33,7 +32,6 @@ export async function getTotalRevenueByCourse() {
         GROUP BY
             c.name;
         `;
-    console.log("revenuePerCourse :>> ", revenuePerCourse);
     return revenuePerCourse;
   } catch (error) {
     console.error("Error retrieving revenue per course:", error);

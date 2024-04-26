@@ -1,4 +1,5 @@
 "use client";
+import { getCompletedEnrollments } from "@/actions/analytics/get-completed-enrollments";
 import { getStudentsStats } from "@/actions/analytics/get-students-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loader from "@/components/ui/page-loader";
@@ -6,14 +7,14 @@ import { DonutChart } from "@tremor/react";
 
 import { useEffect, useState } from "react";
 
-export default function StudentsStats() {
+export default function CompletedEnrollments() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getStudentsStats()
+    getCompletedEnrollments()
       .then((res: any) => {
         setData(res);
       })
@@ -24,9 +25,9 @@ export default function StudentsStats() {
   }, []);
 
   return (
-    <Card className="min-h-[433px] relative p-0 md:w-1/2">
+    <Card className="min-h-[433px] relative md:w-2/5 lg:5/12 p-0">
       <CardHeader>
-        <CardTitle>Students</CardTitle>
+        <CardTitle>Enrollments</CardTitle>
       </CardHeader>
       <CardContent className="pt-6">
         {isLoading && !error ? (
@@ -38,24 +39,26 @@ export default function StudentsStats() {
             <DonutChart
               data={data}
               variant="donut"
-              colors={["emerald", "rose"]}
+              colors={["emerald", "sky"]}
               className="w-40 p-0"
             />
 
-            <div className="flex flex-col w-full mt-10 mx-10">
+            <div className="flex flex-col w-full lg:w-44 mt-10 mx-10">
               <div className="flex justify-between items-center">
                 <div className="flex items-center">
                   <div className="size-2.5 bg-emerald-500 rounded-sm mr-2.5"></div>
-                  <span className="text-sm text-muted-foreground">Active</span>
+                  <span className="text-sm text-muted-foreground">
+                    Completed
+                  </span>
                 </div>
                 <span>{data[0]?.value}</span>
               </div>
 
               <div className="flex justify-between items-center">
                 <div className="flex items-center">
-                  <div className="size-2.5 bg-rose-500 rounded-sm mr-2.5"></div>
+                  <div className="size-2.5 bg-sky-500 rounded-sm mr-2.5"></div>
                   <span className="text-sm text-muted-foreground">
-                    Inactive
+                    In Progress
                   </span>
                 </div>
                 <span>{data[1]?.value}</span>

@@ -45,7 +45,7 @@ export default function SchoolClient({
       <div
         className={cn(
           "flex-1 flex flex-col transition-all pl-0",
-          sidebar.isOpen ? "md:pl-56" : "pl-0"
+          sidebar.isOpen ? "lg:pl-56" : "pl-0"
         )}
       >
         <Header session={session} />

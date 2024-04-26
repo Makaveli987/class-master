@@ -17,14 +17,7 @@ export function MonthlyRevenue() {
     setIsLoading(true);
     getRevenuePerMonth()
       .then((res: any) => {
-        const s = [];
-        s.push(res[0]);
-        s.push({
-          date: "May 24",
-          revenue: 37500,
-        });
-        setData(s);
-        console.log("res :>> ", s);
+        setData(res);
       })
       .catch(() => {
         setError("Failed to fetch data.");
@@ -33,18 +26,18 @@ export function MonthlyRevenue() {
   }, []);
 
   return (
-    <Card className="relative min-h-[433px] w-3/5">
+    <Card className="relative min-h-[433px] w-full xl:w-3/5">
       <CardHeader>
         <CardTitle>Monthly Revenue</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pl-0">
         {isLoading && !error ? (
           <div className=" flex-1">
             <Loader />
           </div>
         ) : (
           <AreaChart
-            className="mt-6 "
+            className="mt-6"
             data={data}
             index="date"
             yAxisWidth={65}

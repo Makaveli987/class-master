@@ -1,19 +1,19 @@
+import { getNewEnrollmentsPerMonth } from "@/actions/analytics/get-monthly-new-enrollments";
 import { RevenuePerMonthResponse } from "@/actions/analytics/get-revenue-per-month";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loader from "@/components/ui/page-loader";
+import { chartValueFormatter } from "@/lib/utils";
 import { AreaChart } from "@tremor/react";
 import { useEffect, useState } from "react";
-import { chartValueFormatter } from "@/lib/utils";
-import { getNewStudentsPerMonth } from "@/actions/analytics/get-new-students-per-month";
 
-export function MonthlyNewStudents() {
+export function MonthlyNewEnrollments() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<RevenuePerMonthResponse[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getNewStudentsPerMonth()
+    getNewEnrollmentsPerMonth()
       .then((res: any) => {
         setData(res);
       })
@@ -26,7 +26,7 @@ export function MonthlyNewStudents() {
   return (
     <Card className="relative min-h-[433px] flex-1">
       <CardHeader>
-        <CardTitle>Monthly New Students</CardTitle>
+        <CardTitle>Monthly New Enrollments</CardTitle>
       </CardHeader>
       <CardContent className="pl-0">
         {isLoading && !error ? (
@@ -35,12 +35,12 @@ export function MonthlyNewStudents() {
           </div>
         ) : (
           <AreaChart
-            className="mt-6"
+            className="mt-6 "
             data={data}
             index="date"
             yAxisWidth={65}
-            categories={["students"]}
-            colors={["purple"]}
+            categories={["enrollments"]}
+            colors={["emerald"]}
             valueFormatter={chartValueFormatter}
           />
         )}

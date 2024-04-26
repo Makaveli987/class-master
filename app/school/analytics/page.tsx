@@ -11,6 +11,9 @@ import { RevenueByCourse } from "./_components/revenue-by-course";
 import StudentsStats from "./_components/students-stats";
 import { MonthlyNewStudents } from "./_components/monthly-new-students";
 import GroupsStats from "./_components/groups-stats";
+import { EnrollmentsByCourse } from "./_components/enrollments-by-course";
+import CompletedEnrollments from "./_components/completed-enrollments";
+import { MonthlyNewEnrollments } from "./_components/monthly-new-enrollments";
 
 export default function Analytics() {
   const [date, setDate] = React.useState<DateRange | undefined>({
@@ -25,13 +28,13 @@ export default function Analytics() {
       <Card className="pt-6">
         <CardContent>
           <Tabs defaultValue="finance">
-            <div className="flex items-center">
+            <div className="flex flex-col md:flex-row justify-start items-center">
               <TabsList>
                 <TabsTrigger value="finance">Finance</TabsTrigger>
                 <TabsTrigger value="students">Students - Groups</TabsTrigger>
-                <TabsTrigger value="groups">Groups</TabsTrigger>
+                <TabsTrigger value="courses">Courses</TabsTrigger>
               </TabsList>
-              <div className="ml-auto flex items-center gap-2">
+              <div className="md:ml-auto mt-4 md:mt-0 flex items-center gap-2">
                 <DateRangePicker
                   date={{
                     from: new Date(2022, 0, 20),
@@ -42,19 +45,29 @@ export default function Analytics() {
               </div>
             </div>
             <TabsContent className="mt-3" value="finance">
-              <div className="mt-3 flex gap-6 flex-1">
+              <div className="mt-3 flex flex-col xl:flex-row gap-6">
                 <MonthlyRevenue />
                 <RevenueByCourse />
               </div>
             </TabsContent>
             <TabsContent className="mt-3" value="students">
-              <div className="mt-3 flex gap-6 flex-1">
-                <StudentsStats />
-                <GroupsStats />
+              <div className="mt-3 flex flex-col xl:flex-row gap-6">
+                <div className="flex flex-col md:flex-row gap-6 xl:w-2/5">
+                  <StudentsStats />
+                  <GroupsStats />
+                </div>
                 <MonthlyNewStudents />
               </div>
             </TabsContent>
-            <TabsContent className="mt-3" value="groups"></TabsContent>
+            <TabsContent className="mt-3" value="courses">
+              <div className="mt-3 flex flex-col xl:flex-row gap-6 ">
+                <div className="flex flex-col md:flex-row gap-6 ">
+                  <EnrollmentsByCourse />
+                  <CompletedEnrollments />
+                </div>
+                <MonthlyNewEnrollments />
+              </div>
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>

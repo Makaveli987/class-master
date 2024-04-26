@@ -24,11 +24,11 @@ export default function GroupsStats() {
   }, []);
 
   return (
-    <Card className="min-h-[433px] relative w-1/4 p-0">
+    <Card className="min-h-[433px] relative p-0 md:w-1/2">
       <CardHeader>
         <CardTitle>Groups</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         {isLoading && !error ? (
           <div className=" flex-1">
             <Loader />
@@ -42,7 +42,7 @@ export default function GroupsStats() {
               className="w-40 p-0"
             />
 
-            <div className="flex flex-col w-60 mt-10 mx-10">
+            <div className="flex flex-col w-full  mt-10 mx-10">
               <div className="flex justify-between items-center">
                 <div className="flex items-center">
                   <div className="size-2.5 bg-emerald-500 rounded-sm mr-2.5"></div>
