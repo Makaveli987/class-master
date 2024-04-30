@@ -2,18 +2,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { addDays, subMonths } from "date-fns";
-import React, { useEffect } from "react";
-import { DateRange } from "react-day-picker";
+import { subMonths } from "date-fns";
+import React from "react";
+import CompletedEnrollments from "./_components/completed-enrollments";
+import { EnrollmentsByCourse } from "./_components/enrollments-by-course";
+import GroupsStats from "./_components/groups-stats";
+import { MonthlyNewEnrollments } from "./_components/monthly-new-enrollments";
+import { MonthlyNewStudents } from "./_components/monthly-new-students";
 import { MonthlyRevenue } from "./_components/monthly-revenue";
 import OverviewStats from "./_components/overview-stats";
 import { RevenueByCourse } from "./_components/revenue-by-course";
 import StudentsStats from "./_components/students-stats";
-import { MonthlyNewStudents } from "./_components/monthly-new-students";
-import GroupsStats from "./_components/groups-stats";
-import { EnrollmentsByCourse } from "./_components/enrollments-by-course";
-import CompletedEnrollments from "./_components/completed-enrollments";
-import { MonthlyNewEnrollments } from "./_components/monthly-new-enrollments";
 
 export default function Analytics() {
   const [date, setDate] = React.useState<{ from: Date; to: Date }>({

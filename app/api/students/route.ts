@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     const { firstName, lastName, email, phone, dateOfBirth } = await req.json();
 
-    if (!firstName || !lastName || !email || !phone || !dateOfBirth) {
+    if (!firstName || !lastName || !email || !phone) {
       return new NextResponse(
         JSON.stringify({ error: "Missing required fields" }),
         {

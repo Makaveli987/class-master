@@ -53,7 +53,7 @@ model User {
   email                 String          @unique
   emailVerified         DateTime?
   hashedPassword        String
-  phone                 String
+  phone                 String?
   dateOfBirth           DateTime?
   schoolId              String
   archived              Boolean         @default(false)

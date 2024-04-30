@@ -1,43 +1,37 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
+import DateOfBirthPicker from "@/components/ui/date-of-birth";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Loader2Icon, PlusCircleIcon, User } from "lucide-react";
-import { useEffect, useState } from "react";
-import { DialogAction } from "@/lib/models/dialog-actions";
-import useTeacherDialog from "@/hooks/use-teacher-dialog";
-import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
-import { DatePicker } from "@/components/ui/date-picker";
 import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import useTeacherDialog from "@/hooks/use-teacher-dialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { roleOptions } from "@/lib/models/role";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@radix-ui/react-popover";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 export default function TeacherDialog() {
   const [pending, setPending] = useState(false);
@@ -53,7 +47,7 @@ export default function TeacherDialog() {
     }),
     email: z.string().min(1, "Field is required").email("Enter a valid email"),
     password: z.string(),
-    dateOfBirth: z.date({ required_error: "Field is required" }),
+    dateOfBirth: z.date().optional(),
     phone: z.string().min(5, "Field is required"),
     role: z.string().min(1, "Field is required"),
     active: z.boolean().default(true),
@@ -78,7 +72,7 @@ export default function TeacherDialog() {
           firstName: teacherDialog.data.firstName,
           lastName: teacherDialog.data.lastName,
           email: teacherDialog.data.email,
-          phone: teacherDialog.data.phone,
+          phone: teacherDialog.data?.phone || "",
           role: teacherDialog.data.role,
           dateOfBirth: teacherDialog.data.dateOfBirth || undefined,
           active: teacherDialog.data.active,
@@ -249,12 +243,16 @@ export default function TeacherDialog() {
               name="dateOfBirth"
               render={({ field }) => (
                 <FormItem className="">
-                  <FormLabel>Date of Birth</FormLabel>
+                  <FormLabel>
+                    Date of Birth{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (Optional)
+                    </span>
+                  </FormLabel>
                   <FormControl>
-                    <DatePicker
-                      date={field.value}
-                      disabled={pending}
-                      setDate={field.onChange}
+                    <DateOfBirthPicker
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

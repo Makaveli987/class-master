@@ -6,9 +6,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
-import { DatePicker } from "@/components/ui/date-picker";
-import { DropdownSelect } from "@/components/ui/dropdown-select";
 import {
   Form,
   FormControl,
@@ -22,11 +19,8 @@ import { Separator } from "@/components/ui/separator";
 import { RoleType } from "@/lib/models/role";
 import { User } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { sendVerificationEmail } from "@/lib/nodemailer";
-import { generateVerificationToken } from "@/actions/verification-token/generate-verification-token";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -37,8 +31,7 @@ const formSchema = z.object({
   }),
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
   password: z.string().min(1, "Field is required"),
-  phone: z.string().min(5, "Field is required"),
-  dateOfBirth: z.date({ required_error: "Field is required" }),
+  dateOfBirth: z.date().optional(),
   schoolName: z.string().min(1, "Field is required").min(3, {
     message: "School name must be at least 3 characters long.",
   }),
@@ -54,7 +47,6 @@ const SignUpClient = () => {
       lastName: "",
       email: "",
       password: "",
-      phone: "",
       schoolName: "",
     },
   });
@@ -167,42 +159,6 @@ const SignUpClient = () => {
                     disabled={pending}
                     type="password"
                     placeholder="Password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="dateOfBirth"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel>Date of Birth</FormLabel>
-                <FormControl>
-                  <DatePicker
-                    date={field.value}
-                    disabled={pending}
-                    setDate={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <CustomPhoneInput
-                    disabled={pending}
-                    placeholder="Phone number"
                     {...field}
                   />
                 </FormControl>

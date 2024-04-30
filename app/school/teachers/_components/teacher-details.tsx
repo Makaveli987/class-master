@@ -95,7 +95,7 @@ export default function TeacherDetails({ teacher }: TeacherDetailsProps) {
             <PhoneIcon />
           </BasicInfoIcon>
           <BasicInfoLabel label="Phone">
-            {formatPhoneNumber(teacher?.phone as string)}
+            {teacher?.phone ? formatPhoneNumber(teacher?.phone as string) : "-"}
           </BasicInfoLabel>
         </BasicInfoItem>
 
@@ -104,7 +104,9 @@ export default function TeacherDetails({ teacher }: TeacherDetailsProps) {
             <CalendarIcon />
           </BasicInfoIcon>
           <BasicInfoLabel label="Date of Birth">
-            {format(teacher?.dateOfBirth as Date, "dd-MMM-yyyy")}
+            {teacher?.dateOfBirth
+              ? format(teacher?.dateOfBirth as Date, "dd-MMM-yyyy")
+              : "-"}
           </BasicInfoLabel>
         </BasicInfoItem>
 

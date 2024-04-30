@@ -1,4 +1,7 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
+import DateOfBirthPicker from "@/components/ui/date-of-birth";
 import {
   Dialog,
   DialogContent,
@@ -6,31 +9,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import useStudentDialog from "@/hooks/use-student-dialog";
-import { DialogAction } from "@/lib/models/dialog-actions";
-import { CustomPhoneInput } from "@/components/ui/custom-phone-input";
-import { DatePicker } from "@/components/ui/date-picker";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader2Icon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import useStudentDialog from "@/hooks/use-student-dialog";
+import { DialogAction } from "@/lib/models/dialog-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Student } from "@prisma/client";
 import axios, { AxiosResponse } from "axios";
+import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Field is required").min(3, {
@@ -39,7 +39,7 @@ const formSchema = z.object({
   lastName: z.string().min(1, "Field is required").min(3, {
     message: "Last name is too short",
   }),
-  dateOfBirth: z.date({ required_error: "Field is required" }),
+  dateOfBirth: z.date().optional(),
   email: z.string().min(1, "Field is required").email("Enter a valid email"),
   phone: z.string().min(5, "Field is required"),
   active: z.boolean().default(true),
@@ -177,13 +177,13 @@ export default function StudentDialog() {
 
             <FormField
               control={form.control}
-              name="dateOfBirth"
+              name="email"
               disabled={pending}
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel>Date of Birth</FormLabel>
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <DatePicker date={field.value} setDate={field.onChange} />
+                    <Input type="email" placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,13 +192,20 @@ export default function StudentDialog() {
 
             <FormField
               control={form.control}
-              name="email"
-              disabled={pending}
+              name="dateOfBirth"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
+                <FormItem className="">
+                  <FormLabel>
+                    Date of Birth{" "}
+                    <span className="text-muted-foreground font-normal">
+                      (Optional)
+                    </span>
+                  </FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Email" {...field} />
+                    <DateOfBirthPicker
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

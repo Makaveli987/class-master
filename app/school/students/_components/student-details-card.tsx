@@ -90,7 +90,9 @@ export default function StudentDetails({
           <CalendarIcon />
         </div>
         <span className="font-semibold text-sm">
-          {format(student?.dateOfBirth as Date, "dd-MMM-yyyy") || "-"}
+          {student?.dateOfBirth
+            ? format(student?.dateOfBirth as Date, "dd-MMM-yyyy")
+            : "-"}
         </span>
       </div>
 

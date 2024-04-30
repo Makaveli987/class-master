@@ -55,7 +55,11 @@ export const columns: ColumnDef<User>[] = [
         title="Phone"
       />
     ),
-    cell: ({ row }) => <span>{formatPhoneNumber(row.original.phone)}</span>,
+    cell: ({ row }) => (
+      <span>
+        {row.original.phone ? formatPhoneNumber(row.original.phone) : "-"}
+      </span>
+    ),
     enableSorting: false,
   },
   {
@@ -68,6 +72,9 @@ export const columns: ColumnDef<User>[] = [
       />
     ),
     cell: ({ row }) => {
+      if (!row.original.dateOfBirth) {
+        return "-";
+      }
       const dateOfBirth = format(
         row.original.dateOfBirth as Date,
         "dd-MMM-yyyy"

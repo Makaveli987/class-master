@@ -15,7 +15,6 @@ export async function POST(request: Request) {
       phone,
       role,
       schoolName,
-
       dateOfBirth,
     } = await request.json();
 
@@ -24,9 +23,7 @@ export async function POST(request: Request) {
       !lastName ||
       !email ||
       !password ||
-      !phone ||
       !role ||
-      !dateOfBirth ||
       !schoolName
     ) {
       return new NextResponse(
