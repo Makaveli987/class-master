@@ -33,6 +33,17 @@ export function getEnrollmentColumns(
           {userType === EnrollUserType.STUDENT
             ? `${row.original.student?.firstName} ${row.original.student?.lastName}`
             : row.original.group?.name}
+          {userType === EnrollUserType.STUDENT
+            ? row.original.student?.archived && (
+                <MerakiBadge className="ml-2" variant={"rose"}>
+                  Archived
+                </MerakiBadge>
+              )
+            : row.original.group?.archived && (
+                <MerakiBadge className="ml-2" variant={"rose"}>
+                  Archived
+                </MerakiBadge>
+              )}
         </span>
       ),
     },
@@ -48,7 +59,7 @@ export function getEnrollmentColumns(
       },
     },
     {
-      accessorKey: "teacher.firstName",
+      accessorKey: "teacher.fullName",
       header: ({ column }) => (
         <DataTableColumnHeader
           className="pl-2 text-xs"

@@ -90,16 +90,16 @@ export default function Notes({
           Add Note
         </Button>
       </CardHeader>
-      <CardContent className="max-w-5xl">
+      <CardContent className="max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {!notes?.length ? (
           <p className="text-sm">There are no notes for this course.</p>
         ) : (
-          <div className=" flex flex-wrap gap-6">
+          <>
             {notes.map((note) => (
               <div
                 key={note.id}
                 onClick={(e) => handleNoteDialog(e, note)}
-                className="flex w-72 cursor-pointer group flex-col gap-3 justify-between rounded-md border  transition-all p-4 shadow-sm hover:shadow-md"
+                className="flex cursor-pointer group flex-col gap-3 justify-between rounded-md border  transition-all p-4 shadow-sm hover:shadow-md"
               >
                 <div className="flex flex-col">
                   <div className="flex items-start justify-between">
@@ -139,7 +139,7 @@ export default function Notes({
                 </p>
               </div>
             ))}
-          </div>
+          </>
         )}
       </CardContent>
     </>

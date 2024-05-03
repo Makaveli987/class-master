@@ -112,6 +112,7 @@ export default function StudentClassForm({
       )
         .then((response) => {
           toast.success(response.message);
+          classDetailsDialog.onSuccess?.();
         })
         .catch((error) => {
           toast.error(error.er);

@@ -103,7 +103,11 @@ export const Combobox = ({
           }}
           className="w-full"
         >
-          <CommandInput disabled={disabled} placeholder="Search..." />
+          <CommandInput
+            className="border-0 ring-0 focus:ring-0"
+            disabled={disabled}
+            placeholder="Search..."
+          />
           <CommandEmpty>No option found.</CommandEmpty>
           <CommandGroup>
             {options.length === 0 ? (

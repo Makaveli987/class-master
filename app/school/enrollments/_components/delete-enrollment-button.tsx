@@ -22,7 +22,7 @@ export const DeleteEnrollmentButton = React.forwardRef<
   const router = useRouter();
   function onDelete() {
     axios
-      .delete(`/api/enrollments/${enrollmentId}`)
+      .delete(`/api/enrollment/${enrollmentId}`)
       .then(() => {
         toast.success("Enrollment has been archived");
         router.refresh();

@@ -1,4 +1,5 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { ComboboxOptions } from "@/components/ui/combobox";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -91,15 +92,24 @@ export async function GET(req: NextRequest) {
       },
       include: {
         group: {
+          where: {
+            archived: false,
+          },
           select: { id: true, name: true },
         },
       },
     });
 
-    const mappedGroups = enrollments.map((enrollment) => ({
-      value: enrollment.group?.id,
-      label: enrollment.group?.name,
-    }));
+    const mappedGroups: ComboboxOptions[] = [];
+
+    enrollments.forEach((enrollment) => {
+      if (enrollment.group) {
+        mappedGroups.push({
+          value: enrollment.group?.id,
+          label: enrollment.group?.name,
+        });
+      }
+    });
 
     // const enrollmentss = await db.enrollment.findMany({
     //   where: {

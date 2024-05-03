@@ -52,25 +52,15 @@ export async function completeEnrollment(
     };
   }
 
-  if (
-    enrollment?.attendedClasses &&
-    enrollment?.totalClasses &&
-    enrollment?.attendedClasses >= 0 &&
-    enrollment?.attendedClasses < enrollment?.totalClasses
-  ) {
+  if (enrollment?.attendedClasses! < enrollment?.totalClasses!) {
     return {
       error: `Cannot complete course. ${
-        enrollment.groupId ? "Group" : "Student"
+        enrollment?.groupId ? "Group" : "Student"
       } did not attended all classes.`,
     };
   }
 
-  if (
-    enrollment?.attendedClasses &&
-    enrollment?.totalClasses &&
-    enrollment?.attendedClasses > 0 &&
-    enrollment?.attendedClasses > enrollment?.totalClasses
-  ) {
+  if (enrollment?.attendedClasses! > enrollment?.totalClasses!) {
     return { error: "Cannot complete course. Something went wrong." };
   }
 

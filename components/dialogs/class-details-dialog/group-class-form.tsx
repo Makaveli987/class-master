@@ -117,6 +117,7 @@ export default function GroupClassForm({
       )
         .then((response) => {
           toast.success(response.message);
+          classDetailsDialog.onSuccess?.();
         })
         .catch((error) => {
           toast.error(error.er);

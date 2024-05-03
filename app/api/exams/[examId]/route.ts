@@ -15,7 +15,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { enrollmentId, name, result } = await req.json();
+    const { enrollmentId, name, result, comment } = await req.json();
     const s = await db.exam.update({
       where: {
         id: examId,
@@ -23,6 +23,7 @@ export async function PATCH(
       data: {
         name,
         result,
+        comment,
       },
     });
 

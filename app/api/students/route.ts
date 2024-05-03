@@ -1,4 +1,5 @@
 import getCurrentUser from "@/actions/get-current-user";
+import { ComboboxOptions } from "@/components/ui/combobox";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -77,15 +78,22 @@ export async function GET(req: NextRequest) {
       },
       include: {
         student: {
+          where: { archived: false },
           select: { id: true, firstName: true, lastName: true },
         },
       },
     });
 
-    const mappedStudents = enrollments.map((enrollment) => ({
-      value: enrollment.student?.id,
-      label: `${enrollment.student?.firstName} ${enrollment.student?.lastName}`,
-    }));
+    const mappedStudents: ComboboxOptions[] = [];
+
+    enrollments.forEach((enrollment) => {
+      if (enrollment.student) {
+        mappedStudents.push({
+          value: enrollment.student?.id,
+          label: `${enrollment.student?.firstName} ${enrollment.student?.lastName}`,
+        });
+      }
+    });
 
     return new NextResponse(JSON.stringify(mappedStudents), {
       status: 200,

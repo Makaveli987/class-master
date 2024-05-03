@@ -12,6 +12,7 @@ import TeacherDialog from "@/components/dialogs/teacher-dialog/teacher-dialog";
 import ClassDetailsDialog from "./dialogs/class-details-dialog/class-details-dialog";
 import MultipleSelectDialog from "./dialogs/multiple-select-dialog/multiple-select-dialog";
 import PaymenDialog from "./dialogs/payment-dialog/payment-dialog";
+import { CalendarPopover } from "./ui/calendar-popover";
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -37,6 +38,7 @@ export const DialogProvider = () => {
       <ClassDetailsDialog />
       <MultipleSelectDialog />
       <PaymenDialog />
+      <CalendarPopover />
     </>
   );
 };

@@ -29,6 +29,9 @@ import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 import useFilteredClasses from "@/hooks/use-filter-classes";
 import EventContent from "./event.content";
 import { getCurrentWeekRange } from "@/lib/utils";
+import { useCalendarPopover } from "@/hooks/useCalendarPopover";
+import SingleClassDialog from "@/components/dialogs/class-dialog/single-class-dialog";
+import { useSingleClassDialog } from "@/hooks/use-single-class-dialog";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
@@ -43,7 +46,9 @@ interface DateChangeArgs {
 
 const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const classDialog = useClassDialog();
+  const singleclassDialog = useSingleClassDialog();
   const classDetailsDialog = useClassDetailsDialog();
+  const calendarPopover = useCalendarPopover();
 
   const [activeViewIndex, setActiveViewIndex] = useState<number>(1);
 
@@ -70,11 +75,24 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
    * @param {DateSelectArg} selectInfo selected time and date
    */
   const handleDateSelect = (selectInfo: DateSelectArg): void => {
-    classDialog.open({
-      startDate: selectInfo.start,
-      refreshCalendar: refreshCalendar,
-      classroom: classroomId && classroomId !== "all" ? classroomId : "",
-      onSuccess: fetchClasses,
+    calendarPopover.open({
+      x: selectInfo.jsEvent?.clientX!,
+      y: selectInfo.jsEvent?.clientY!,
+      onSingleSelect: () =>
+        singleclassDialog.open({
+          startDate: selectInfo.start,
+          refreshCalendar: refreshCalendar,
+          classroom: classroomId && classroomId !== "all" ? classroomId : "",
+          onSuccess: fetchClasses,
+        }),
+      onRecurringSelect: () =>
+        // classDialog.open({
+        //   startDate: selectInfo.start,
+        //   refreshCalendar: refreshCalendar,
+        //   classroom: classroomId && classroomId !== "all" ? classroomId : "",
+        //   onSuccess: fetchClasses,
+        // }),
+        {},
     });
   };
 
@@ -134,7 +152,12 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   return (
     <div>
       <div className="flex flex-col gap-5 xl:flex-row">
-        <ClassDialog
+        {/* <ClassDialog
+          teachers={teachers?.slice(1) || []}
+          classrooms={classrooms?.slice(1) || []}
+        /> */}
+
+        <SingleClassDialog
           teachers={teachers?.slice(1) || []}
           classrooms={classrooms?.slice(1) || []}
         />
