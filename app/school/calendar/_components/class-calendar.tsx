@@ -23,7 +23,6 @@ import { useEffect, useRef, useState } from "react";
 import "./calendar.scss";
 
 import { SchoolClassResponse } from "@/actions/get-classes";
-import ClassDetailsDialog from "@/components/dialogs/class-details-dialog/class-details-dialog";
 import LinearLoader from "@/components/ui/linear-loader";
 import { useClassDetailsDialog } from "@/hooks/use-class-details-dialog";
 import useFilteredClasses from "@/hooks/use-filter-classes";
@@ -32,6 +31,8 @@ import { getCurrentWeekRange } from "@/lib/utils";
 import { useCalendarPopover } from "@/hooks/useCalendarPopover";
 import SingleClassDialog from "@/components/dialogs/class-dialog/single-class-dialog";
 import { useSingleClassDialog } from "@/hooks/use-single-class-dialog";
+import RecurringClassDialog from "@/components/dialogs/class-dialog/recurring-class-dialog";
+import { useRecurringClassDialog } from "@/hooks/use-recurring-class-dialog";
 
 interface CalendarProps {
   classrooms: DropdownSelectOptions[];
@@ -46,7 +47,8 @@ interface DateChangeArgs {
 
 const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
   const classDialog = useClassDialog();
-  const singleclassDialog = useSingleClassDialog();
+  const singleClassDialog = useSingleClassDialog();
+  const recurringClassDialog = useRecurringClassDialog();
   const classDetailsDialog = useClassDetailsDialog();
   const calendarPopover = useCalendarPopover();
 
@@ -79,20 +81,19 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
       x: selectInfo.jsEvent?.clientX!,
       y: selectInfo.jsEvent?.clientY!,
       onSingleSelect: () =>
-        singleclassDialog.open({
+        singleClassDialog.open({
           startDate: selectInfo.start,
           refreshCalendar: refreshCalendar,
           classroom: classroomId && classroomId !== "all" ? classroomId : "",
           onSuccess: fetchClasses,
         }),
       onRecurringSelect: () =>
-        // classDialog.open({
-        //   startDate: selectInfo.start,
-        //   refreshCalendar: refreshCalendar,
-        //   classroom: classroomId && classroomId !== "all" ? classroomId : "",
-        //   onSuccess: fetchClasses,
-        // }),
-        {},
+        recurringClassDialog.open({
+          startDate: selectInfo.start,
+          refreshCalendar: refreshCalendar,
+          classroom: classroomId && classroomId !== "all" ? classroomId : "",
+          onSuccess: fetchClasses,
+        }),
     });
   };
 
@@ -158,6 +159,11 @@ const ClassCalendar = ({ classrooms, teachers }: CalendarProps) => {
         /> */}
 
         <SingleClassDialog
+          teachers={teachers?.slice(1) || []}
+          classrooms={classrooms?.slice(1) || []}
+        />
+
+        <RecurringClassDialog
           teachers={teachers?.slice(1) || []}
           classrooms={classrooms?.slice(1) || []}
         />

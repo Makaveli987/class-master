@@ -34,7 +34,11 @@ export default function Analytics() {
                 <TabsTrigger value="courses">Courses</TabsTrigger>
               </TabsList>
               <div className="md:ml-auto mt-4 md:mt-0 flex items-center gap-2">
-                <DateRangePicker date={date} setDate={setDate} />
+                <DateRangePicker
+                  date={date}
+                  setDate={setDate}
+                  disabledRange={{ after: new Date() }}
+                />
               </div>
             </div>
             <TabsContent className="mt-3" value="finance">

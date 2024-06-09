@@ -122,3 +122,34 @@ html {
 /* ::-webkit-scrollbar-thumb:hover {
   @apply bg-muted-foreground;
 } */
+
+@property --num-transactions {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@property --num-assets {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@property --num-users {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@keyframes counter {
+  from {
+    --num-transactions: 0;
+    --num-assets: 0;
+    --num-users: 0;
+  }
+  to {
+    --num-transactions: 44;
+    --num-assets: 119;
+    --num-users: 4600;
+  }
+}

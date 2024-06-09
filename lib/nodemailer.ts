@@ -4,9 +4,6 @@ const email = process.env.NODEMAILER_EMAIL;
 const pass = process.env.NODEMAILER_PASSWORD;
 const domain = process.env.NEXT_PUBLIC_APP_URL;
 
-console.log("email", email);
-console.log("pass", pass);
-
 export const transporter = nodemailer.createTransport({
   service: "gmail",
   host: "smtp.gmail.com",
@@ -286,6 +283,40 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
     
       </table>
       <!-- end body -->
+    
+    </body>
+    </html>`,
+  });
+};
+
+export const sendContactEmail = async (
+  fullName: string,
+  email: string,
+  message: string
+) => {
+  await transporter.sendMail({
+    from: email,
+    to: "vidic93@gmail.com",
+    subject: `Message from: ${fullName} - (${email})`,
+    text: "Test Text",
+    html: `<html>
+    <head>
+    
+      <meta charset="utf-8">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      <title>Contact Form</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <style type="text/css">
+      body {
+        white-space: pre-wrap;
+      }
+      </style>
+    
+    </head>
+    <body>
+
+    <p>${message}</p>
     
     </body>
     </html>`,

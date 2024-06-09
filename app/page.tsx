@@ -1,17 +1,22 @@
-import Benefits from "@/components/benefits";
+import Contact from "@/components/contact";
+import FAQ from "@/components/faq";
+import Features from "@/components/features";
+import Footer from "@/components/footer";
+import HowItWorks from "@/components/how-it-works";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import Pricing from "@/components/pricing";
+import Testimonials from "@/components/testimonials";
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowRightIcon, MonitorIcon } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
   return (
     <>
-      <div className="h-[30rem] w-full dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative flex ">
+      <div className="h-[30rem] w-full bg-card  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative flex ">
         {/* Radial gradient for the container to give a faded look */}
-        <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+        <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-background [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         {/* <p className="text-4xl sm:text-7xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 py-8">
           Backgrounds
         </p> */}
@@ -29,11 +34,14 @@ export default async function Home() {
             Savremeni sistem za <span className="text-blue-600">škole</span>{" "}
             stranih jezika
           </h1>
-          <p className="mt-5 max-w-prose text-zinc-700 sm:text-lg">
-            ClassMaster predstavlja online aplikaciju koja je kreirana za
+          <p className="mt-5 max-w-prose text-muted-foreground sm:text-lg">
+            {/* ClassMaster predstavlja online aplikaciju koja je kreirana za
             potrebe škola stranih jezika u cilju optimizacije njihovog
             poslovanja, efikasnije evidencije studenata i smanjenja
-            papirologije.
+            papirologije. */}
+            Pojednostavite administraciju škole uz našu platformu. Efikasno
+            upravljajte upisom, studentima, prisustvom, ocenama i komunikacijom,
+            uz izveštavanje u realnom vremenu.
           </p>
 
           <div className=" flex gap-4">
@@ -47,7 +55,7 @@ export default async function Home() {
             >
               Probajte besplatno <ArrowRightIcon className="ml-2 h-5 w-5" />
             </Link>
-            <Link
+            {/* <Link
               className={buttonVariants({
                 variant: "outline",
                 size: "lg",
@@ -57,7 +65,7 @@ export default async function Home() {
               target="_blank"
             >
               Demo <MonitorIcon className="ml-2 h-4 w-4" />
-            </Link>
+            </Link> */}
           </div>
         </MaxWidthWrapper>
       </div>
@@ -83,7 +91,7 @@ export default async function Home() {
               <div className="mt-16 flow-root sm:mt-24">
                 <div className="-m-2 rounded-xl bg-gray-600/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                   <Image
-                    src="/calendar-view2.png"
+                    src="/hero-dashboard.png"
                     alt="product preview"
                     width={1920}
                     height={1080}
@@ -94,6 +102,66 @@ export default async function Home() {
               </div>
             </div>
           </div>
+
+          {/* <section className="w-full py-12 md:py-16 lg:py-20">
+            <div className="container grid grid-cols-1 gap-6 md:grid-cols-3">
+              <div className="flex flex-col items-center gap-4 rounded-lg p-6 transition-all hover:bg-gray-50 dark:bg-gray-950 dark:hover:bg-gray-900">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500 text-white">
+                  <School2Icon className="h-6 w-6" />
+                </div>
+                <div className="text-4xl font-bold">20+</div>
+                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Škola
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-4 rounded-lg p-6 transition-all hover:bg-gray-50 dark:bg-gray-950 dark:hover:bg-gray-900">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500 text-white">
+                  <UsersIcon className="h-6 w-6" />
+                </div>
+                <div className="text-4xl font-bold">4.500+</div>
+                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Učenika
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-4 rounded-lg p-6 transition-all hover:bg-gray-50 dark:bg-gray-950 dark:hover:bg-gray-900">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500 text-white">
+                  <CalendarCheck className="h-6 w-6" />
+                </div>
+                <div className="text-4xl font-bold">30.000+</div>
+                <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Časova
+                </div>
+              </div>
+            </div>
+          </section> */}
+
+          {/* <div id="stats" class="bg-white py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <dl class="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
+      <div class="mx-auto flex max-w-xs flex-col gap-y-4">
+        <dt class="text-base leading-7 text-gray-600">Transactions every 24 hours</dt>
+        <dd class="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+          <span class="animate-[counter_3s_ease-out_forwards] tabular-nums [counter-set:_num_var(--num-transactions)] before:content-[counter(num)]"> <span class="sr-only">44</span>million </span>
+        </dd>
+      </div>
+      <div class="mx-auto flex max-w-xs flex-col gap-y-4">
+        <dt class="text-base leading-7 text-gray-600">Assets under holding</dt>
+        <dd class="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+          $<span class="animate-[counter_3s_ease-out_forwards] tabular-nums [counter-set:_num_var(--num-assets)] before:content-[counter(num)]"> <span class="sr-only">119</span> trillion </span>
+        </dd>
+      </div>
+      <div class="mx-auto flex max-w-xs flex-col gap-y-4">
+        <dt class="text-base leading-7 text-gray-600">New users annually</dt>
+        <dd class="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+          <span class="animate-[counter_3s_ease-out_forwards] tabular-nums [counter-set:_num_var(--num-users)] before:content-[counter(num)] before:left-[calc(0.4em * var(--n, 1))]">
+            <span class="sr-only">4600</span>
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div> */}
+
           {/* 
           <div
             aria-hidden="true"
@@ -111,8 +179,15 @@ export default async function Home() {
       </div>
 
       {/* Feature section */}
-      <Benefits />
+      <div className="mt-28 bg-accent">
+        <Features />
+      </div>
+      <HowItWorks />
       <Pricing />
+      <Testimonials />
+      <FAQ />
+      <Contact />
+      <Footer />
     </>
   );
 }

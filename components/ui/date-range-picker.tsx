@@ -20,6 +20,7 @@ interface DateTimePickerProps {
     | React.Dispatch<React.SetStateAction<{ from: Date; to: Date }>>
     | SelectRangeEventHandler;
   disabled?: boolean;
+  disabledRange?: any;
 }
 
 export function DateRangePicker({
@@ -27,6 +28,7 @@ export function DateRangePicker({
   date,
   setDate,
   disabled = false,
+  disabledRange,
 }: React.HTMLAttributes<HTMLDivElement> & DateTimePickerProps) {
   // const [date, setDate] = React.useState<DateRange | undefined>({
   //   from: new Date(2022, 0, 20),
@@ -69,7 +71,7 @@ export function DateRangePicker({
             selected={date}
             onSelect={setDate as SelectRangeEventHandler}
             numberOfMonths={2}
-            disabled={{ after: new Date() }}
+            disabled={disabledRange}
           />
         </PopoverContent>
       </Popover>

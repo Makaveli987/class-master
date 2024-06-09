@@ -31,7 +31,7 @@ export async function scheduleSingleClass(
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
-      throw new Error("Unauthorized.");
+      return { data: {} as SchoolClass, error: "Unauthorized." };
     }
 
     const {

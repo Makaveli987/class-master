@@ -17,7 +17,6 @@ import { useSingleClassDialog } from "@/hooks/use-single-class-dialog";
 import { ClassType } from "@/lib/models/class-type";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { Loader2Icon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
@@ -158,17 +157,14 @@ export default function SingleClassDialog({
         }
       }}
     >
-      <DialogContent className="max-h-screen overflow-y-auto overflow-x-auto">
+      <DialogContent className="max-h-screen max-w-md overflow-y-auto overflow-x-auto">
         <DialogHeader>
-          <DialogTitle>Add Class</DialogTitle>
+          <DialogTitle>Add Single Class</DialogTitle>
         </DialogHeader>
         <div className="h-1.5">{isFetching && <LinearLoader />}</div>
 
         <Form {...form}>
-          <form
-            className="max-w-88"
-            onSubmit={form.handleSubmit(onSubmit, onErrors)}
-          >
+          <form onSubmit={form.handleSubmit(onSubmit, onErrors)}>
             <div className="space-y-6 mt-1">
               <FormField
                 control={form.control}
@@ -188,7 +184,6 @@ export default function SingleClassDialog({
                           )
                             ? form.getValues("substitutedTeacherId")
                             : session.data?.user.id;
-                          console.log("teacherId", teacherId);
                           getAtendeeOptions(teacherId as string, value);
 
                           form.setValue("attendeeId", "");
