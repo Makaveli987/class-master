@@ -48,7 +48,7 @@ export default function StudentDetails({
 
   return (
     <div className="flex min-w-60 max-w-80 flex-col gap-3 border-r py-6 px-8">
-      <div className="">
+      <div>
         <div className="mx-auto size-20 rounded-full bg-muted text-center relative">
           <Image
             src="/male-student.png"
@@ -72,7 +72,7 @@ export default function StudentDetails({
           <MailIcon />
         </div>
         <div className="flex flex-col text-sm">
-          <span className="font-semibold">{student?.email}</span>
+          <span className="">{student?.email}</span>
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export default function StudentDetails({
         <div className="flex size-4 items-center justify-center rounded-full">
           <PhoneIcon />
         </div>
-        <span className="font-semibold text-sm">
+        <span className=" text-sm">
           {formatPhoneNumber(student?.phone as string)}
         </span>
       </div>
@@ -89,7 +89,7 @@ export default function StudentDetails({
         <div className="flex size-4 items-center justify-center rounded-full">
           <CalendarIcon />
         </div>
-        <span className="font-semibold text-sm">
+        <span className=" text-sm">
           {student?.dateOfBirth
             ? format(student?.dateOfBirth as Date, "dd-MMM-yyyy")
             : "-"}
@@ -100,7 +100,7 @@ export default function StudentDetails({
         <div className="flex size-4 items-center justify-center rounded-full">
           <Users2Icon />
         </div>
-        <div className="font-semibold flex flex-col items-start justify-start gap-2">
+        <div className=" flex flex-col items-start justify-start gap-2">
           {studentGroups?.length ? (
             studentGroups?.map((item) => (
               <Button
@@ -138,7 +138,7 @@ export default function StudentDetails({
             variant={"outline"}
             className="flex-1 hover:bg-destructive/5 hover:text-destructive hover:border-destructive"
           >
-            <Trash2Icon className="size-4 mr-2" />
+            <Trash2Icon className="size-3.5 mr-2" />
             Delete
           </Button>
         </ConfirmDialog>
@@ -150,7 +150,7 @@ export default function StudentDetails({
             studentDialog.open({ data: student, action: DialogAction.EDIT })
           }
         >
-          <EditIcon className="size-4 mr-2" />
+          <EditIcon className="size-3.5 mr-2" />
           Edit
         </Button>
       </div>

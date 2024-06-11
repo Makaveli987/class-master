@@ -25,6 +25,7 @@ import { useState } from "react";
 import DebouncedInput from "../debounce-input";
 import { DataTablePagination } from "./data-table-pagination";
 import { cn } from "@/lib/utils";
+import LinearLoader from "../linear-loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +35,8 @@ interface DataTableProps<TData, TValue> {
   className?: string;
   headerClassName?: string;
   onRowClick?: (row: any, index?: number) => void;
+  showSearchInput?: boolean;
+  isLoading?: boolean;
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -55,6 +58,8 @@ export function DataTable<TData, TValue>({
   onRowClick,
   className,
   headerClassName,
+  showSearchInput = true,
+  isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -74,16 +79,24 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <DebouncedInput
-          value={globalFilter ?? ""}
-          onChange={(value) => setGlobalFilter(String(value))}
-          className="p-2 font-lg shadow border border-block"
-          placeholder={filterPlaceholder}
-        />
+      <div
+        className={cn(
+          "flex items-center justify-between",
+          showSearchInput ? "mb-5" : null
+        )}
+      >
+        {showSearchInput && (
+          <DebouncedInput
+            value={globalFilter ?? ""}
+            onChange={(value) => setGlobalFilter(String(value))}
+            className="p-2 font-lg shadow border border-block"
+            placeholder={filterPlaceholder}
+          />
+        )}
         <div>{children}</div>
       </div>
-      <div className={cn("border !rounded-md mt-6", className)}>
+      {isLoading ? <LinearLoader /> : <div className="h-1.5 w-full"></div>}
+      <div className={cn("border !rounded-md", className)}>
         <Table>
           <TableHeader className={headerClassName}>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -1,17 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import StatusBadge from "@/components/ui/status-badge";
-import {
-  BasicInfoIcon,
-  BasicInfoItem,
-  BasicInfoLabel,
-} from "@/components/user/basic-info-item";
 import useTeacherDialog from "@/hooks/use-teacher-dialog";
 import { DialogAction } from "@/lib/models/dialog-actions";
 import { formatPhoneNumber } from "@/lib/utils";
@@ -24,10 +14,10 @@ import {
   EditIcon,
   MailIcon,
   PhoneIcon,
-  UserRoundCheckIcon,
+  Trash2Icon,
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
 
 interface TeacherDetailsProps {
@@ -35,121 +25,109 @@ interface TeacherDetailsProps {
 }
 
 export default function TeacherDetails({ teacher }: TeacherDetailsProps) {
-  const [newPassword, setNewPassword] = useState("");
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [pending, setPending] = useState(false);
-
   const teacherDialog = useTeacherDialog();
   const router = useRouter();
 
-  function handleResetPassword() {
+  function onDelete() {
     axios
-      .patch("/api/auth/register/reset-password", {
-        teacherId: teacher?.id,
-        password: newPassword,
+      .delete(`/api/auth/register/teachers/${teacher?.id}`)
+      .then(() => {
+        toast.success("Teacher has been archived");
+        router.refresh();
       })
-      .then((response) => {
-        if (response.status === 200) {
-          router.refresh();
-          toast.success("Password has been reset.", {
-            description: `${teacher?.firstName} ${teacher?.lastName}`,
-          });
-        }
-      })
-      .catch((error) => {
-        toast.error("Something went wrong. Password has not been reset.", {
-          description: `${teacher?.firstName} ${teacherDialog.data?.lastName}`,
-        });
-      })
-      .finally(() => {
-        setPending(false);
-      });
-    setNewPassword("");
-    setIsPopoverOpen(false);
+      .catch(() =>
+        toast.error("Something bad happend. Teacher has not been archived!")
+      );
   }
 
   return (
-    <div className="max-w-4xl pt-4 pb-6 px-6">
-      <div className="flex justify-between">
-        <h3 className="font-semibold">Basic Details</h3>
+    <div className="flex min-w-60 max-w-80 flex-col gap-3 border-r py-6 px-8">
+      <div>
+        <div className="mx-auto size-20 rounded-full bg-muted text-center relative">
+          <Image
+            src="/male-student.png"
+            alt={"Student Image"}
+            fill
+            className="rounded-full"
+          />
+        </div>
+        <div className="flex flex-col justify-center text-center mt-3 pb-6 border-b">
+          <h2 className="text-xl font-bold tracking-tight">
+            {teacher?.firstName + " " + teacher?.lastName}
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Created: {format(teacher?.createdAt as Date, "dd-MMM-yyyy") || "-"}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-center gap-3">
+        <div className="flex size-4 items-center justify-center rounded-full">
+          <MailIcon />
+        </div>
+        <div className="flex flex-col text-sm">
+          <span className="">{teacher?.email}</span>
+        </div>
+      </div>
+
+      <div className="mt-1 flex items-center gap-3">
+        <div className="flex size-4 items-center justify-center rounded-full">
+          <PhoneIcon />
+        </div>
+        <span className=" text-sm">
+          {formatPhoneNumber(teacher?.phone as string)}
+        </span>
+      </div>
+
+      <div className="mt-1 flex items-center gap-3">
+        <div className="flex size-4 items-center justify-center rounded-full">
+          <CalendarIcon />
+        </div>
+        <span className=" text-sm">
+          {teacher?.dateOfBirth
+            ? format(teacher?.dateOfBirth as Date, "dd-MMM-yyyy")
+            : "-"}
+        </span>
+      </div>
+
+      <div className="mt-1 flex items-center gap-3">
+        <div className="flex size-4 items-center justify-center rounded-full">
+          <CircleUserIcon />
+        </div>
+        <span className=" text-sm">{teacher?.role}</span>
+      </div>
+
+      <StatusBadge
+        className="mt-4 justify-center h-7"
+        active={teacher?.active || false}
+      />
+
+      <div className="mt-4 flex gap-3">
+        <ConfirmDialog
+          description="This action will archive the student. You will not be able to assign students and classes to this student."
+          onConfirm={onDelete}
+        >
+          <Button
+            size={"sm"}
+            variant={"outline"}
+            className="flex-1 hover:bg-destructive/5 hover:text-destructive hover:border-destructive"
+          >
+            <Trash2Icon className="size-3.5 mr-2" />
+            Delete
+          </Button>
+        </ConfirmDialog>
         <Button
+          size={"sm"}
+          variant={"outline"}
+          className="flex-1 hover:bg-primary/5 hover:text-primary hover:border-primary"
           onClick={() =>
             teacherDialog.open({ data: teacher, action: DialogAction.EDIT })
           }
-          variant="outline"
         >
-          <EditIcon className="w-4 h-4 mr-2" /> Edit
+          <EditIcon className="size-3.5 mr-2" />
+          Edit
         </Button>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-5 mt-4">
-        <BasicInfoItem>
-          <BasicInfoIcon>
-            <MailIcon />
-          </BasicInfoIcon>
-          <BasicInfoLabel label="Email"> {teacher?.email}</BasicInfoLabel>
-        </BasicInfoItem>
-
-        <BasicInfoItem>
-          <BasicInfoIcon>
-            <PhoneIcon />
-          </BasicInfoIcon>
-          <BasicInfoLabel label="Phone">
-            {teacher?.phone ? formatPhoneNumber(teacher?.phone as string) : "-"}
-          </BasicInfoLabel>
-        </BasicInfoItem>
-
-        <BasicInfoItem>
-          <BasicInfoIcon>
-            <CalendarIcon />
-          </BasicInfoIcon>
-          <BasicInfoLabel label="Date of Birth">
-            {teacher?.dateOfBirth
-              ? format(teacher?.dateOfBirth as Date, "dd-MMM-yyyy")
-              : "-"}
-          </BasicInfoLabel>
-        </BasicInfoItem>
-
-        <BasicInfoItem>
-          <BasicInfoIcon>
-            <CircleUserIcon />
-          </BasicInfoIcon>
-          <BasicInfoLabel label="Role">{teacher?.role}</BasicInfoLabel>
-        </BasicInfoItem>
-
-        <BasicInfoItem>
-          <BasicInfoIcon>
-            <UserRoundCheckIcon />
-          </BasicInfoIcon>
-          <BasicInfoLabel label="Status">
-            <StatusBadge className="mt-1" active={teacher?.active || false} />
-          </BasicInfoLabel>
-        </BasicInfoItem>
-      </div>
-      <Popover
-        open={isPopoverOpen}
-        onOpenChange={() => setIsPopoverOpen((current) => !current)}
-      >
-        <PopoverTrigger asChild>
-          <Button className="mr-auto mt-8" disabled={pending} variant="link">
-            Reset Password
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <p className="pb-2 text-sm font-medium">New Password</p>
-          <Input
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            type="password"
-            placeholder="Enter new password..."
-          ></Input>
-          <div className="flex justify-end mt-4">
-            <Button className="ml-auto" onClick={handleResetPassword}>
-              Reset
-            </Button>
-          </div>
-        </PopoverContent>
-      </Popover>
     </div>
   );
 }

@@ -75,7 +75,7 @@ export default function AssignedTeachersCard({
   }
 
   return (
-    <Card className="">
+    <Card className="border-0">
       <div className="max-w-4xl">
         <CardHeader className=" flex flex-row justify-between items-start">
           <div className="space-y-1.5">
