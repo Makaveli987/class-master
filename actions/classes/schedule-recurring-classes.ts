@@ -99,8 +99,6 @@ export async function createRecurringEvents(
       currentDay.setHours(scheduleConfig.firstWeek.startTime.getHours());
       currentDay.setMinutes(scheduleConfig.firstWeek.startTime.getMinutes());
 
-      console.log("currentDay", currentDay);
-
       while (currentDay <= to) {
         const isAvailable = await isClassTimeSlotAvailable(
           classroomId,

@@ -50,7 +50,7 @@ export async function getStudentsOptions(
       data: students as ComboboxOptions[],
     };
   } catch (error) {
-    console.log("error", error);
+    console.error("[getStudentsOptions]: Error", error);
     return {
       error: "Something bad happened. Courses were not assigned",
       data: [],

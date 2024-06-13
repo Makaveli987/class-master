@@ -139,7 +139,6 @@ export default function SingleClassDialog({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    console.log("values: ", values);
 
     createClass(values);
   }

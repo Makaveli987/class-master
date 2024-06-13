@@ -133,7 +133,7 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    console.log("error", error);
+    console.log("[UpdateClassGroup] Error:", error);
     return new NextResponse(JSON.stringify({ error: error }), {
       status: 500,
       headers: {

@@ -16,7 +16,8 @@ import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { subMonths } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { classStatisticsColumns } from "./class-statistics-columns";
+import { GetClassStatisticsColumns } from "./class-statistics-columns";
+import ClassStatisticsDialog from "@/components/dialogs/class-statistics-dialog/class-statistics-dialog";
 
 interface TotalClassesTableProps {
   teacherId: string;
@@ -66,7 +67,7 @@ export default function ClassStatisticsTable({
       <CardContent>
         <DataTable
           headerClassName="rounded-t-md bg-muted/50"
-          columns={classStatisticsColumns}
+          columns={GetClassStatisticsColumns()}
           data={totalClasses || []}
           filterPlaceholder="Search month..."
           showSearchInput={false}

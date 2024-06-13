@@ -99,7 +99,7 @@ export async function PATCH(
       },
     });
   } catch (error: any) {
-    console.log("error :>> ", error);
+    console.error("[UpdateClassPayload] Error ", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal Server Error" }),
       {

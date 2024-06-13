@@ -22,16 +22,13 @@ export async function getTotalClassesByTeacherPerMonth(
   try {
     const currentUser = await getCurrentUser();
 
-    const dateFrom = new Date("2024-01-01"); // Replace with actual start date
-    const dateTo = new Date(); // Replace with actual end date
-
-    if (!currentUser || currentUser?.role === Role.TEACHER) {
+    if (!currentUser) {
       return { data: [], error: "Unauthorized" };
     }
 
     const classesPerMonth: TotalClassesByTeacher[] = await db.$queryRaw`
         SELECT
-            TO_CHAR("start", 'Mon yyyy') AS date,
+            TO_CHAR("start", 'Month yyyy') AS date,
             "teacherId",
             COUNT("id") AS classes
         FROM

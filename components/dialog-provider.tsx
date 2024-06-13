@@ -13,6 +13,7 @@ import ClassDetailsDialog from "./dialogs/class-details-dialog/class-details-dia
 import MultipleSelectDialog from "./dialogs/multiple-select-dialog/multiple-select-dialog";
 import PaymenDialog from "./dialogs/payment-dialog/payment-dialog";
 import { CalendarPopover } from "./ui/calendar-popover";
+import ClassStatisticsDialog from "./dialogs/class-statistics-dialog/class-statistics-dialog";
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -39,6 +40,7 @@ export const DialogProvider = () => {
       <MultipleSelectDialog />
       <PaymenDialog />
       <CalendarPopover />
+      <ClassStatisticsDialog />
     </>
   );
 };

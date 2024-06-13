@@ -2,7 +2,6 @@ import { getCourses } from "@/actions/get-courses";
 
 import { getAssignedCourses } from "@/actions/get-assigned-courses";
 import { getTeacher } from "@/actions/get-teachers";
-import { getTeachersStats } from "@/actions/get-teachers-stats";
 import { Card, CardContent } from "@/components/ui/card";
 import AssignedCoursesCard from "../_components/assigned-courses-card";
 

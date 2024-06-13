@@ -119,7 +119,6 @@ export default function RecurringClassDialog({
 
   async function onSubmit(values: z.infer<typeof recurringClassSchema>) {
     setIsPending(true);
-    console.log("values: ", values);
 
     await createRecurringEvents(values)
       .then((data) => {
