@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/",
+      disallow: "/private/",
     },
-    sitemap: "https://class-master.com/sitemap.xml",
+    sitemap: "https://www.class-master.com/sitemap.xml",
   };
 }
