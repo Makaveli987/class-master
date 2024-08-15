@@ -41,11 +41,11 @@ export default function Contact() {
     setIsPending(true);
     console.log("values: ", values);
 
-    await sendEmailFromContact(
-      values.fullName,
-      values.email,
-      values.message
-    ).finally(() => setIsPending(false));
+    // await sendEmailFromContact(
+    //   values.fullName,
+    //   values.email,
+    //   values.message
+    // ).finally(() => setIsPending(false));
   }
 
   return (
