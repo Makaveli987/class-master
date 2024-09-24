@@ -15,14 +15,18 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendVerificationEmail = async (toEmail: string, token: string) => {
+export const sendVerificationEmail = async (
+  toEmail: string,
+  token: string,
+  name: string
+) => {
   const resetLink = `http://localhost:3000/new-verification?token=${token}`;
   // const resetLink = `${domain}/auth/new-password?token=${token}`
 
   await transporter.sendMail({
     from: email,
     to: toEmail,
-    subject: "Test verification",
+    subject: "Verifikacija naloga",
     text: "Test Text",
     // html: `<h1>Test  title</h1><p>Test content.</p> <a href='${resetLink}'>Click here to verify your account!</a>`,
     html: `<html>
@@ -140,9 +144,6 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
               <tr>
                 <td align="center" valign="top" style="padding: 36px 24px;">
-                  <a href="https://www.blogdesire.com" target="_blank" style="display: inline-block;">
-                    <img src="https://www.blogdesire.com/wp-content/uploads/2019/07/blogdesire-1.png" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
-                  </a>
                 </td>
               </tr>
             </table>
@@ -166,7 +167,7 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
               <tr>
                 <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #d4dadf;">
-                  <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Confirm Your Email Address</h1>
+                  <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Verifikacija naloga</h1>
                 </td>
               </tr>
             </table>
@@ -192,7 +193,8 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
               <!-- start copy -->
               <tr>
                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                  <p style="margin: 0;">Tap the button below to confirm your email address. If you didn't create an account with <a href="https://blogdesire.com">Paste</a>, you can safely delete this email.</p>
+                  <p style="margin: 0;">Poštovani/a ${name},</p> <br>
+                  <p style="margin: 0;">Hvala Vam što ste se registrovali kod nas. Da biste završili proces registracije i aktivirali svoj nalog, molimo Vas da potvrdite svoju email adresu klikom na sledeći link:</p>
                 </td>
               </tr>
               <!-- end copy -->
@@ -206,7 +208,7 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
                         <table border="0" cellpadding="0" cellspacing="0">
                           <tr>
                             <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                              <a href='${resetLink}' target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify Email</a>
+                              <a href='${resetLink}' target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Potvrdite e-mail</a>
                             </td>
                           </tr>
                         </table>
@@ -220,7 +222,8 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
               <!-- start copy -->
               <tr>
                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                  <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
+                  <p style="margin: 0;">Ukoliko niste kreirali nalog ili ste ovu poruku primili greškom, slobodno je zanemarite.</p>
+                  <p style="margin: 0;">Ako imate bilo kakvih pitanja ili Vam je potrebna pomoć, slobodno nas kontaktirajte.</p>
                   <p style="margin: 0;"><a href="https://blogdesire.com" target="_blank">https://blogdesire.com/xxx-xxx-xxxx</a></p>
                 </td>
               </tr>
@@ -229,7 +232,7 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
               <!-- start copy -->
               <tr>
                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                  <p style="margin: 0;">Cheers,<br> Paste</p>
+                  <p style="margin: 0;">Hvala Vam,<br> ClassMaster</p>
                 </td>
               </tr>
               <!-- end copy -->
@@ -243,43 +246,7 @@ export const sendVerificationEmail = async (toEmail: string, token: string) => {
           </td>
         </tr>
         <!-- end copy block -->
-    
-        <!-- start footer -->
-        <tr>
-          <td align="center" bgcolor="#e9ecef" style="padding: 24px;">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-            <tr>
-            <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-    
-              <!-- start permission -->
-              <tr>
-                <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                  <p style="margin: 0;">You received this email because we received a request for [type_of_action] for your account. If you didn't request [type_of_action] you can safely delete this email.</p>
-                </td>
-              </tr>
-              <!-- end permission -->
-    
-              <!-- start unsubscribe -->
-              <tr>
-                <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                  <p style="margin: 0;">To stop receiving these emails, you can <a href="https://www.blogdesire.com" target="_blank">unsubscribe</a> at any time.</p>
-                  <p style="margin: 0;">Paste 1234 S. Broadway St. City, State 12345</p>
-                </td>
-              </tr>
-              <!-- end unsubscribe -->
-    
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-            </td>
-            </tr>
-            </table>
-            <![endif]-->
-          </td>
-        </tr>
-        <!-- end footer -->
+  
     
       </table>
       <!-- end body -->

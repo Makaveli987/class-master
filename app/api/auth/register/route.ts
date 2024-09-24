@@ -77,7 +77,8 @@ export async function POST(request: Request) {
     const verificationToken = await generateVerificationToken(email);
     await sendVerificationEmail(
       verificationToken.email,
-      verificationToken.token
+      verificationToken.token,
+      user.firstName
     );
 
     await db.classroom.create({

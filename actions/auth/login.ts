@@ -39,7 +39,8 @@ export const login = async (
 
     await sendVerificationEmail(
       "darko.vidic2@gmail.com",
-      verificationToken.token
+      verificationToken.token,
+      existingUser.firstName
     );
 
     return { error: "Email not verified", code: 951 };

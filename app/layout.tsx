@@ -11,12 +11,12 @@ import "./globals.css";
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Class Master | Vođenje Škole Stranih Jezika",
+  title: "Class Master | Aplikacija Za Škole Stranih Jezika",
   description:
     "Efikasno upravljajte svojom školom stranih jezika uz našu intuitivnu aplikaciju. Organizacija kurseva, evidencija studenata i više.",
-  // icons: {
-  //   icon: "/logo-base-32x32.png", // Favicon link
-  // },
+  icons: {
+    icon: "/favicon-32x32.png", // Favicon link
+  },
   keywords:
     "upravljanje školom stranih jezika, softver za školu, aplikacija za školu, sistem za vođenje škole jezika, administracija škole jezika, platforma za učenje jezika",
   robots: "index, follow",
