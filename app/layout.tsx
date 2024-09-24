@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import ClientSessionProvider from "./client-session-provider";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 // import ReactQueryProvider from "@/lib/react-query-provider";
 
 // const inter = Inter({ subsets: ["latin"] });
@@ -70,6 +71,7 @@ export default function RootLayout({
           </ClientSessionProvider>
           {/* </ReactQueryProvider> */}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
