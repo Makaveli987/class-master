@@ -20,7 +20,7 @@ export const sendVerificationEmail = async (
   token: string,
   name: string
 ) => {
-  const resetLink = `http://localhost:3000/new-verification?token=${token}`;
+  const resetLink = `${domain}/new-verification?token=${token}`;
   // const resetLink = `${domain}/auth/new-password?token=${token}`
 
   await transporter.sendMail({
